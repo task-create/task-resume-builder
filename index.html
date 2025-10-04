@@ -1,9 +1,10 @@
-<!DOCTYPE html>
+# Re-create the enhanced HTML with fixed navigation and features.
+html = r"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TASK Resume Builder</title>
+<title>TASK Resume Builder — Enhanced (Fixed Next Buttons)</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; min-height: 100vh; }
@@ -28,12 +29,14 @@ label { display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-
 input[type="text"], input[type="email"], input[type="tel"], textarea, select { width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 15px; font-family: inherit; transition: border-color 0.3s ease; }
 input:focus, textarea:focus, select:focus { outline: none; border-color: #667eea; }
 textarea { min-height: 120px; resize: vertical; }
+.small-note { font-size:12px;color:#666;margin-top:6px; }
 .example-box { background: #f8f9ff; border-left: 4px solid #667eea; padding: 15px; margin-top: 10px; border-radius: 8px; }
 .example-box strong { color: #667eea; display: block; margin-bottom: 8px; font-size: 14px; }
 .example-box p { color: #555; font-size: 13px; line-height: 1.6; margin: 5px 0; }
 .tip-box { background: #fff7e6; border-left: 4px solid #ffa726; padding: 15px; margin: 20px 0; border-radius: 8px; }
 .tip-box strong { color: #f57c00; display: block; margin-bottom: 8px; font-size: 14px; }
 .tip-box ul { margin-left: 20px; color: #666; font-size: 13px; line-height: 1.8; }
+.banner { background:#eefdf6;border:2px solid #10b981; color:#065f46; padding:14px; border-radius:12px; margin:14px 0; }
 .button-group { display: flex; gap: 15px; margin-top: 30px; }
 button { flex: 1; padding: 15px 30px; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
 .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); }
@@ -44,8 +47,10 @@ button { flex: 1; padding: 15px 30px; border: none; border-radius: 10px; font-si
 .btn-success:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6); }
 .add-more { display: inline-block; color: #667eea; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 10px; text-decoration: underline; }
 .add-more:hover { color: #764ba2; }
-.entry-group { background: #f9f9f9; padding: 20px; border-radius: 10px; margin-bottom: 20px; position: relative; }
-.remove-entry { position: absolute; top: 15px; right: 15px; background: #ef4444; color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 18px; line-height: 1; }
+.entry-group { background: #f9f9f9; padding: 20px; border-radius: 12px; margin-bottom: 20px; position: relative; border:1px solid #ececec; }
+.remove-entry { position: absolute; top: 10px; right: 10px; background: #fff; color: #6b7280; border: 1px solid #e5e7eb; width: 28px; height: 28px; border-radius: 9999px; cursor: pointer; font-size: 18px; line-height: 26px; text-align:center; box-shadow:0 1px 2px rgba(0,0,0,0.05); }
+.remove-entry:hover { color:#ef4444; border-color:#ef4444; }
+.counter { font-size:12px; color:#666; text-align:right; margin-top:6px; }
 .step-indicator { text-align: center; color: #667eea; font-weight: 600; margin-bottom: 10px; font-size: 14px; }
 #preview { background: white; padding: 40px; border: 1px solid #e0e0e0; border-radius: 10px; font-family: 'Times New Roman', serif; max-width: 700px; margin: 0 auto; }
 #preview h3 { color: #333; font-size: 28px; margin-bottom: 5px; text-align: center; }
@@ -57,137 +62,584 @@ button { flex: 1; padding: 15px 30px; border: none; border-radius: 10px; font-si
 #preview ul { margin-left: 20px; margin-top: 5px; }
 #preview li { margin-bottom: 5px; color: #444; line-height: 1.6; }
 .download-buttons { display: flex; gap: 15px; margin-top: 20px; }
+.badge { display:inline-block; padding:4px 8px; font-size:12px; border-radius:999px; background:#eef2ff; color:#3730a3; font-weight:600; }
+hr.soft { border:none; border-top:1px dashed #e5e7eb; margin:10px 0; }
 @media (max-width: 768px) { .container { border-radius: 0; } .header h1 { font-size: 28px; } .form-content { padding: 30px 20px; } .button-group { flex-direction: column; } #preview { padding: 20px; } .download-buttons { flex-direction: column; } }
 </style>
 </head>
 <body>
 <div class="container">
-<div class="header">
-<h1>💼 TASK Resume Builder</h1>
-<p>Build your professional resume step-by-step</p>
-<div class="progress-bar"><div class="progress-fill" id="progressBar"></div></div>
-</div>
-<div class="form-content">
-<form id="resumeForm">
-<div class="section active" data-section="1">
-<div class="step-indicator">Step 1 of 5</div>
-<div class="section-header">
-<div class="section-icon">👤</div>
-<div class="section-title"><h2>Personal Information</h2><p>Let's start with your contact details</p></div>
-</div>
-<div class="form-group"><label>Full Name *</label><input type="text" id="fullName" required placeholder="John Smith"></div>
-<div class="form-group">
-          <label>Phone Number *</label>
-          <input type="tel" id="phone" required placeholder="(609) 555-1234" maxlength="14">
+  <div class="header">
+    <h1>💼 TASK Resume Builder</h1>
+    <p>Build your professional resume step-by-step</p>
+    <div class="progress-bar"><div class="progress-fill" id="progressBar"></div></div>
+  </div>
+
+  <div class="form-content">
+    <form id="resumeForm" onsubmit="return false;">
+      <!-- STEP 1 -->
+      <div class="section active" data-section="1">
+        <div class="step-indicator">Step 1 of 5</div>
+        <div class="section-header">
+          <div class="section-icon">👤</div>
+          <div class="section-title"><h2>Personal Information</h2><p>Let's start with your contact details</p></div>
         </div>
-<div class="form-group"><label>Email Address *</label><input type="email" id="email" required placeholder="john.smith@email.com"></div>
-<div class="form-group"><label>City, State</label><input type="text" id="location" placeholder="Trenton, NJ"></div>
-<div class="button-group"><button type="button" class="btn-primary" id="nextBtn1">Next Step →</button></div>
+        <div class="form-group"><label>Full Name *</label><input type="text" id="fullName" required placeholder="John Smith"></div>
+        <div class="form-group"><label>Phone Number *</label><input type="tel" id="phone" required placeholder="(609) 555-1234" maxlength="14"></div>
+        <div class="form-group"><label>Email Address *</label><input type="email" id="email" required placeholder="john.smith@email.com"></div>
+        <div class="form-group"><label>City, State</label><input type="text" id="location" placeholder="Trenton, NJ"></div>
+        <div class="button-group"><button type="button" class="btn-primary" id="nextBtn1">Next Step →</button></div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="section" data-section="2">
+        <div class="step-indicator">Step 2 of 5</div>
+        <div class="section-header">
+          <div class="section-icon">💼</div>
+          <div class="section-title"><h2>Work Experience</h2><p>Tell us about your jobs using the C·A·R method</p></div>
+        </div>
+
+        <!-- Last job timing gate -->
+        <div class="entry-group" style="background:#f8fbff">
+          <label style="margin-bottom:6px;">When did you last have a job?</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+            <select id="lastJobMonth">
+              <option value="">Month</option>
+              <option>January</option><option>February</option><option>March</option><option>April</option><option>May</option><option>June</option><option>July</option><option>August</option><option>September</option><option>October</option><option>November</option><option>December</option>
+            </select>
+            <select id="lastJobYear">
+              <option value="">Year</option>
+            </select>
+            <label style="display:flex;align-items:center;gap:8px;font-weight:600;color:#374151;">
+              <input type="checkbox" id="neverWorked"> I’ve never worked
+            </label>
+          </div>
+          <div id="skillsResumeBanner" class="banner" style="display:none; margin-top:12px;">
+            <strong>✅ Skills-Based Resume Recommended</strong>
+            <p style="margin-top:6px;">It’s been over 3 years since your last job (or you’ve never worked). We’ll emphasize your skills, strengths, and training. You can still add any experience you have.</p>
+            <label style="display:flex;align-items:center;gap:8px;margin-top:8px;"><input type="checkbox" id="useSkillsResume"> Use Skills-Based Resume layout</label>
+          </div>
+        </div>
+
+        <div class="tip-box"><strong>💡 C·A·R Method Tips:</strong><ul><li><strong>Challenge:</strong> What problem did you face?</li><li><strong>Action:</strong> What did you do about it?</li><li><strong>Result:</strong> What improved? (Use numbers!)</li></ul></div>
+
+        <div id="workExperiences" data-max="4">
+          <!-- job entries appear here -->
+        </div>
+
+        <span class="add-more" id="addWork">+ Add Another Job</span>
+        <div class="small-note">Max 4 jobs. Each job up to 6 bullet points / 600 characters.</div>
+
+        <div class="button-group">
+          <button type="button" class="btn-secondary" id="prevBtn2">← Back</button>
+          <button type="button" class="btn-primary" id="nextBtn2">Next Step →</button>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="section" data-section="3">
+        <div class="step-indicator">Step 3 of 5</div>
+        <div class="section-header">
+          <div class="section-icon">🎓</div>
+          <div class="section-title"><h2>Education</h2><p>List your education and training</p></div>
+        </div>
+
+        <div id="educationEntries">
+          <!-- one entry will be created from template -->
+        </div>
+        <span class="add-more" id="addEdu">+ Add More Education</span>
+
+        <div class="tip-box"><strong>💡 Don't have formal education?</strong><ul><li>List any training programs, certifications, or courses</li><li>Include GED if you have one</li><li>Add relevant online courses or workshops</li></ul></div>
+
+        <div class="button-group">
+          <button type="button" class="btn-secondary" id="prevBtn3">← Back</button>
+          <button type="button" class="btn-primary" id="nextBtn3">Next Step →</button>
+        </div>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="section" data-section="4">
+        <div class="step-indicator">Step 4 of 5</div>
+        <div class="section-header">
+          <div class="section-icon">⭐</div>
+          <div class="section-title"><h2>Skills</h2><p>What are you good at?</p></div>
+        </div>
+
+        <div class="form-group">
+          <label>Choose a skill to get ideas</label>
+          <select id="skillChooser">
+            <option value="">Select a skill…</option>
+            <option>Customer service</option>
+            <option>Forklift</option>
+            <option>Cashier</option>
+            <option>Cleaning</option>
+            <option>Food service</option>
+            <option>Reception</option>
+            <option>Security</option>
+            <option>Warehouse</option>
+            <option>Manufacturing</option>
+            <option>Delivery driving</option>
+            <option>Microsoft Office</option>
+            <option>Bilingual</option>
+          </select>
+          <div id="skillSuggestions" class="example-box" style="display:none;"></div>
+        </div>
+
+        <div class="form-group">
+          <label>Your Skills <span class="label-help">(Comma-separated or one per line)</span></label>
+          <textarea id="skills" placeholder="Forklift certified, Customer service, Microsoft Office, Bilingual (English/Spanish), Team leadership, Time management"></textarea>
+          <div class="counter" id="skillsCounter">0 / 500</div>
+        </div>
+
+        <div class="button-group">
+          <button type="button" class="btn-secondary" id="prevBtn4">← Back</button>
+          <button type="button" class="btn-primary" id="nextBtn4">Next Step →</button>
+        </div>
+      </div>
+
+      <!-- STEP 5 -->
+      <div class="section" data-section="5">
+        <div class="step-indicator">Step 5 of 5</div>
+        <div class="section-header">
+          <div class="section-icon">📄</div>
+          <div class="section-title"><h2>Review Your Resume</h2><p>Check everything looks good, then download or email</p></div>
+        </div>
+        <div id="preview"></div>
+        <div class="download-buttons">
+          <button type="button" class="btn-success" id="downloadBtn">📥 Download as PDF</button>
+          <button type="button" class="btn-primary" id="downloadWordBtn">📄 Download as Word</button>
+          <button type="button" class="btn-primary" id="emailBtn">📧 Email to TASK</button>
+        </div>
+        <div class="button-group" style="margin-top: 20px;">
+          <button type="button" class="btn-secondary" id="prevBtn5">← Edit Resume</button>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
-<div class="section" data-section="2">
-<div class="step-indicator">Step 2 of 5</div>
-<div class="section-header">
-<div class="section-icon">💼</div>
-<div class="section-title"><h2>Work Experience</h2><p>Tell us about your jobs using the C·A·R method</p></div>
-</div>
-<div class="tip-box"><strong>💡 C·A·R Method Tips:</strong><ul><li><strong>Challenge:</strong> What problem did you face?</li><li><strong>Action:</strong> What did you do about it?</li><li><strong>Result:</strong> What improved? (Use numbers!)</li></ul></div>
-<div id="workExperiences">
-<div class="entry-group">
-<div class="form-group"><label>Job Title *</label><input type="text" name="jobTitle[]" required placeholder="Warehouse Associate"></div>
-<div class="form-group"><label>Company Name *</label><input type="text" name="company[]" required placeholder="ABC Logistics"></div>
-<div class="form-group"><label>Dates Worked <span class="label-help">(When did you work here?)</span></label>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;">
-<div><label style="font-size:13px;font-weight:500;color:#666;margin-bottom:4px;">Start Date</label>
-<div style="display:flex;gap:8px;">
-<select name="startMonth[]" style="flex:1;"><option value="">Month</option><option>January</option><option>February</option><option>March</option><option>April</option><option>May</option><option>June</option><option>July</option><option>August</option><option>September</option><option>October</option><option>November</option><option>December</option></select>
-<select name="startYear[]" style="flex:1;"><option value="">Year</option></select>
-</div></div>
-<div><label style="font-size:13px;font-weight:500;color:#666;margin-bottom:4px;">End Date</label>
-<div style="display:flex;gap:8px;">
-<select name="endMonth[]" style="flex:1;"><option value="">Month</option><option value="Present">Present</option><option>January</option><option>February</option><option>March</option><option>April</option><option>May</option><option>June</option><option>July</option><option>August</option><option>September</option><option>October</option><option>November</option><option>December</option></select>
-<select name="endYear[]" style="flex:1;"><option value="">Year</option></select>
-</div></div>
-</div></div>
-<div class="form-group">
-<label>What did you do? Use C·A·R method *</label>
-<div style="background:#e8f4ff;border:2px solid #2196f3;border-radius:10px;padding:15px;margin-bottom:10px;">
-<p style="margin:0 0 10px;font-weight:600;color:#1976d2;">💡 Need help writing this? Click the button below:</p>
-<button type="button" class="generate-car" style="display:block;width:100%;background:#2196f3;color:white;border:none;border-radius:8px;padding:12px;cursor:pointer;font-size:15px;font-weight:600;">✨ Generate C·A·R Examples for This Job</button>
-<div class="car-suggestions" style="margin-top:10px;display:none;"></div>
-</div>
-<textarea name="responsibilities[]" class="resp-textarea" required placeholder="Your accomplishments will appear here after you click the button above, or you can type your own...&#10;&#10;Example format:&#10;• Challenge: [What problem existed?]&#10;• Action: [What did you do?]&#10;• Result: [What improved? Use numbers!]"></textarea>
-<div class="example-box"><strong>✅ Good Example:</strong><p>• Challenge: Shipping delays were causing customer complaints</p><p>• Action: Created new packing checklist and trained team</p><p>• Result: Cut shipping errors by 40% and improved ratings from 3.5 to 4.8 stars</p></div>
-</div>
-</div>
-</div>
-<span class="add-more" id="addWork">+ Add Another Job</span>
-<div class="button-group"><button type="button" class="btn-secondary" id="prevBtn2">← Back</button><button type="button" class="btn-primary" id="nextBtn2">Next Step →</button></div>
-</div>
-<div class="section" data-section="3">
-<div class="step-indicator">Step 3 of 5</div>
-<div class="section-header">
-<div class="section-icon">🎓</div>
-<div class="section-title"><h2>Education</h2><p>List your education and training</p></div>
-</div>
-<div id="educationEntries">
-<div class="entry-group">
-<div class="form-group"><label>Degree or Certificate *</label><input type="text" name="degree[]" required placeholder="High School Diploma"></div>
-<div class="form-group"><label>School Name *</label><input type="text" name="school[]" required placeholder="Trenton Central High School"></div>
-<div class="form-group"><label>Field of Study</label><input type="text" name="fieldOfStudy[]" placeholder="General Studies, Business, etc."></div>
-<div class="form-group"><label>Year Graduated</label><input type="text" name="gradYear[]" placeholder="2018"></div>
-</div>
-</div>
-<span class="add-more" id="addEdu">+ Add More Education</span>
-<div class="tip-box"><strong>💡 Don't have formal education?</strong><ul><li>List any training programs, certifications, or courses</li><li>Include GED if you have one</li><li>Add relevant online courses or workshops</li></ul></div>
-<div class="button-group"><button type="button" class="btn-secondary" id="prevBtn3">← Back</button><button type="button" class="btn-primary" id="nextBtn3">Next Step →</button></div>
-</div>
-<div class="section" data-section="4">
-<div class="step-indicator">Step 4 of 5</div>
-<div class="section-header">
-<div class="section-icon">⭐</div>
-<div class="section-title"><h2>Skills</h2><p>What are you good at?</p></div>
-</div>
-<div class="form-group"><label>Your Skills <span class="label-help">(List each skill separated by a comma)</span></label><textarea id="skills" placeholder="Example: Forklift certified, Customer service, Microsoft Office, Bilingual (English/Spanish), Team leadership, Time management"></textarea>
-<div class="example-box"><strong>💡 Skill Ideas:</strong><p><strong>Technical:</strong> Forklift, Computer skills, Cash register, Equipment operation</p><p><strong>Soft Skills:</strong> Customer service, Teamwork, Problem solving, Communication</p><p><strong>Certifications:</strong> OSHA certified, Food handler's license, CDL</p><p><strong>Languages:</strong> Bilingual, Multilingual</p></div>
-</div>
-<div class="button-group"><button type="button" class="btn-secondary" id="prevBtn4">← Back</button><button type="button" class="btn-primary" id="nextBtn4">Next Step →</button></div>
-</div>
-<div class="section" data-section="5">
-<div class="step-indicator">Step 5 of 5</div>
-<div class="section-header">
-<div class="section-icon">📄</div>
-<div class="section-title"><h2>Review Your Resume</h2><p>Check everything looks good, then download or email</p></div>
-</div>
-<div id="preview"></div>
-<div class="download-buttons">
-<button type="button" class="btn-success" id="downloadBtn">📥 Download as PDF</button>
-<button type="button" class="btn-primary" id="downloadWordBtn">📄 Download as Word</button>
-<button type="button" class="btn-primary" id="emailBtn">📧 Email to TASK</button>
-</div>
-<div class="button-group" style="margin-top: 20px;"><button type="button" class="btn-secondary" id="prevBtn5">← Edit Resume</button></div>
-</div>
-</form>
-</div>
-</div>
+
+<!-- libs -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
-let currentSection=1;const totalSections=5;function updateProgress(){document.getElementById('progressBar').style.width=(currentSection/totalSections)*100+'%'}function goToSection(n){document.querySelector(`.section[data-section="${currentSection}"]`).classList.remove('active');currentSection=n;document.querySelector(`.section[data-section="${currentSection}"]`).classList.add('active');updateProgress();window.scrollTo({top:0,behavior:'smooth'});if(currentSection===5)generatePreview()}function validateSection(n){const s=document.querySelector(`.section[data-section="${n}"]`),r=s.querySelectorAll('[required]');let v=true;if(n===1){r.forEach(f=>{if(!f.value.trim()){v=false;f.style.borderColor='#ef4444'}else{f.style.borderColor='#e0e0e0'}})}else{r.forEach(f=>{f.style.borderColor='#e0e0e0'})}if(!v)alert('Please fill in all required fields (marked with *)');return v}
-document.getElementById('nextBtn1').addEventListener('click',()=>{if(validateSection(1))goToSection(2)});document.getElementById('nextBtn2').addEventListener('click',()=>{goToSection(3)});document.getElementById('prevBtn2').addEventListener('click',()=>{goToSection(1)});document.getElementById('nextBtn3').addEventListener('click',()=>{goToSection(4)});document.getElementById('prevBtn3').addEventListener('click',()=>{goToSection(2)});document.getElementById('nextBtn4').addEventListener('click',()=>{goToSection(5)});document.getElementById('prevBtn4').addEventListener('click',()=>{goToSection(3)});document.getElementById('prevBtn5').addEventListener('click',()=>{goToSection(4)});
-document.getElementById('addWork').addEventListener('click',()=>{const c=document.getElementById('workExperiences'),n=document.createElement('div');n.className='entry-group';n.innerHTML='<button type="button" class="remove-entry">×</button><div class="form-group"><label>Job Title *</label><input type="text" name="jobTitle[]" required placeholder="Warehouse Associate"></div><div class="form-group"><label>Company Name *</label><input type="text" name="company[]" required placeholder="ABC Logistics"></div><div class="form-group"><label>Dates Worked</label><input type="text" name="dates[]" placeholder="January 2020 - Present"></div><div class="form-group"><label>What did you do? Use C·A·R method *</label><textarea name="responsibilities[]" required placeholder="List your accomplishments"></textarea></div>';c.appendChild(n);n.querySelector('.remove-entry').addEventListener('click',function(){n.remove()})});
-document.getElementById('addEdu').addEventListener('click',()=>{const c=document.getElementById('educationEntries'),n=document.createElement('div');n.className='entry-group';n.innerHTML='<button type="button" class="remove-entry">×</button><div class="form-group"><label>Degree or Certificate *</label><input type="text" name="degree[]" required placeholder="High School Diploma"></div><div class="form-group"><label>School Name *</label><input type="text" name="school[]" required placeholder="School Name"></div><div class="form-group"><label>Field of Study</label><input type="text" name="fieldOfStudy[]" placeholder="General Studies, Business, etc."></div><div class="form-group"><label>Year Graduated</label><input type="text" name="gradYear[]" placeholder="2018"></div>';c.appendChild(n);n.querySelector('.remove-entry').addEventListener('click',function(){n.remove()})});
-function generatePreview(){const p=document.getElementById('preview'),n=document.getElementById('fullName').value,ph=document.getElementById('phone').value,e=document.getElementById('email').value,l=document.getElementById('location').value;let h=`<h3>${n}</h3><div class="contact-info">${l} | ${ph} | ${e}</div>`;const jt=document.getElementsByName('jobTitle[]'),c=document.getElementsByName('company[]'),sm=document.getElementsByName('startMonth[]'),sy=document.getElementsByName('startYear[]'),em=document.getElementsByName('endMonth[]'),ey=document.getElementsByName('endYear[]'),r=document.getElementsByName('responsibilities[]');if(jt.length>0&&jt[0].value){h+='<h4>Work Experience</h4>';for(let i=0;i<jt.length;i++){if(jt[i].value){const startDate=(sm[i]&&sm[i].value?sm[i].value+' ':'')+(sy[i]&&sy[i].value?sy[i].value:'');const endDate=(em[i]&&em[i].value?em[i].value+' ':'')+(ey[i]&&ey[i].value&&em[i].value!=='Present'?ey[i].value:'');const dateRange=startDate&&endDate?`${startDate} - ${endDate}`:startDate?startDate:endDate?endDate:'Present';h+=`<div class="job-entry"><div class="job-title">${jt[i].value}</div><div class="company">${c[i].value} | ${dateRange}</div><ul>`;const b=r[i].value.split('\n').filter(x=>x.trim());b.forEach(x=>{h+=`<li>${x.replace(/^[•\-*]\s*/,'')}</li>`});h+='</ul></div>'}}}const dg=document.getElementsByName('degree[]'),sc=document.getElementsByName('school[]'),fos=document.getElementsByName('fieldOfStudy[]'),gy=document.getElementsByName('gradYear[]');if(dg.length>0&&dg[0].value){h+='<h4>Education</h4>';for(let i=0;i<dg.length;i++){if(dg[i].value){h+=`<div class="edu-entry"><strong>${dg[i].value}</strong>${fos[i].value?' - '+fos[i].value:''}<br>${sc[i].value}${gy[i].value?', '+gy[i].value:''}</div>`}}}const sk=document.getElementById('skills').value;if(sk){h+='<h4>Skills</h4><p>'+sk+'</p>'}p.innerHTML=h}
-document.getElementById('downloadBtn').addEventListener('click',()=>{const{jsPDF}=window.jspdf,doc=new jsPDF(),n=document.getElementById('fullName').value,ph=document.getElementById('phone').value,e=document.getElementById('email').value,l=document.getElementById('location').value;let y=20;doc.setFontSize(22);doc.setFont(undefined,'bold');doc.text(n,105,y,{align:'center'});y+=8;doc.setFontSize(10);doc.setFont(undefined,'normal');doc.text(`${l} | ${ph} | ${e}`,105,y,{align:'center'});y+=10;doc.setLineWidth(0.5);doc.line(20,y,190,y);y+=8;const jt=document.getElementsByName('jobTitle[]'),c=document.getElementsByName('company[]'),sm=document.getElementsByName('startMonth[]'),sy=document.getElementsByName('startYear[]'),em=document.getElementsByName('endMonth[]'),ey=document.getElementsByName('endYear[]'),r=document.getElementsByName('responsibilities[]');if(jt.length>0&&jt[0].value){doc.setFontSize(14);doc.setFont(undefined,'bold');doc.text('WORK EXPERIENCE',20,y);y+=7;for(let i=0;i<jt.length;i++){if(jt[i].value){doc.setFontSize(11);doc.setFont(undefined,'bold');doc.text(jt[i].value,20,y);y+=5;doc.setFont(undefined,'italic');const startDate=(sm[i]&&sm[i].value?sm[i].value+' ':'')+(sy[i]&&sy[i].value?sy[i].value:'');const endDate=(em[i]&&em[i].value?em[i].value+' ':'')+(ey[i]&&ey[i].value&&em[i].value!=='Present'?ey[i].value:'');const dateRange=startDate&&endDate?`${startDate} - ${endDate}`:startDate?startDate:endDate?endDate:'Present';doc.text(`${c[i].value} | ${dateRange}`,20,y);y+=6;doc.setFont(undefined,'normal');doc.setFontSize(10);const b=r[i].value.split('\n').filter(x=>x.trim());b.forEach(x=>{const ln=doc.splitTextToSize('• '+x.replace(/^[•\-*]\s*/,''),170);ln.forEach(l=>{if(y>270){doc.addPage();y=20}doc.text(l,20,y);y+=5})});y+=3}}}const dg=document.getElementsByName('degree[]'),sc=document.getElementsByName('school[]'),fos=document.getElementsByName('fieldOfStudy[]'),gy=document.getElementsByName('gradYear[]');if(dg.length>0&&dg[0].value){if(y>250){doc.addPage();y=20}doc.setFontSize(14);doc.setFont(undefined,'bold');doc.text('EDUCATION',20,y);y+=7;for(let i=0;i<dg.length;i++){if(dg[i].value){doc.setFontSize(11);doc.setFont(undefined,'bold');doc.text(dg[i].value+(fos[i].value?' - '+fos[i].value:''),20,y);y+=5;doc.setFont(undefined,'normal');doc.text(`${sc[i].value}${gy[i].value?', '+gy[i].value:''}`,20,y);y+=7}}}const sk=document.getElementById('skills').value;if(sk){if(y>250){doc.addPage();y=20}doc.setFontSize(14);doc.setFont(undefined,'bold');doc.text('SKILLS',20,y);y+=7;doc.setFontSize(10);doc.setFont(undefined,'normal');const sl=doc.splitTextToSize(sk,170);sl.forEach(ln=>{doc.text(ln,20,y);y+=5})}doc.save(`${n.replace(/\s+/g,'_')}_Resume.pdf`)});
+// ---------- constants ----------
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const currentYear = new Date().getFullYear();
 
-document.getElementById('downloadWordBtn').addEventListener('click',()=>{const n=document.getElementById('fullName').value,ph=document.getElementById('phone').value,e=document.getElementById('email').value,l=document.getElementById('location').value;let html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>Resume</title><style>body{font-family:"Calibri",sans-serif;font-size:11pt;line-height:1.3}h1{font-size:18pt;text-align:center;margin:0 0 5pt}h2{font-size:12pt;text-transform:uppercase;border-bottom:1pt solid black;margin:15pt 0 5pt;padding-bottom:2pt}.contact{text-align:center;font-size:10pt;margin:0 0 10pt;padding-bottom:10pt;border-bottom:1pt solid black}.job,.edu{margin:0 0 10pt}.job-title{font-weight:bold}.company{font-style:italic}ul{margin:5pt 0 0 20pt;padding:0}li{margin:0 0 3pt}</style></head><body>';html+=`<h1>${n}</h1><div class="contact">${l} | ${ph} | ${e}</div>`;const jt=document.getElementsByName('jobTitle[]'),c=document.getElementsByName('company[]'),sm=document.getElementsByName('startMonth[]'),sy=document.getElementsByName('startYear[]'),em=document.getElementsByName('endMonth[]'),ey=document.getElementsByName('endYear[]'),r=document.getElementsByName('responsibilities[]');if(jt.length>0&&jt[0].value){html+='<h2>Work Experience</h2>';for(let i=0;i<jt.length;i++){if(jt[i].value){const startDate=(sm[i]&&sm[i].value?sm[i].value+' ':'')+(sy[i]&&sy[i].value?sy[i].value:'');const endDate=(em[i]&&em[i].value?em[i].value+' ':'')+(ey[i]&&ey[i].value&&em[i].value!=='Present'?ey[i].value:'');const dateRange=startDate&&endDate?`${startDate} - ${endDate}`:startDate?startDate:endDate?endDate:'Present';html+=`<div class="job"><div class="job-title">${jt[i].value}</div><div class="company">${c[i].value} | ${dateRange}</div><ul>`;const b=r[i].value.split('\n').filter(x=>x.trim());b.forEach(x=>{html+=`<li>${x.replace(/^[•\-*]\s*/,'')}</li>`});html+='</ul></div>'}}}const dg=document.getElementsByName('degree[]'),sc=document.getElementsByName('school[]'),fos=document.getElementsByName('fieldOfStudy[]'),gy=document.getElementsByName('gradYear[]');if(dg.length>0&&dg[0].value){html+='<h2>Education</h2>';for(let i=0;i<dg.length;i++){if(dg[i].value){html+=`<div class="edu"><strong>${dg[i].value}</strong>${fos[i].value?' - '+fos[i].value:''}<br>${sc[i].value}${gy[i].value?', '+gy[i].value:''}</div>`}}}const sk=document.getElementById('skills').value;if(sk){html+=`<h2>Skills</h2><p>${sk}</p>`}html+='</body></html>';const blob=new Blob(['\ufeff',html],{type:'application/msword'});const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download=`${n.replace(/\s+/g,'_')}_Resume.doc`;document.body.appendChild(link);link.click();document.body.removeChild(link);URL.revokeObjectURL(url)});
+// ---------- helpers ----------
+function fillYearSelect(selectEl, span=50) { for(let y=currentYear; y>=currentYear-span; y--){ const opt=document.createElement('option'); opt.value=y; opt.textContent=y; selectEl.appendChild(opt); } }
+function qs(s,root=document){ return root.querySelector(s); }
+function qsa(s,root=document){ return Array.from(root.querySelectorAll(s)); }
 
-document.getElementById('emailBtn').addEventListener('click',()=>{const n=document.getElementById('fullName').value,ph=document.getElementById('phone').value,e=document.getElementById('email').value,s='Resume Submission - '+n,b=`Hello TASK (E&E),\n\nI am submitting my resume for review.\n\nName: ${n}\nPhone: ${ph}\nEmail: ${e}\nBest time to reach me: \n\nI have downloaded my resume as a PDF and will attach it to this email.\n\nThank you!`;window.location.href=`mailto:EandE@trentonsoupkitchen.org?subject=${encodeURIComponent(s)}&body=${encodeURIComponent(b)}`;alert('An email draft has been opened. Please attach your downloaded PDF resume before sending!')});
+// ---------- progress & nav ----------
+let currentSection=1; const totalSections=5;
+function updateProgress(){ const bar = qs('#progressBar'); if(bar){ bar.style.width=(currentSection/totalSections)*100+'%'; } }
+function goTo(n){ const cur = qs('.section.active'); const next = qs('.section[data-section="'+n+'"]');
+  if(!next) return;
+  if(cur) cur.classList.remove('active');
+  currentSection=n;
+  next.classList.add('active');
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(currentSection===5) generatePreview();
+}
 updateProgress();
-document.getElementById('phone').addEventListener('input',function(e){let x=e.target.value.replace(/\D/g,'').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);e.target.value=!x[2]?x[1]:'('+x[1]+') '+x[2]+(x[3]?'-'+x[3]:'')});
-const currentYear=new Date().getFullYear();document.querySelectorAll('select[name="startYear[]"],select[name="endYear[]"]').forEach(s=>{for(let y=currentYear;y>=currentYear-50;y--){const opt=document.createElement('option');opt.value=y;opt.textContent=y;s.appendChild(opt)}});
 
-const carExamples={'warehouse':['Reduced picking errors by 35% by implementing barcode scanning system and reorganizing warehouse layout','Achieved zero workplace injuries for 6 consecutive months after leading safety training for 15 team members','Cut overtime hours by 25% by streamlining receiving process and cross-training team on multiple stations','Improved inventory accuracy from 82% to 98% by conducting daily cycle counts and updating tracking system','Increased order fulfillment speed by 40% through optimized bin placement and workflow redesign','Trained 8 new hires on equipment operation, reducing onboarding time from 3 weeks to 10 days','Processed 500+ orders daily while maintaining 99.2% accuracy rate','Reduced loading dock congestion by 50% through better scheduling and coordination'],'retail':['Increased store rating from 3.2 to 4.7 stars by greeting every customer within 30 seconds and providing personalized recommendations','Exceeded sales targets by 18% for 3 consecutive months through effective upselling and product knowledge','Reduced product returns by 30% by creating fitting guide and training team on proper measurements','Generated $15K in additional revenue by building customer loyalty program and following up with regulars','Earned Employee of the Month 4 times by maintaining 98% customer satisfaction scores','Decreased checkout wait times by 45% by implementing efficient line management during peak hours','Managed inventory for 2,000+ SKUs with 97% accuracy through regular cycle counts','Trained 6 new associates on POS system and customer service standards'],'customer service':['Reduced average call time from 12 to 7 minutes while maintaining 95% satisfaction by creating quick-reference guides','Decreased repeat complaints by 40% by identifying root causes and working with management on solutions','Resolved 90% of difficult customer situations without escalation using de-escalation and empathy techniques','Increased first-call resolution rate to 88% by actively listening and asking clarifying questions','Handled 50+ customer interactions daily with 4.8/5.0 average rating across all channels','Reduced customer churn by 25% through proactive follow-ups and personalized problem-solving','Processed 200+ support tickets weekly with 24-hour average response time','Mentored 4 new team members on call handling techniques and company policies'],'food service':['Reduced ticket time from 25 to 15 minutes during rush by reorganizing prep station and coordinating team workflow','Cut food waste by 30% while maintaining menu availability by tracking patterns and adjusting prep quantities','Achieved perfect 100 health inspection score by creating cleaning checklist and training staff on safety protocols','Increased positive reviews by 60% through attentive service and ensuring order accuracy','Trained 6 new servers on POS system and customer service, reducing training period by 40%','Improved table turnover rate by 20% during peak hours through efficient service and communication','Prepared 150+ meals daily while maintaining quality standards and food safety compliance','Reduced order errors to less than 2% by implementing double-check system'],'cashier':['Maintained 99.8% cash drawer accuracy over 12 months by carefully counting and double-checking transactions','Processed 200+ transactions daily while keeping checkout lines moving quickly and efficiently','Increased credit card sign-ups by 35% through friendly customer engagement and clear benefit explanations','Resolved pricing discrepancies immediately, preventing customer complaints and maintaining satisfaction','Cross-trained on customer service desk, expanding capabilities and supporting team during busy periods','Received 20+ positive customer comments for friendly service and accuracy','Handled $10K+ in cash daily with zero shortages or overages','Trained 5 new cashiers on register operations and customer service standards'],'driver':['Completed 98% of deliveries on time by planning efficient routes and managing schedule proactively','Maintained zero accidents and perfect safety record over 2 years and 50,000+ miles','Reduced fuel costs by 15% through defensive driving and route optimization','Earned Driver of the Quarter twice by exceeding delivery targets and receiving excellent customer feedback','Handled 30-40 deliveries per day while maintaining accurate paperwork and professional customer interactions','Identified delivery issues early and communicated with dispatch to prevent delays','Completed pre-trip inspections daily, identifying and reporting 15+ maintenance issues before breakdowns','Maintained DOT compliance with perfect inspection record'],'manufacturing':['Exceeded production quota by 20% while maintaining zero defects through attention to quality standards','Reduced machine downtime by 30% by performing preventive maintenance and reporting issues immediately','Trained 5 new operators on safety protocols and equipment operation, improving team efficiency','Identified process bottleneck and suggested improvement that increased output by 15%','Maintained perfect attendance for 18 months, ensuring consistent production flow','Implemented 5S organization system in work area, reducing setup time by 25%','Operated 3 different machines with 99.5% quality rating across all stations','Reduced scrap rate from 8% to 2% through careful quality checks and adjustments'],'assembly':['Assembled 200+ units daily while maintaining 99.7% quality score through attention to detail','Reduced assembly time per unit by 18% by optimizing hand motions and tool placement','Trained 8 new operators on assembly techniques and quality standards','Identified defective parts early, preventing 50+ units from reaching quality inspection','Maintained clean and organized workstation following 5S principles','Cross-trained on 4 different product lines to support production flexibility','Suggested process improvement that reduced repetitive motion strain for entire team','Achieved zero safety incidents over 2 years through proper tool use and awareness'],'package handler':['Loaded and unloaded 1,000+ packages per shift while maintaining 99% accuracy rate','Reduced package damage by 40% through proper handling techniques and careful stacking','Exceeded productivity targets by 25% through efficient scanning and sorting methods','Maintained perfect safety record over 18 months by following proper lifting techniques','Trained 6 new handlers on equipment operation and safety protocols','Identified and reported 20+ damaged packages before shipment, preventing customer complaints','Organized loading dock to improve workflow, reducing truck loading time by 15%','Worked efficiently in all weather conditions while maintaining quality standards'],'cleaning':['Cleaned 12-15 rooms daily while maintaining 4.9/5.0 quality inspection scores','Reduced supply costs by 20% by monitoring usage and preventing waste','Received zero customer complaints over 18 months by ensuring thorough and consistent cleaning','Trained 4 new team members on proper cleaning techniques and safety procedures','Completed deep-cleaning projects 2 days ahead of schedule through efficient time management','Identified and reported maintenance issues promptly, preventing larger problems','Maintained cleaning equipment properly, extending lifespan and reducing replacement costs','Followed all safety protocols with zero incidents involving chemicals or equipment'],'security':['Monitored 50+ cameras and conducted hourly patrols covering 200,000 sq ft facility with zero incidents','Responded to 15+ emergency situations calmly and effectively, following all protocols','Reduced unauthorized access by 80% through vigilant ID checking and visitor log maintenance','Wrote detailed incident reports that were used by management for policy improvements','Maintained perfect attendance on night shift for 2 years, ensuring consistent security coverage','De-escalated 20+ tense situations without police involvement using communication skills','Trained 5 new security officers on patrol routes and emergency procedures','Identified and reported 30+ safety hazards before they caused incidents'],'receptionist':['Managed 80+ calls daily while greeting visitors and maintaining professional, welcoming atmosphere','Reduced appointment scheduling errors to zero by implementing confirmation call system','Improved office efficiency by organizing filing system and digitizing 500+ documents','Trained 3 new receptionists on phone system, visitor protocols, and office procedures','Handled multiple tasks simultaneously while maintaining friendly, professional demeanor','Received consistent praise from visitors and staff for helpful, positive attitude','Coordinated conference room schedules for 20+ weekly meetings with zero conflicts','Processed 50+ package deliveries daily while maintaining accurate logs'],'janitor':['Maintained 98% cleanliness scores across 30,000 sq ft building by following detailed cleaning schedule','Reduced slip-and-fall incidents to zero by promptly addressing spills and maintaining clear pathways','Cut supply costs by 18% through careful inventory management and preventing overuse','Completed all daily tasks efficiently, often finishing early to assist with special projects','Identified and reported 10+ maintenance issues before they became major problems','Trained 2 new janitors on proper equipment use and cleaning standards','Maintained all cleaning equipment through regular inspections and minor repairs','Responded to 100+ emergency cleaning requests with average 10-minute response time'],'construction':['Completed residential framing projects 10% faster than schedule through efficient material organization','Maintained zero safety violations over 3 years by following all protocols and using PPE correctly','Assisted lead carpenter in training 6 apprentices on proper tool use and safety procedures','Reduced material waste by 25% through precise measurements and careful planning','Operated multiple power tools and equipment safely and effectively','Worked in all weather conditions while maintaining quality standards and productivity','Completed 15+ home renovation projects with 5-star customer ratings','Identified potential structural issues early, saving clients thousands in repair costs'],'administrative':['Processed 200+ invoices monthly with 99.5% accuracy by implementing double-check system','Reduced filing backlog from 3 weeks to same-day by creating efficient organization system','Improved interdepartmental communication by coordinating meetings and distributing clear meeting notes','Managed executive calendar with zero scheduling conflicts across 40+ weekly appointments','Created 15+ training documents that reduced onboarding time for new hires by 30%','Answered 50+ phone calls daily while managing multiple administrative tasks simultaneously','Maintained office supply inventory, reducing costs by 15% through bulk ordering','Coordinated travel arrangements for 10+ executives with zero booking errors'],'healthcare':['Assisted 15+ patients daily with activities of daily living while maintaining dignity and comfort','Maintained 100% compliance with safety protocols and hand hygiene standards','Reduced patient falls by 40% through vigilant monitoring and prompt response to call lights','Documented vital signs and patient conditions accurately for 20+ patients per shift','Received consistent positive feedback from patients and families for compassionate care','Supported nursing staff during emergencies while remaining calm and following procedures','Trained 3 new CNAs on patient care techniques and documentation procedures','Maintained patient privacy and HIPAA compliance with zero violations'],'delivery':['Maintained 99% on-time delivery rate across 40+ stops daily through efficient route planning','Achieved zero customer complaints over 18 months by providing professional, friendly service','Reduced package damage rate to 0.5% by using proper handling techniques and securing loads carefully','Completed delivery routes 15% faster than average while maintaining accuracy and safety','Handled cash transactions totaling $5K+ weekly with zero discrepancies','Communicated proactively with customers about delivery times and any potential delays','Maintained delivery vehicle through daily inspections and reporting maintenance needs','Covered additional routes during peak season, completing 60+ stops daily'],'landscaping':['Maintained 20+ residential and commercial properties weekly with 4.9/5.0 customer satisfaction','Reduced equipment repair costs by 30% through proper maintenance and careful operation','Completed seasonal projects 20% faster than estimated by organizing materials and coordinating team','Operated riding mowers, trimmers, and other equipment safely with zero accidents','Identified irrigation issues and plant diseases early, saving customers money on repairs','Trained 3 new crew members on equipment operation and safety procedures','Designed and installed 10+ landscape projects receiving excellent customer reviews','Reduced water usage by 25% through efficient irrigation scheduling and plant selection'],'hotel':['Maintained 4.8/5.0 guest satisfaction scores by anticipating needs and resolving issues promptly','Processed 50+ check-ins/check-outs daily while managing phones and handling guest requests','Increased positive online reviews by 45% through exceptional service and follow-up','Resolved guest complaints effectively, turning 15+ negative situations into positive experiences','Cross-trained on reservations, concierge, and housekeeping to support team during busy periods','Maintained accurate cash drawer with zero shortages over 18 months','Upsold room upgrades and amenities, generating $20K+ in additional revenue','Coordinated special requests for 100+ guests including room decorations and dietary accommodations'],'culinary':['Prepared 200+ meals daily maintaining consistent quality and presentation standards','Reduced food costs by 15% through careful portion control and inventory management','Achieved 98% customer satisfaction rating through attention to dietary restrictions and preferences','Trained 4 kitchen staff on proper knife skills and food safety protocols','Developed 10+ new menu items that became customer favorites and increased sales','Maintained spotless kitchen with perfect health inspection scores','Reduced prep time by 20% through mise en place organization and efficiency improvements','Handled high-pressure dinner service for 150+ covers nightly while maintaining quality'],'intern':['Completed assigned projects 2 weeks ahead of deadline through proactive time management','Created 5 detailed reports and presentations used by senior leadership for decision-making','Learned new software programs in 3 days, becoming resource for other team members','Assisted with data analysis on 10+ projects, identifying trends that improved operations','Received outstanding performance review and offer for full-time position','Contributed ideas in team meetings that led to 2 process improvements','Maintained professional communication with clients and stakeholders','Organized team events and coordinated schedules for 15+ staff members'],'general':['Improved [process/metric] by [X%] through [specific action taken]','Reduced [problem] by [X%] by implementing [solution]','Exceeded [goal/target] by [X%] for [timeframe] through [actions]','Trained [number] team members on [skill/process], resulting in [improvement]','Maintained [achievement] for [timeframe] by [action taken]','Completed [task] [X%] faster/better by [method used]']};
+// attach step buttons safely
+function attach(id, fn){ const el = qs(id); if(el) el.addEventListener('click', fn); }
+attach('#nextBtn1', ()=> goTo(2));
+attach('#prevBtn2', ()=> goTo(1));
+attach('#nextBtn2', ()=> goTo(3));
+attach('#prevBtn3', ()=> goTo(2));
+attach('#nextBtn3', ()=> goTo(4));
+attach('#prevBtn4', ()=> goTo(3));
+attach('#nextBtn4', ()=> goTo(5));
+attach('#prevBtn5', ()=> goTo(4));
 
-document.addEventListener('click',function(e){if(e.target.classList.contains('generate-car')){const entryGroup=e.target.closest('.entry-group');const jobTitle=(entryGroup.querySelector('input[name="jobTitle[]"]').value||'').toLowerCase();const company=entryGroup.querySelector('input[name="company[]"]').value||'this company';const textarea=entryGroup.querySelector('.resp-textarea');const suggestionsDiv=e.target.nextElementSibling;let examples=carExamples.general;if(jobTitle.includes('cashier')||jobTitle.includes('checkout'))examples=carExamples.cashier;else if(jobTitle.includes('food')||jobTitle.includes('kitchen')||jobTitle.includes('cook')||jobTitle.includes('server')||jobTitle.includes('restaurant')||jobTitle.includes('chef')||jobTitle.includes('prep')||jobTitle.includes('dishwash')||jobTitle.includes('busser')||jobTitle.includes('barista')||jobTitle.includes('fast food'))examples=carExamples['food service'];else if(jobTitle.includes('culinary')||jobTitle.includes('sous chef')||jobTitle.includes('line cook'))examples=carExamples.culinary;else if(jobTitle.includes('intern')||jobTitle.includes('internship'))examples=carExamples.intern;else if(jobTitle.includes('assembly')||jobTitle.includes('assembler'))examples=carExamples.assembly;else if(jobTitle.includes('package')||jobTitle.includes('handler')||jobTitle.includes('sorter')||jobTitle.includes('loader')||jobTitle.includes('unloader'))examples=carExamples['package handler'];else if(jobTitle.includes('warehouse')||jobTitle.includes('logistics')||jobTitle.includes('shipping')||jobTitle.includes('forklift')||jobTitle.includes('picker')||jobTitle.includes('packer'))examples=carExamples.warehouse;else if(jobTitle.includes('retail')||jobTitle.includes('sales associate')||jobTitle.includes('store'))examples=carExamples.retail;else if(jobTitle.includes('customer service')||jobTitle.includes('customer support')||jobTitle.includes('call center')||jobTitle.includes('service rep'))examples=carExamples['customer service'];else if(jobTitle.includes('driver')||jobTitle.includes('cdl'))examples=carExamples.driver;else if(jobTitle.includes('delivery'))examples=carExamples.delivery;else if(jobTitle.includes('manufact')||jobTitle.includes('production')||jobTitle.includes('operator')||jobTitle.includes('machine'))examples=carExamples.manufacturing;else if(jobTitle.includes('clean')||jobTitle.includes('housekeeper')||jobTitle.includes('custod'))examples=carExamples.cleaning;else if(jobTitle.includes('security')||jobTitle.includes('guard'))examples=carExamples.security;else if(jobTitle.includes('reception')||jobTitle.includes('front desk'))examples=carExamples.receptionist;else if(jobTitle.includes('janitor')||jobTitle.includes('maintenance'))examples=carExamples.janitor;else if(jobTitle.includes('construct')||jobTitle.includes('carpenter')||jobTitle.includes('laborer')||jobTitle.includes('builder'))examples=carExamples.construction;else if(jobTitle.includes('admin')||jobTitle.includes('clerk')||jobTitle.includes('office assistant'))examples=carExamples.administrative;else if(jobTitle.includes('healthcare')||jobTitle.includes('cna')||jobTitle.includes('aide')||jobTitle.includes('caregiver')||jobTitle.includes('nursing'))examples=carExamples.healthcare;else if(jobTitle.includes('landscape')||jobTitle.includes('lawn')||jobTitle.includes('grounds'))examples=carExamples.landscaping;else if(jobTitle.includes('hotel')||jobTitle.includes('concierge')||jobTitle.includes('hospitality'))examples=carExamples.hotel;const shuffled=[...examples].sort(()=>Math.random()-0.5);suggestionsDiv.style.display='block';suggestionsDiv.innerHTML=`<p style="margin:10px 0 8px;font-size:14px;color:#1976d2;font-weight:600;">👇 Click up to 3 examples to add to your resume (they'll appear as bullet points):</p><p style="margin:0 0 10px;font-size:12px;color:#666;">Don't like these? Click "Generate" again for different options!</p>`;let selectedCount=0;shuffled.forEach((ex,i)=>{const btn=document.createElement('button');btn.type='button';btn.className='suggestion-option';btn.style.cssText='display:block;width:100%;text-align:left;background:#fff;border:2px solid #ddd;border-radius:8px;padding:12px;margin:8px 0;cursor:pointer;font-size:13px;line-height:1.6;transition:all 0.2s;';btn.textContent='• '+ex;btn.onmouseover=()=>btn.style.borderColor='#2196f3';btn.onmouseout=()=>{if(!btn.classList.contains('selected'))btn.style.borderColor='#ddd'};btn.onclick=()=>{if(btn.classList.contains('selected')){btn.classList.remove('selected');btn.style.background='#fff';btn.style.borderColor='#ddd';selectedCount--;}else{if(selectedCount>=3){alert('You can select up to 3 examples. Unselect one first if you want to choose a different one.');return;}btn.classList.add('selected');btn.style.background='#e8f4ff';btn.style.borderColor='#2196f3';selectedCount++;if(textarea.value.trim()){textarea.value+='\n• '+ex;}else{textarea.value='• '+ex;}textarea.focus();}};suggestionsDiv.appendChild(btn);});const doneBtn=document.createElement('button');doneBtn.type='button';doneBtn.style.cssText='display:block;width:100%;background:#10b981;color:white;border:none;border-radius:8px;padding:12px;margin:12px 0 0;cursor:pointer;font-size:15px;font-weight:600;';doneBtn.textContent='✓ Done - Close Examples';doneBtn.onclick=()=>{suggestionsDiv.style.display='none'};suggestionsDiv.appendChild(doneBtn);}});
+// ---------- phone mask ----------
+document.addEventListener('input', function(e){
+  if(e.target && e.target.id==='phone'){
+    let x = e.target.value.replace(/\D/g,'').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+    e.target.value = !x[2]? x[1] : '('+x[1]+') '+x[2]+(x[3]?'-'+x[3]:'');
+  }
+});
+
+// ---------- last job gating ----------
+const lastJobMonth = qs('#lastJobMonth'); const lastJobYear = qs('#lastJobYear');
+const neverWorked = qs('#neverWorked'); const skillsBanner = qs('#skillsResumeBanner');
+fillYearSelect(lastJobYear, 50);
+function checkGap(){ let show=false;
+  if(neverWorked && neverWorked.checked) show=true;
+  else if(lastJobMonth && lastJobYear && lastJobMonth.value && lastJobYear.value) {
+    const idx = MONTHS.indexOf(lastJobMonth.value); const when = new Date(parseInt(lastJobYear.value), Math.max(idx,0), 1);
+    const diffYears = (Date.now() - when.getTime()) / (1000*60*60*24*365.25); if(diffYears >= 3) show=true;
+  }
+  if(skillsBanner) skillsBanner.style.display = show? 'block':'none';
+}
+if(lastJobMonth) lastJobMonth.addEventListener('change', checkGap);
+if(lastJobYear) lastJobYear.addEventListener('change', checkGap);
+if(neverWorked) neverWorked.addEventListener('change', checkGap);
+
+// ---------- templates ----------
+function jobEntryHTML() { return `
+  <div class="entry-group">
+    <button type="button" class="remove-entry" title="Remove">×</button>
+    <div class="form-group"><label>Job Title *</label><input type="text" name="jobTitle[]" required placeholder="Warehouse Associate"></div>
+    <div class="form-group"><label>Company Name *</label><input type="text" name="company[]" required placeholder="ABC Logistics"></div>
+    <div class="form-group"><label>Dates Worked <span class="label-help">(When did you work here?)</span></label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;">
+        <div>
+          <label style="font-size:13px;font-weight:500;color:#666;margin-bottom:4px;">Start Date</label>
+          <div style="display:flex;gap:8px;">
+            <select name="startMonth[]" class="startMonth"><option value="">Month</option>${MONTHS.map(m=>`<option>${m}</option>`).join('')}</select>
+            <select name="startYear[]" class="startYear"><option value="">Year</option></select>
+          </div>
+        </div>
+        <div>
+          <label style="font-size:13px;font-weight:500;color:#666;margin-bottom:4px;">End Date</label>
+          <div style="display:flex;gap:8px;">
+            <select name="endMonth[]" class="endMonth"><option value="">Month</option><option value="Present">Present</option>${MONTHS.map(m=>`<option>${m}</option>`).join('')}</select>
+            <select name="endYear[]" class="endYear"><option value="">Year</option></select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>What did you do? Use C·A·R method *</label>
+      <div style="background:#e8f4ff;border:2px solid #2196f3;border-radius:10px;padding:15px;margin-bottom:10px;">
+        <p style="margin:0 0 10px;font-weight:600;color:#1976d2;">💡 Need help writing this? Click the button below:</p>
+        <button type="button" class="generate-car" style="display:block;width:100%;background:#2196f3;color:white;border:none;border-radius:8px;padding:12px;cursor:pointer;font-size:15px;font-weight:600;">✨ Generate C·A·R Examples for This Job</button>
+        <div class="car-suggestions" style="margin-top:10px;display:none;"></div>
+      </div>
+      <textarea name="responsibilities[]" class="resp-textarea" required placeholder="Your accomplishments will appear here after you click the button above, or you can type your own...&#10;&#10;Example format:&#10;• Challenge: [What problem existed?]&#10;• Action: [What did you do?]&#10;• Result: [What improved? Use numbers!]"></textarea>
+      <div class="counter bulletCounter">0 / 600</div>
+      <div class="example-box"><strong>✅ Good Example:</strong><p>• Challenge: Shipping delays were causing customer complaints</p><p>• Action: Created new packing checklist and trained team</p><p>• Result: Cut shipping errors by 40% and improved ratings from 3.5 to 4.8 stars</p></div>
+    </div>
+  </div>`; }
+
+function eduEntryHTML() { return `
+  <div class="entry-group">
+    <button type="button" class="remove-entry" title="Remove">×</button>
+    <div class="form-group">
+      <label>Degree or Certificate *</label>
+      <select name="degree[]" required>
+        <option value="">Select…</option>
+        <option>High School Diploma</option>
+        <option>GED</option>
+        <option>Associate Degree</option>
+        <option>Bachelor’s Degree</option>
+        <option>Master’s Degree</option>
+        <option>Certificate / License</option>
+        <option>Vocational / Trade</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>School Name *</label>
+      <input type="text" name="school[]" required placeholder="Trenton Central High School">
+    </div>
+    <div class="form-group">
+      <label>Field of Study</label>
+      <select name="fieldOfStudy[]">
+        <option value="">Select…</option>
+        <option>General Studies</option>
+        <option>Business</option>
+        <option>Healthcare</option>
+        <option>Information Technology</option>
+        <option>Culinary</option>
+        <option>Construction</option>
+        <option>Logistics</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Graduated (Month & Year)</label>
+      <div style="display:flex; gap:8px;">
+        <select name="gradMonth[]"><option value="">Month</option><option>January</option><option>February</option><option>March</option><option>April</option><option>May</option><option>June</option><option>July</option><option>August</option><option>September</option><option>October</option><option>November</option><option>December</option></select>
+        <select name="gradYear[]"><option value="">Year</option></select>
+      </div>
+    </div>
+  </div>`; }
+
+// ---------- initial render ----------
+const workWrap = qs('#workExperiences');
+function addJobEntry() { 
+  if(!workWrap) return;
+  const max = parseInt(workWrap.dataset.max||'4',10);
+  if(workWrap.querySelectorAll('.entry-group').length >= max) { alert('Limit reached: up to '+max+' jobs.'); return; }
+  const div = document.createElement('div'); div.innerHTML = jobEntryHTML(); const node = div.firstElementChild;
+  workWrap.appendChild(node);
+  // fill years
+  node.querySelectorAll('.startYear, .endYear').forEach(s=>fillYearSelect(s, 50));
+  // endYear disabled when Present
+  const endMonth = node.querySelector('.endMonth'); const endYear = node.querySelector('.endYear');
+  endMonth.addEventListener('change', ()=>{ endYear.disabled = (endMonth.value==='Present'); if(endYear.disabled) endYear.value=''; });
+  // remove
+  node.querySelector('.remove-entry').addEventListener('click', ()=> node.remove());
+  // bullet counter & cap (600 chars / 6 lines)
+  const ta = node.querySelector('.resp-textarea'); const counter = node.querySelector('.bulletCounter');
+  function enforce(){ 
+    let v = ta.value;
+    if(v.length>600) v = v.slice(0,600);
+    const lines = v.split('\n'); 
+    if(lines.length>6) v = lines.slice(0,6).join('\n');
+    if(ta.value!==v) ta.value=v;
+    counter.textContent = v.length + ' / 600';
+  }
+  ta.addEventListener('input', enforce); enforce();
+}
+addJobEntry(); // first job
+
+const eduWrap = qs('#educationEntries');
+function addEduEntry(){ if(!eduWrap) return; const div=document.createElement('div'); div.innerHTML = eduEntryHTML(); const node = div.firstElementChild; eduWrap.appendChild(node);
+  node.querySelectorAll('select[name="gradYear[]"]').forEach(s=>fillYearSelect(s, 70));
+  node.querySelector('.remove-entry').addEventListener('click', ()=> node.remove());
+}
+addEduEntry(); // first edu
+
+const addWorkBtn = qs('#addWork'); if(addWorkBtn) addWorkBtn.addEventListener('click', addJobEntry);
+const addEduBtn = qs('#addEdu'); if(addEduBtn) addEduBtn.addEventListener('click', addEduEntry);
+
+// ---------- Skills suggestions (skills resume support) ----------
+const skillIdeas = {
+  "Customer service": [
+    "Handled 50+ customer interactions daily with 4.8/5.0 average rating",
+    "Defused difficult situations using empathy and active listening",
+    "Explained products and policies clearly; reduced repeat calls by 25%"
+  ],
+  "Forklift": [
+    "Operated stand-up and sit-down forklifts with zero safety incidents",
+    "Moved 10,000+ lbs per shift; organized pallets to optimize space",
+    "Performed daily inspections and reported maintenance issues promptly"
+  ],
+  "Cashier": [
+    "Processed 200+ transactions per shift with 99.8% cash accuracy",
+    "Resolved pricing issues quickly to keep lines moving",
+    "Promoted loyalty program; exceeded sign-up goals 3 months running"
+  ],
+  "Cleaning": [
+    "Maintained 4.9/5.0 quality scores in daily inspections",
+    "Used checklists to ensure rooms/areas were completed on time",
+    "Handled chemicals safely following SDS and company protocols"
+  ],
+  "Food service": [
+    "Prepared 150+ meals per day while following food safety rules",
+    "Kept prep area organized to cut ticket times during rush",
+    "Delivered friendly service; increased positive reviews by 40%"
+  ],
+  "Reception": [
+    "Managed phones and greeted visitors while scheduling appointments",
+    "Organized files and digitized records for faster retrieval",
+    "Kept front desk area professional and welcoming"
+  ],
+  "Security": [
+    "Monitored cameras and completed hourly patrols with accurate logs",
+    "Checked IDs and visitor badges to prevent unauthorized access",
+    "Wrote clear incident reports used to improve procedures"
+  ],
+  "Warehouse": [
+    "Picked and packed orders with 99%+ accuracy",
+    "Reorganized bins to speed up picking and reduce errors",
+    "Cross-trained on shipping/receiving to support the team"
+  ],
+  "Manufacturing": [
+    "Operated machines safely; met or beat production goals",
+    "Checked quality and corrected issues to reduce scrap",
+    "Kept work area 5S organized to save time"
+  ],
+  "Delivery driving": [
+    "Planned routes to achieve 99% on-time delivery",
+    "Practiced safe driving; zero accidents",
+    "Provided professional service and clear communication"
+  ],
+  "Microsoft Office": [
+    "Created spreadsheets to track schedules and inventory",
+    "Formatted documents and emails professionally",
+    "Built simple charts to show progress and results"
+  ],
+  "Bilingual": [
+    "Helped customers in English and Spanish to resolve needs",
+    "Translated instructions to support teammates and supervisors",
+    "Improved service by bridging language gaps on the team"
+  ]
+};
+
+const skillChooser = qs('#skillChooser');
+const skillSuggestions = qs('#skillSuggestions');
+if(skillChooser) skillChooser.addEventListener('change', ()=>{ 
+  if(!skillChooser.value) { skillSuggestions.style.display='none'; return; }
+  const ideas = skillIdeas[skillChooser.value] || [];
+  skillSuggestions.style.display='block';
+  skillSuggestions.innerHTML = '<strong>Example bullets for '+skillChooser.value+':</strong>' + ideas.map(x=>'<p>• '+x+'</p>').join('') + '<hr class="soft"><span class="small-note">Tip: Copy any you like into your Skills or Experience.</span>';
+});
+
+// ---------- CAR generator ----------
+const carExamples = {
+  "general": ["Improved [process/metric] by [X%] through [specific action taken]","Reduced [problem] by [X%] by implementing [solution]","Exceeded [goal] by [X%] through [actions]","Trained [number] team members on [skill/process], resulting in [improvement]","Maintained [achievement] for [timeframe] by [action taken]","Completed [task] [X%] faster/better by [method used]"],
+  "cashier": ["Maintained 99.8% cash drawer accuracy","Processed 200+ transactions daily efficiently","Resolved pricing discrepancies immediately","Cross-trained on customer service desk","Received 20+ positive customer comments","Handled $10K+ cash daily with zero errors","Trained 5 new cashiers on POS"],
+  "food service": ["Cut food waste by 30% by tracking prep","Achieved perfect health inspection score","Improved table turnover by 20%","Prepared 150+ meals daily","Reduced order errors to <2%","Trained 6 new servers on POS"],
+  "warehouse": ["Improved inventory accuracy to 98%","Processed 500+ orders daily with 99% accuracy","Reduced loading dock congestion by 50%","Trained 8 new hires on equipment","Reorganized bin layout to speed picking"],
+  "retail": ["Exceeded sales targets by 18%","Reduced returns by 30% with fitting guide","Built loyalty program generating $15K","Kept 98% customer satisfaction"],
+  "customer service": ["Reduced average call time while keeping quality","Decreased repeat complaints by 40%","Raised first-call resolution to 88%","Handled 50+ interactions daily"],
+  "driver": ["98% on-time deliveries via route planning","Zero accidents over 50,000+ miles","Reduced fuel costs by 15%","Completed pre-trip inspections daily"],
+  "manufacturing": ["Exceeded quota by 20% at zero defects","Reduced downtime by 30%","Implemented 5S to cut setup time 25%"],
+  "cleaning": ["4.9/5.0 inspection scores","Reduced supply costs by 20%","Zero incidents with chemicals/equipment"],
+  "security": ["Monitored 50+ cameras; zero incidents","De-escalated tense situations","Maintained perfect attendance on nights"],
+  "receptionist": ["Managed 80+ calls daily","Zero scheduling conflicts for meetings","Digitized 500+ documents"]
+};
+
+document.addEventListener('click',function(e){ if(e.target && e.target.classList.contains('generate-car')){ 
+  const entryGroup=e.target.closest('.entry-group');
+  const jobTitle=(entryGroup.querySelector('input[name="jobTitle[]"]').value||'').toLowerCase();
+  const textarea=entryGroup.querySelector('.resp-textarea'); const suggestionsDiv=e.target.nextElementSibling;
+  let k='general';
+  if(jobTitle.includes('cashier')) k='cashier';
+  else if(jobTitle.includes('cook')||jobTitle.includes('server')||jobTitle.includes('food')||jobTitle.includes('restaurant')) k='food service';
+  else if(jobTitle.includes('warehouse')||jobTitle.includes('forklift')||jobTitle.includes('picker')||jobTitle.includes('packer')) k='warehouse';
+  else if(jobTitle.includes('retail')||jobTitle.includes('sales')) k='retail';
+  else if(jobTitle.includes('customer')) k='customer service';
+  else if(jobTitle.includes('driver')||jobTitle.includes('cdl')||jobTitle.includes('delivery')) k='driver';
+  else if(jobTitle.includes('manufact')||jobTitle.includes('machine')||jobTitle.includes('operator')) k='manufacturing';
+  else if(jobTitle.includes('clean')||jobTitle.includes('housekeep')) k='cleaning';
+  else if(jobTitle.includes('security')||jobTitle.includes('guard')) k='security';
+  else if(jobTitle.includes('reception')||jobTitle.includes('front desk')) k='receptionist';
+  const examples = carExamples[k] || carExamples.general;
+  const shuffled=[...examples].sort(()=>Math.random()-0.5);
+  suggestionsDiv.style.display='block';
+  suggestionsDiv.innerHTML='<p style="margin:10px 0 8px;font-size:14px;color:#1976d2;font-weight:600;">👇 Click up to 3 examples to add (they\'ll appear as bullets):</p>';
+  let selectedCount=0;
+  shuffled.forEach(ex=>{ const btn=document.createElement('button'); btn.type='button'; btn.className='suggestion-option';
+    btn.style.cssText='display:block;width:100%;text-align:left;background:#fff;border:2px solid #ddd;border-radius:8px;padding:12px;margin:8px 0;cursor:pointer;font-size:13px;line-height:1.6;transition:all 0.2s;';
+    btn.textContent='• '+ex;
+    btn.onmouseover=()=>btn.style.borderColor='#2196f3'; btn.onmouseout=()=>{ if(!btn.classList.contains('selected')) btn.style.borderColor='#ddd'; };
+    btn.onclick=()=>{ if(btn.classList.contains('selected')){ btn.classList.remove('selected'); btn.style.background='#fff'; btn.style.borderColor='#ddd'; selectedCount--; }
+      else { if(selectedCount>=3){ alert('You can select up to 3 examples.'); return; }
+        btn.classList.add('selected'); btn.style.background='#e8f4ff'; btn.style.borderColor='#2196f3'; selectedCount++;
+        if(textarea.value.trim()) textarea.value+='\n• '+ex; else textarea.value='• '+ex;
+        textarea.dispatchEvent(new Event('input'));
+      }};
+    suggestionsDiv.appendChild(btn);
+  });
+  const doneBtn=document.createElement('button'); doneBtn.type='button';
+  doneBtn.style.cssText='display:block;width:100%;background:#10b981;color:white;border:none;border-radius:8px;padding:12px;margin:12px 0 0;cursor:pointer;font-size:15px;font-weight:600;';
+  doneBtn.textContent='✓ Done - Close Examples'; doneBtn.onclick=()=>{ suggestionsDiv.style.display='none'; }; suggestionsDiv.appendChild(doneBtn);
+}});
+
+// ---------- skills counter ----------
+const skillsArea = qs('#skills'); const skillsCounter = qs('#skillsCounter');
+if(skillsArea) skillsArea.addEventListener('input', ()=>{ const len=skillsArea.value.length; skillsCounter.textContent = len + ' / 500'; if(len>500) skillsArea.value = skillsArea.value.slice(0,500); });
+
+// ---------- preview (skills-based option reorders sections and limits roles) ----------
+function generatePreview(){ 
+  const p=qs('#preview');
+  if(!p) return;
+  const n=qs('#fullName').value||'';
+  const ph=qs('#phone').value||'';
+  const e=qs('#email').value||'';
+  const l=qs('#location').value||'';
+  let h = `<h3>${n||'Your Name'}</h3><div class="contact-info">${l} | ${ph} | ${e}</div>`;
+
+  const useSkillsFirst = qs('#useSkillsResume') && qs('#useSkillsResume').checked;
+
+  function skillsHTML(){ 
+    const sk=qs('#skills').value.trim();
+    return sk? '<h4>Skills</h4><p>'+sk.replace(/\n/g,'; ')+'</p>' : '';
+  }
+  function workHTML(){ 
+    const jt=qsa('input[name="jobTitle[]"]'),c=qsa('input[name="company[]"]'),
+      sm=qsa('select[name="startMonth[]"]'),sy=qsa('select[name="startYear[]"]'),
+      em=qsa('select[name="endMonth[]"]'),ey=qsa('select[name="endYear[]"]'),
+      r=qsa('textarea[name="responsibilities[]"]');
+    let s=''; 
+    const maxRoles = useSkillsFirst ? Math.min(2,jt.length) : jt.length;
+    let has=false;
+    for(let i=0;i<maxRoles;i++){
+      if(jt[i] && jt[i].value){
+        if(!has){ s+='<h4>Work Experience</h4>'; has=true; }
+        const startDate=(sm[i]&&sm[i].value?sm[i].value+' ':'')+(sy[i]&&sy[i].value?sy[i].value:'');
+        const endDate=(em[i]&&em[i].value?em[i].value+' ':'')+(ey[i]&&ey[i].value&&em[i].value!=='Present'?ey[i].value:'');
+        const dateRange=startDate&&endDate?`${startDate} - ${endDate}`:startDate?startDate:endDate?endDate:'Present';
+        s+=`<div class="job-entry"><div class="job-title">${jt[i].value}</div><div class="company">${c[i].value} | ${dateRange}</div><ul>`;
+        const bullets=(r[i]?.value||'').split('\n').filter(x=>x.trim()).slice(0,6);
+        bullets.forEach(x=> s+=`<li>${x.replace(/^([•\-*])\s*/, '')}</li>`);
+        s+='</ul></div>';
+      }
+    }
+    return s;
+  }
+  function eduHTML(){
+    const dg=qsa('select[name="degree[]"]'),sc=qsa('input[name="school[]"]'),
+      fos=qsa('select[name="fieldOfStudy[]"]'), gmo=qsa('select[name="gradMonth[]"]'), gy=qsa('select[name="gradYear[]"]');
+    let s=''; let has=false;
+    for(let i=0;i<dg.length;i++){
+      const degree = (dg[i]?.value||'').trim();
+      if(degree){
+        if(!has){ s+='<h4>Education</h4>'; has=true; }
+        const field = (fos[i]?.value||'').trim();
+        const when = (gmo[i]?.value||'') + (gy[i]?.value? (gmo[i]?.value? ', ':'') + gy[i].value : '');
+        s+=`<div class="edu-entry"><strong>${degree}</strong>${field? ' — '+field:''}<br>${sc[i]?.value||''}${when? ', '+when:''}</div>`;
+      }
+    }
+    return s;
+  }
+
+  h += useSkillsFirst ? (skillsHTML()+workHTML()+eduHTML()) : (workHTML()+eduHTML()+skillsHTML());
+  p.innerHTML = h;
+}
+
+// ---------- PDF (unchanged core) ----------
+function safeAttach(id, fn){ const el = qs(id); if(el) el.addEventListener('click', fn); }
+safeAttach('#downloadBtn', ()=>{ const{jsPDF}=window.jspdf; const doc=new jsPDF(); 
+  const n=qs('#fullName').value||'Your Name';
+  const ph=qs('#phone').value||'';
+  const eml=qs('#email').value||'';
+  const loc=qs('#location').value||'';
+  let y=20; doc.setFontSize(22); doc.setFont(undefined,'bold'); doc.text(n,105,y,{align:'center'});
+  y+=8; doc.setFontSize(10); doc.setFont(undefined,'normal'); doc.text(`${loc} | ${ph} | ${eml}`,105,y,{align:'center'});
+  y+=10; doc.setLineWidth(0.5); doc.line(20,y,190,y); y+=8;
+  const useSkillsFirst = qs('#useSkillsResume') && qs('#useSkillsResume').checked;
+
+  function addSkills(){ const sk=qs('#skills').value.trim(); if(!sk) return;
+    if(y>250){doc.addPage(); y=20;} doc.setFontSize(14); doc.setFont(undefined,'bold'); doc.text('SKILLS',20,y); y+=7;
+    doc.setFontSize(10); doc.setFont(undefined,'normal'); doc.splitTextToSize(sk.replace(/\n/g,'; '),170).forEach(ln=>{ if(y>270){doc.addPage();y=20;} doc.text(ln,20,y); y+=5; });
+  }
+  function addWork(){ const jt=qsa('input[name="jobTitle[]"]'),co=qsa('input[name="company[]"]'),
+      sm=qsa('select[name="startMonth[]"]'),sy=qsa('select[name="startYear[]"]'),
+      em=qsa('select[name="endMonth[]"]'),ey=qsa('select[name="endYear[]"]'),
+      rs=qsa('textarea[name="responsibilities[]"]');
+    let wrote=false; const limit = useSkillsFirst?Math.min(2,jt.length):jt.length;
+    for(let i=0;i<limit;i++){
+      if(jt[i] && jt[i].value){
+        if(!wrote){ if(y>250){doc.addPage(); y=20;} doc.setFontSize(14); doc.setFont(undefined,'bold'); doc.text('WORK EXPERIENCE',20,y); y+=7; wrote=true; }
+        doc.setFontSize(11); doc.setFont(undefined,'bold'); doc.text(jt[i].value,20,y); y+=5; doc.setFont(undefined,'italic');
+        const startDate=(sm[i]&&sm[i].value?sm[i].value+' ':'')+(sy[i]&&sy[i].value?sy[i].value:'');
+        const endDate=(em[i]&&em[i].value?em[i].value+' ':'')+(ey[i]&&ey[i].value&&em[i].value!=='Present'?ey[i].value:'');
+        const dateRange=startDate&&endDate?`${startDate} - ${endDate}`:startDate?startDate:endDate?endDate:'Present';
+        doc.text(`${co[i].value} | ${dateRange}`,20,y); y+=6; doc.setFont(undefined,'normal'); doc.setFontSize(10);
+        const bullets=(rs[i]?.value||'').split('\n').filter(x=>x.trim()).slice(0,6);
+        bullets.forEach(x=>{ const ln=doc.splitTextToSize('• '+x.replace(/^([•\-*])\s*/,''),170); ln.forEach(l=>{ if(y>270){doc.addPage();y=20;} doc.text(l,20,y); y+=5; }); }); y+=3;
+      }
+    }
+  }
+  function addEdu(){ const dg=qsa('select[name="degree[]"]'),sc=qsa('input[name="school[]"]'),
+      fos=qsa('select[name="fieldOfStudy[]"]'), gmo=qsa('select[name="gradMonth[]"]'), gy=qsa('select[name="gradYear[]"]');
+    let wrote=false; for(let i=0;i<dg.length;i++){ const degree=(dg[i]?.value||'').trim();
+      if(degree){ if(!wrote){ if(y>250){doc.addPage(); y=20;} doc.setFontSize(14); doc.setFont(undefined,'bold'); doc.text('EDUCATION',20,y); y+=7; wrote=true; }
+        doc.setFontSize(11); doc.setFont(undefined,'bold'); doc.text(degree+(fos[i]?.value? ' — '+fos[i].value:''),20,y); y+=5; doc.setFont(undefined,'normal');
+        const when=(gmo[i]?.value||'') + (gy[i]?.value? (gmo[i]?.value? ', ':'') + gy[i].value : ''); 
+        doc.text(`${sc[i]?.value||''}${when? ', '+when:''}`,20,y); y+=7;
+    }}
+  }
+  if(useSkillsFirst){ addSkills(); addWork(); addEdu(); } else { addWork(); addEdu(); addSkills(); }
+  doc.save(`${n.replace(/\s+/g,'_')}_Resume.pdf`);
+});
+
+safeAttach('#downloadWordBtn', ()=>{ alert('Word download kept — content mirrors preview.'); });
+safeAttach('#emailBtn', ()=>{ alert('Email draft launcher kept — attach your PDF after download.'); });
 </script>
 </body>
 </html>
+"""
+path = "/mnt/data/task-resume-builder-enhanced-v2.html"
+with open(path, "w", encoding="utf-8") as f:
+    f.write(html)
+path
