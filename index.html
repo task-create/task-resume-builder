@@ -1,645 +1,1499 @@
-# Re-create the enhanced HTML with fixed navigation and features.
-html = r"""<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TASK Resume Builder — Enhanced (Fixed Next Buttons)</title>
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; min-height: 100vh; }
-.container { max-width: 800px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }
-.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 30px; text-align: center; }
-.header h1 { font-size: 36px; margin-bottom: 10px; }
-.header p { font-size: 18px; opacity: 0.95; }
-.progress-bar { background: rgba(255,255,255,0.2); height: 6px; border-radius: 3px; margin-top: 20px; overflow: hidden; }
-.progress-fill { background: white; height: 100%; width: 0%; transition: width 0.3s ease; }
-.form-content { padding: 40px 30px; }
-.section { margin-bottom: 40px; display: none; }
-.section.active { display: block; animation: fadeIn 0.5s ease; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-.section-header { display: flex; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 3px solid #667eea; }
-.section-icon { font-size: 32px; margin-right: 15px; }
-.section-title { flex: 1; }
-.section-title h2 { font-size: 24px; color: #333; margin-bottom: 5px; }
-.section-title p { font-size: 14px; color: #666; }
-.form-group { margin-bottom: 25px; }
-label { display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 15px; }
-.label-help { font-weight: 400; color: #666; font-size: 13px; margin-left: 5px; }
-input[type="text"], input[type="email"], input[type="tel"], textarea, select { width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 15px; font-family: inherit; transition: border-color 0.3s ease; }
-input:focus, textarea:focus, select:focus { outline: none; border-color: #667eea; }
-textarea { min-height: 120px; resize: vertical; }
-.small-note { font-size:12px;color:#666;margin-top:6px; }
-.example-box { background: #f8f9ff; border-left: 4px solid #667eea; padding: 15px; margin-top: 10px; border-radius: 8px; }
-.example-box strong { color: #667eea; display: block; margin-bottom: 8px; font-size: 14px; }
-.example-box p { color: #555; font-size: 13px; line-height: 1.6; margin: 5px 0; }
-.tip-box { background: #fff7e6; border-left: 4px solid #ffa726; padding: 15px; margin: 20px 0; border-radius: 8px; }
-.tip-box strong { color: #f57c00; display: block; margin-bottom: 8px; font-size: 14px; }
-.tip-box ul { margin-left: 20px; color: #666; font-size: 13px; line-height: 1.8; }
-.banner { background:#eefdf6;border:2px solid #10b981; color:#065f46; padding:14px; border-radius:12px; margin:14px 0; }
-.button-group { display: flex; gap: 15px; margin-top: 30px; }
-button { flex: 1; padding: 15px 30px; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
-.btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); }
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6); }
-.btn-secondary { background: white; color: #667eea; border: 2px solid #667eea; }
-.btn-secondary:hover { background: #f8f9ff; }
-.btn-success { background: #10b981; color: white; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); }
-.btn-success:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6); }
-.add-more { display: inline-block; color: #667eea; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 10px; text-decoration: underline; }
-.add-more:hover { color: #764ba2; }
-.entry-group { background: #f9f9f9; padding: 20px; border-radius: 12px; margin-bottom: 20px; position: relative; border:1px solid #ececec; }
-.remove-entry { position: absolute; top: 10px; right: 10px; background: #fff; color: #6b7280; border: 1px solid #e5e7eb; width: 28px; height: 28px; border-radius: 9999px; cursor: pointer; font-size: 18px; line-height: 26px; text-align:center; box-shadow:0 1px 2px rgba(0,0,0,0.05); }
-.remove-entry:hover { color:#ef4444; border-color:#ef4444; }
-.counter { font-size:12px; color:#666; text-align:right; margin-top:6px; }
-.step-indicator { text-align: center; color: #667eea; font-weight: 600; margin-bottom: 10px; font-size: 14px; }
-#preview { background: white; padding: 40px; border: 1px solid #e0e0e0; border-radius: 10px; font-family: 'Times New Roman', serif; max-width: 700px; margin: 0 auto; }
-#preview h3 { color: #333; font-size: 28px; margin-bottom: 5px; text-align: center; }
-#preview .contact-info { text-align: center; color: #666; font-size: 14px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #333; }
-#preview h4 { color: #333; font-size: 18px; margin-top: 20px; margin-bottom: 10px; text-transform: uppercase; border-bottom: 1px solid #333; padding-bottom: 5px; }
-#preview .job-entry, #preview .edu-entry { margin-bottom: 15px; }
-#preview .job-title { font-weight: bold; color: #333; }
-#preview .company { font-style: italic; color: #555; }
-#preview ul { margin-left: 20px; margin-top: 5px; }
-#preview li { margin-bottom: 5px; color: #444; line-height: 1.6; }
-.download-buttons { display: flex; gap: 15px; margin-top: 20px; }
-.badge { display:inline-block; padding:4px 8px; font-size:12px; border-radius:999px; background:#eef2ff; color:#3730a3; font-weight:600; }
-hr.soft { border:none; border-top:1px dashed #e5e7eb; margin:10px 0; }
-@media (max-width: 768px) { .container { border-radius: 0; } .header h1 { font-size: 28px; } .form-content { padding: 30px 20px; } .button-group { flex-direction: column; } #preview { padding: 20px; } .download-buttons { flex-direction: column; } }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TASK Resume — Simple Builder</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- jsPDF for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <style>
+        /* Using a system font stack for performance and simplicity */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Custom styles for UI elements with TASK Theming */
+        :root {
+            --card-bg: #ffffff;
+            --body-bg: #f3f4f6;
+            --primary-color: #E34A27; /* TASK Red-Orange */
+            --primary-hover: #C63D20;
+            --secondary-color: #003B5C; /* TASK Dark Blue */
+            --text-color: #111827;
+            --label-color: #374151;
+            --placeholder-color: #9ca3af;
+            --border-color: #d1d5db;
+            --focus-ring: #f9b4a4; /* Lighter shade of primary for focus */
+            --error-color: #dc2626;
+        }
+
+        /* Large, friendly input bubbles */
+        .input-bubble {
+            font-size: 20px;
+            padding: 16px 20px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease-in-out;
+            width: 100%;
+        }
+        .input-bubble:focus, .input-bubble:focus-within {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px var(--focus-ring);
+        }
+        .input-error {
+            border-color: var(--error-color);
+            animation: shake 0.5s ease-in-out;
+        }
+        .input-error:focus, .input-error:focus-within {
+            box-shadow: 0 0 0 3px var(--error-color);
+        }
+
+        /* Big, tappable buttons */
+        .btn {
+            font-size: 24px;
+            padding: 16px 32px;
+            border-radius: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            min-height: 60px; /* Ensure consistent height */
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .btn-primary:hover:not(:disabled) {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+        .btn-primary:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background-color: var(--body-bg);
+            color: var(--label-color);
+            border: 1px solid var(--border-color);
+        }
+        .btn-secondary:hover {
+            background-color: #e5e7eb;
+            transform: translateY(-2px);
+        }
+        
+        .btn-link {
+            background: none;
+            color: var(--primary-color);
+            text-decoration: underline;
+            padding: 8px;
+            font-size: 18px;
+        }
+        .btn-link:hover {
+            color: var(--primary-hover);
+        }
+
+        /* Center card layout */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 24px;
+            padding: 32px 40px;
+            width: 100%;
+            max-width: 700px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            margin: 20px;
+            border-top: 5px solid var(--primary-color);
+        }
+        .card-title {
+            color: var(--secondary-color);
+        }
+        
+        /* Animations */
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .progress-step {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--border-color);
+            transition: all 0.3s ease;
+        }
+        .progress-step.active {
+            background-color: var(--primary-color);
+            transform: scale(1.25);
+        }
+
+        /* Resume Preview Styles */
+        #resume-preview-content {
+            font-family: 'Times New Roman', Times, serif;
+            color: #000;
+        }
+        #resume-preview-content h1 { font-size: 24pt; font-weight: bold; margin-bottom: 4pt;}
+        #resume-preview-content p.contact-info { font-size: 11pt; text-align: center; margin-bottom: 12pt; }
+        #resume-preview-content p.summary { font-size: 11pt; text-align: center; margin-bottom: 12pt; font-style: italic; }
+        #resume-preview-content h2 { font-size: 14pt; font-weight: bold; border-bottom: 1px solid #000; padding-bottom: 2pt; margin-top: 12pt; margin-bottom: 6pt; color: var(--secondary-color) }
+        #resume-preview-content .job-header, #resume-preview-content .edu-header { display: flex; justify-content: space-between; font-size: 11pt; margin-bottom: 4pt; }
+        #resume-preview-content .job-title, #resume-preview-content .degree-field { font-weight: bold; }
+        #resume-preview-content .job-company, #resume-preview-content .school { font-style: italic; }
+        #resume-preview-content ul { list-style-type: disc; padding-left: 20px; font-size: 11pt; }
+        #resume-preview-content li { margin-bottom: 4pt; }
+        #resume-preview-content .additional-info ul { list-style-type: none; padding-left: 0; }
+        #resume-preview-content .additional-info li::before { content: "•"; padding-right: 8px; }
+    </style>
 </head>
-<body>
-<div class="container">
-  <div class="header">
-    <h1>💼 TASK Resume Builder</h1>
-    <p>Build your professional resume step-by-step</p>
-    <div class="progress-bar"><div class="progress-fill" id="progressBar"></div></div>
-  </div>
+<body class="bg-gray-100">
 
-  <div class="form-content">
-    <form id="resumeForm" onsubmit="return false;">
-      <!-- STEP 1 -->
-      <div class="section active" data-section="1">
-        <div class="step-indicator">Step 1 of 5</div>
-        <div class="section-header">
-          <div class="section-icon">👤</div>
-          <div class="section-title"><h2>Personal Information</h2><p>Let's start with your contact details</p></div>
-        </div>
-        <div class="form-group"><label>Full Name *</label><input type="text" id="fullName" required placeholder="John Smith"></div>
-        <div class="form-group"><label>Phone Number *</label><input type="tel" id="phone" required placeholder="(609) 555-1234" maxlength="14"></div>
-        <div class="form-group"><label>Email Address *</label><input type="email" id="email" required placeholder="john.smith@email.com"></div>
-        <div class="form-group"><label>City, State</label><input type="text" id="location" placeholder="Trenton, NJ"></div>
-        <div class="button-group"><button type="button" class="btn-primary" id="nextBtn1">Next Step →</button></div>
-      </div>
+    <main id="app-root" class="min-h-screen w-full flex flex-col items-center justify-center p-4">
+        <!-- App content will be rendered here -->
+    </main>
+     <div id="modal-container"></div>
 
-      <!-- STEP 2 -->
-      <div class="section" data-section="2">
-        <div class="step-indicator">Step 2 of 5</div>
-        <div class="section-header">
-          <div class="section-icon">💼</div>
-          <div class="section-title"><h2>Work Experience</h2><p>Tell us about your jobs using the C·A·R method</p></div>
-        </div>
+    <script type="module">
+        const { jsPDF } = window.jspdf;
 
-        <!-- Last job timing gate -->
-        <div class="entry-group" style="background:#f8fbff">
-          <label style="margin-bottom:6px;">When did you last have a job?</label>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
-            <select id="lastJobMonth">
-              <option value="">Month</option>
-              <option>January</option><option>February</option><option>March</option><option>April</option><option>May</option><option>June</option><option>July</option><option>August</option><option>September</option><option>October</option><option>November</option><option>December</option>
-            </select>
-            <select id="lastJobYear">
-              <option value="">Year</option>
-            </select>
-            <label style="display:flex;align-items:center;gap:8px;font-weight:600;color:#374151;">
-              <input type="checkbox" id="neverWorked"> I’ve never worked
-            </label>
-          </div>
-          <div id="skillsResumeBanner" class="banner" style="display:none; margin-top:12px;">
-            <strong>✅ Skills-Based Resume Recommended</strong>
-            <p style="margin-top:6px;">It’s been over 3 years since your last job (or you’ve never worked). We’ll emphasize your skills, strengths, and training. You can still add any experience you have.</p>
-            <label style="display:flex;align-items:center;gap:8px;margin-top:8px;"><input type="checkbox" id="useSkillsResume"> Use Skills-Based Resume layout</label>
-          </div>
-        </div>
+        // --- STATE MANAGEMENT ---
+        const defaultResume = {
+            contact: { name: '', email: '', phone: '', city: '', state: 'NJ', zip: '' },
+            format: 'traditional', // 'traditional' or 'skills-first'
+            jobs: [],
+            education: [],
+            skills: [],
+            additionalInfo: '',
+            updatedAt: null,
+        };
 
-        <div class="tip-box"><strong>💡 C·A·R Method Tips:</strong><ul><li><strong>Challenge:</strong> What problem did you face?</li><li><strong>Action:</strong> What did you do about it?</li><li><strong>Result:</strong> What improved? (Use numbers!)</li></ul></div>
+        let resume = {};
 
-        <div id="workExperiences" data-max="4">
-          <!-- job entries appear here -->
-        </div>
+        function save() {
+            resume.updatedAt = Date.now();
+            try {
+                localStorage.setItem('task-resume-v1', JSON.stringify(resume));
+            } catch (e) {
+                console.error("Failed to save resume to localStorage:", e);
+            }
+        }
+        
+        // Throttle save function to avoid excessive writes
+        const throttledSave = throttle(save, 300);
 
-        <span class="add-more" id="addWork">+ Add Another Job</span>
-        <div class="small-note">Max 4 jobs. Each job up to 6 bullet points / 600 characters.</div>
+        function load() {
+            try {
+                const savedData = localStorage.getItem('task-resume-v1');
+                const loaded = savedData ? JSON.parse(savedData) : JSON.parse(JSON.stringify(defaultResume));
+                return { ...defaultResume, ...loaded };
+            } catch (e) {
+                console.error("Failed to load or parse resume from localStorage:", e);
+                return JSON.parse(JSON.stringify(defaultResume));
+            }
+        }
+        
+        function clearData() {
+            resume = JSON.parse(JSON.stringify(defaultResume));
+            save();
+            render();
+        }
 
-        <div class="button-group">
-          <button type="button" class="btn-secondary" id="prevBtn2">← Back</button>
-          <button type="button" class="btn-primary" id="nextBtn2">Next Step →</button>
-        </div>
-      </div>
+        // --- UTILITIES ---
+        function throttle(func, limit) {
+            let inThrottle;
+            return function() {
+                const args = arguments;
+                const context = this;
+                if (!inThrottle) {
+                    func.apply(context, args);
+                    inThrottle = true;
+                    setTimeout(() => inThrottle = false, limit);
+                }
+            };
+        }
 
-      <!-- STEP 3 -->
-      <div class="section" data-section="3">
-        <div class="step-indicator">Step 3 of 5</div>
-        <div class="section-header">
-          <div class="section-icon">🎓</div>
-          <div class="section-title"><h2>Education</h2><p>List your education and training</p></div>
-        </div>
+        function maskPhone(input) {
+            const digits = input.value.replace(/\D/g, '').slice(0, 10);
+            const p1 = digits.slice(0, 3);
+            const p2 = digits.slice(3, 6);
+            const p3 = digits.slice(6, 10);
+            
+            let formatted = '';
+            if (p1) formatted += `(${p1}`;
+            if (p2) formatted += `) ${p2}`;
+            if (p3) formatted += `-${p3}`;
+            
+            input.value = formatted;
+            return digits.length === 10;
+        }
 
-        <div id="educationEntries">
-          <!-- one entry will be created from template -->
-        </div>
-        <span class="add-more" id="addEdu">+ Add More Education</span>
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(String(email).toLowerCase());
+        }
+        
+        const US_STATES = [
+            { name: 'Alabama', abbr: 'AL' }, { name: 'Alaska', abbr: 'AK' }, { name: 'Arizona', abbr: 'AZ' },
+            { name: 'Arkansas', abbr: 'AR' }, { name: 'California', abbr: 'CA' }, { name: 'Colorado', abbr: 'CO' },
+            { name: 'Connecticut', abbr: 'CT' }, { name: 'Delaware', abbr: 'DE' }, { name: 'Florida', abbr: 'FL' },
+            { name: 'Georgia', abbr: 'GA' }, { name: 'Hawaii', abbr: 'HI' }, { name: 'Idaho', abbr: 'ID' },
+            { name: 'Illinois', abbr: 'IL' }, { name: 'Indiana', abbr: 'IN' }, { name: 'Iowa', abbr: 'IA' },
+            { name: 'Kansas', abbr: 'KS' }, { name: 'Kentucky', abbr: 'KY' }, { name: 'Louisiana', abbr: 'LA' },
+            { name: 'Maine', abbr: 'ME' }, { name: 'Maryland', abbr: 'MD' }, { name: 'Massachusetts', abbr: 'MA' },
+            { name: 'Michigan', abbr: 'MI' }, { name: 'Minnesota', abbr: 'MN' }, { name: 'Mississippi', abbr: 'MS' },
+            { name: 'Missouri', abbr: 'MO' }, { name: 'Montana', abbr: 'MT' }, { name: 'Nebraska', abbr: 'NE' },
+            { name: 'Nevada', abbr: 'NV' }, { name: 'New Hampshire', abbr: 'NH' }, { name: 'New Jersey', abbr: 'NJ' },
+            { name: 'New Mexico', abbr: 'NM' }, { name: 'New York', abbr: 'NY' }, { name: 'North Carolina', abbr: 'NC' },
+            { name: 'North Dakota', abbr: 'ND' }, { name: 'Ohio', abbr: 'OH' }, { name: 'Oklahoma', abbr: 'OK' },
+            { name: 'Oregon', abbr: 'OR' }, { name: 'Pennsylvania', abbr: 'PA' }, { name: 'Rhode Island', abbr: 'RI' },
+            { name: 'South Carolina', abbr: 'SC' }, { name: 'South Dakota', abbr: 'SD' }, { name: 'Tennessee', abbr: 'TN' },
+            { name: 'Texas', abbr: 'TX' }, { name: 'Utah', abbr: 'UT' }, { name: 'Vermont', abbr: 'VT' },
+            { name: 'Virginia', abbr: 'VA' }, { name: 'Washington', abbr: 'WA' }, { name: 'West Virginia', abbr: 'WV' },
+            { name: 'Wisconsin', abbr: 'WI' }, { name: 'Wyoming', abbr: 'WY' }
+        ];
+        
+        const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        const YEARS = Array.from({ length: 70 }, (_, i) => new Date().getFullYear() - i);
 
-        <div class="tip-box"><strong>💡 Don't have formal education?</strong><ul><li>List any training programs, certifications, or courses</li><li>Include GED if you have one</li><li>Add relevant online courses or workshops</li></ul></div>
 
-        <div class="button-group">
-          <button type="button" class="btn-secondary" id="prevBtn3">← Back</button>
-          <button type="button" class="btn-primary" id="nextBtn3">Next Step →</button>
-        </div>
-      </div>
+        // --- CONTENT GENERATORS ---
 
-      <!-- STEP 4 -->
-      <div class="section" data-section="4">
-        <div class="step-indicator">Step 4 of 5</div>
-        <div class="section-header">
-          <div class="section-icon">⭐</div>
-          <div class="section-title"><h2>Skills</h2><p>What are you good at?</p></div>
-        </div>
+        // Extensive pools for job bullets
+        const JOB_BULLET_POOLS = {
+            'warehouse': [
+                "Operated pallet jacks and forklifts to move inventory loads up to 2,500 lbs, increasing loading efficiency by 15% within 3 months.",
+                "Used RF scanners to track 500+ daily inbound/outbound shipments, maintaining 99.8% inventory accuracy.",
+                "Collaborated with a team of 10 to pick, pack, and ship over 1,000 orders per day, consistently meeting deadlines.",
+                "Implemented a new bin-labeling system that reduced item retrieval times by 20% in the first month.",
+                "Conducted daily safety checks on equipment, contributing to a 100% accident-free record for 6 consecutive months.",
+                "Sorted and staged materials for production lines, preventing downtime and ensuring a continuous workflow for 3 assembly teams.",
+                "Trained 3 new team members on warehouse safety protocols and inventory management software, reducing their onboarding time by 1 week.",
+                "Maintained a clean and organized work area, adhering to 5S principles to improve safety and efficiency.",
+                "Loaded and unloaded delivery trucks, verifying shipment contents against packing slips for accuracy.",
+                "Assisted in monthly cycle counts and physical inventory audits, helping to resolve discrepancies worth over $5,000.",
+                "Safely handled and stacked fragile items, reducing product damage by 25% over a six-month period."
+            ],
+            'retail': [
+                "Assisted over 100 customers daily with product selection and inquiries, achieving a 95% customer satisfaction score.",
+                "Operated a POS system to process 200+ transactions per shift with 100% cash handling accuracy.",
+                "Managed and restocked merchandise on the sales floor, contributing to a 10% increase in sales for featured products.",
+                "Handled customer returns and exchanges professionally, de-escalating issues and retaining 85% of customers.",
+                "Participated in nightly inventory counts and store organization, helping the store achieve a 99% inventory accuracy rate.",
+                "Set up promotional displays that attracted customer interest and boosted sales of new items by 25% during the first week.",
+                "Collaborated with a team of 8 associates to prepare the store for opening and closing, ensuring a clean and welcoming environment.",
+                "Actively greeted customers upon entry, creating a friendly and approachable atmosphere.",
+                "Answered store phone calls, providing information on product availability, store hours, and policies.",
+                "Maintained fitting room standards, returning merchandise to the sales floor and ensuring cleanliness."
+            ],
+            'culinary': [
+                "Prepped ingredients for a menu serving 150+ customers per night, ensuring freshness and reducing food waste by 10%.",
+                "Maintained a clean and sanitized work station in compliance with ServSafe and local health department standards, passing all inspections.",
+                "Operated standard kitchen equipment including grills, fryers, and ovens, contributing to a consistent food preparation time of under 15 minutes.",
+                "Assisted in plating and presentation of dishes, ensuring high-quality and appealing meals for every customer.",
+                "Managed inventory of perishable goods, rotating stock to minimize spoilage and communicating needs to the head cook daily.",
+                "Washed and sanitized over 500 dishes, glassware, and utensils per shift, supporting a smooth kitchen workflow.",
+                "Followed recipes precisely to prepare sauces, dressings, and side dishes for a menu of 30+ items, ensuring consistent taste and quality.",
+                "Received and organized vendor deliveries, ensuring all products met quality standards before storage.",
+                "Communicated effectively with servers and other kitchen staff to coordinate food orders and ensure timely service.",
+                "Assisted with catering event preparation for groups of up to 100 people.",
+                "Contributed to menu development by suggesting 3 new seasonal specials, one of which became a permanent menu item.",
+                "Trained as an intern on garde manger station, preparing cold appetizers and salads."
+            ],
+            'hospitality': [
+                "Greeted and checked in over 75 guests per day, providing a warm and efficient welcome experience.",
+                "Cleaned and prepared up to 15 guest rooms daily, meeting strict hotel standards for cleanliness and presentation.",
+                "Answered a multi-line phone system and directed calls, resolving guest inquiries and booking reservations with 98% accuracy.",
+                "Handled luggage and provided concierge services, such as dining recommendations and transportation arrangements, enhancing the guest experience.",
+                "Responded to guest requests and complaints promptly and professionally, resolving 90% of issues on the first contact.",
+                "Processed payments and maintained accurate guest records using the hotel's property management system (PMS).",
+                "Conducted nightly audits of front desk operations, ensuring all financial transactions were balanced and accounted for.",
+                "Stocked linen closets and housekeeping carts to ensure supplies were available for the next shift.",
+                "Inspected rooms for maintenance needs and reported issues to the engineering department, preventing larger problems.",
+                "Folded and sorted laundry, processing over 200 lbs of linens per shift."
+            ],
+            'janitorial': [
+                "Cleaned and maintained a 20,000 sq. ft. commercial facility, including offices, restrooms, and common areas, to a high standard of hygiene.",
+                "Operated floor buffers and carpet cleaners to perform deep cleaning tasks, extending the life of flooring materials by 2 years.",
+                "Managed inventory of cleaning supplies, submitting orders to prevent shortages and reduce waste by 15%.",
+                "Followed all safety protocols for handling chemical cleaning agents, resulting in a zero-incident safety record for 12 months.",
+                "Responded to urgent cleanup requests within 10 minutes, minimizing disruption to building occupants.",
+                "Emptied trash and recycling receptacles daily across 50+ collection points, supporting the facility's recycling program.",
+                "Performed minor maintenance tasks such as changing light bulbs and reporting larger issues, contributing to a well-maintained facility.",
+                "Stripped and waxed floors quarterly to maintain a professional and polished appearance.",
+                "Cleaned windows and glass surfaces, ensuring a streak-free finish.",
+                "Set up and broke down tables and chairs for events and meetings."
+            ],
+            'healthcare_entry': [
+                "Provided compassionate daily living assistance to 8-10 elderly patients, including bathing, dressing, and meal preparation.",
+                "Monitored and recorded vital signs such as blood pressure and temperature, reporting any changes to the supervising nurse immediately.",
+                "Assisted with patient mobility, using proper transfer techniques and equipment to ensure safety for both patient and caregiver.",
+                "Maintained accurate and confidential patient records, documenting care provided and observations in the EMR system.",
+                "Scheduled patient appointments and managed medical records for a clinic serving 50+ patients per day.",
+                "Cleaned and sterilized medical equipment and patient rooms, adhering to strict infection control protocols.",
+                "Transported patients to and from appointments and procedures within the hospital, ensuring their comfort and safety.",
+                "Answered patient call lights promptly, addressing needs and providing comfort.",
+                "Collected lab specimens as directed and prepared them for transport to the lab.",
+                "Assisted with feeding patients who required help, ensuring proper nutrition and hydration."
+            ],
+            'admin': [
+                "Managed a multi-line phone system, directing over 100 calls per day to the appropriate personnel with professionalism and efficiency.",
+                "Performed data entry for 500+ records per week with a 99.5% accuracy rate, maintaining up-to-date client databases.",
+                "Sorted and distributed incoming mail and prepared outgoing shipments, ensuring timely communication for a 30-person office.",
+                "Scheduled appointments and managed calendars for 3 senior managers, optimizing their time and preventing scheduling conflicts.",
+                "Greeted visitors and clients, providing a professional first impression and directing them to their appointments.",
+                "Maintained office supply inventory, ordering new supplies as needed and reducing annual costs by 10% through vendor comparison.",
+                "Created and formatted documents, reports, and presentations using Microsoft Office Suite (Word, Excel, PowerPoint).",
+                "Organized and maintained physical and digital filing systems.",
+                "Booked travel arrangements and prepared expense reports.",
+                "Provided general administrative support to a team of 15 employees."
+            ],
+            'manufacturing': [
+                "Operated assembly line machinery to produce 1,000+ units per shift, meeting or exceeding production targets by 10%.",
+                "Performed quality control checks on finished products, identifying and removing defective items to maintain a 99% quality standard.",
+                "Followed detailed schematics and work instructions to assemble complex electronic components with a low error rate of less than 1%.",
+                "Maintained a clean and organized workstation, following 5S principles to improve efficiency and safety.",
+                "Collaborated with a team of 15 to troubleshoot production issues, contributing to a 20% reduction in line stoppages.",
+                "Loaded raw materials into machinery and monitored its operation, making adjustments as needed to ensure consistent output.",
+                "Adhered to all safety and PPE (Personal Protective Equipment) requirements, contributing to a safe working environment.",
+                "Calibrated and performed minor maintenance on production equipment to prevent downtime.",
+                "Packaged and labeled finished goods for shipment.",
+                "Documented production data and reported any deviations to the shift supervisor."
+            ],
 
-        <div class="form-group">
-          <label>Choose a skill to get ideas</label>
-          <select id="skillChooser">
-            <option value="">Select a skill…</option>
-            <option>Customer service</option>
-            <option>Forklift</option>
-            <option>Cashier</option>
-            <option>Cleaning</option>
-            <option>Food service</option>
-            <option>Reception</option>
-            <option>Security</option>
-            <option>Warehouse</option>
-            <option>Manufacturing</option>
-            <option>Delivery driving</option>
-            <option>Microsoft Office</option>
-            <option>Bilingual</option>
-          </select>
-          <div id="skillSuggestions" class="example-box" style="display:none;"></div>
-        </div>
+            'generic': [
+                "Collaborated effectively with a team of 5-10 colleagues to achieve daily operational goals and deadlines.",
+                "Maintained a clean, safe, and organized work environment, adhering to all company safety policies and procedures.",
+                "Provided excellent customer service by listening to needs and resolving issues promptly and professionally.",
+                "Adapted quickly to new tasks and responsibilities, demonstrating a willingness to learn and contribute to team success.",
+                "Managed time effectively to complete all assigned duties within the scheduled shift, prioritizing tasks as needed."
+            ]
+        };
 
-        <div class="form-group">
-          <label>Your Skills <span class="label-help">(Comma-separated or one per line)</span></label>
-          <textarea id="skills" placeholder="Forklift certified, Customer service, Microsoft Office, Bilingual (English/Spanish), Team leadership, Time management"></textarea>
-          <div class="counter" id="skillsCounter">0 / 500</div>
-        </div>
+        const SKILL_TEMPLATES = {
+            // Certifications
+            'servsafe': ["Maintains food safety standards by following HACCP protocols, monitoring time and temperature controls, and ensuring proper sanitation.", "Expertly prevents cross-contamination during all stages of food handling, from receiving and storage to preparation and service.", "Demonstrates comprehensive knowledge of foodborne illness prevention, allergen awareness, and personal hygiene best practices."],
+            'forklift': ["Operates sit-down, stand-up, and reach forklifts safely and efficiently in a fast-paced warehouse environment.", "Conducts daily pre-operational vehicle inspections and reports any maintenance issues to ensure equipment safety and longevity.", "Stacks and retrieves pallets from racking up to 30 feet high, maintaining stability and preventing product damage."],
+            'osha': ["Adheres to OSHA 10/30 safety standards to maintain a hazard-free work environment.", "Identifies potential workplace hazards and reports them to management to ensure compliance and safety.", "Utilizes Personal Protective Equipment (PPE) correctly and consistently."],
+            'first_aid': ["Certified in First Aid and CPR, able to respond calmly and effectively to workplace emergencies, including minor injuries and medical incidents.", "Maintains and inspects first aid kits and AED devices, ensuring they are fully stocked and operational.", "Assesses emergency situations, provides immediate care to the injured or ill, and accurately reports incidents to management."],
+            
+            // Hard Skills
+            'cash_handling': ["Processes cash, credit, and debit transactions with 100% accuracy using a POS system.", "Balances a cash drawer of over $1,500 daily, consistently accounting for all sales and receipts.", "Follows all security procedures for handling large sums of money, including cash drops and counterfeit bill detection."],
+            'pos': ["Efficiently operates multiple Point-of-Sale systems, including Square and Toast, to process orders and manage payments.", "Troubleshoots common POS issues, such as printer jams and connection errors, to minimize customer wait times.", "Trains new employees on POS functionality, menu navigation, and end-of-day reporting procedures."],
+            'data_entry': ["Enters alphabetic, numeric, and symbolic data from source documents into computer systems with a typing speed of 70 WPM.", "Verifies and corrects data to ensure 99.8% accuracy, comparing entered data with source documents to identify any discrepancies.", "Maintains confidentiality and adheres to data security policies when handling sensitive personal and financial information."],
+            'ms_office': ["Proficient in Microsoft Office Suite (Word, Excel, PowerPoint) to create documents, analyze data, and build presentations.", "Uses Excel functions, such as VLOOKUP and PivotTables, to organize and interpret large datasets.", "Creates professional, well-formatted reports and correspondence using Microsoft Word."],
+            'google_suite': ["Utilizes Google Workspace (Docs, Sheets, Slides) for real-time collaboration on projects and reports.", "Manages schedules and appointments for multiple team members using Google Calendar.", "Organizes and shares files effectively using Google Drive."],
 
-        <div class="button-group">
-          <button type="button" class="btn-secondary" id="prevBtn4">← Back</button>
-          <button type="button" class="btn-primary" id="nextBtn4">Next Step →</button>
-        </div>
-      </div>
+            // Soft Skills
+            'customer_service': ["De-escalates customer conflicts by actively listening to concerns, empathizing, and offering practical solutions, retaining 95% of at-risk customers.", "Manages a high volume of over 50 customer inquiries per day via phone and email with a positive and professional attitude.", "Proactively identifies customer needs to recommend products and services, resulting in a 15% increase in up-sells."],
+            'time_management': ["Prioritizes a high volume of tasks using methods like the Eisenhower Matrix to focus on urgent and important deadlines.", "Utilizes tools like calendars and to-do lists to organize workflow, track progress, and complete projects 10% ahead of schedule.", "Effectively blocks out distractions to dedicate focused time to critical tasks, improving personal productivity by 20%."],
+            'communication': ["Communicates clearly and professionally with colleagues, managers, and customers, both verbally and in writing.", "Actively listens to instructions and feedback to ensure tasks are completed correctly the first time.", "Presents information to small groups in a clear and confident manner."],
+            'teamwork': ["Collaborates effectively with a diverse team of 10+ members to achieve shared goals and deadlines.", "Offers assistance to teammates during peak periods to ensure the team's overall success.", "Respectfully considers different viewpoints and contributes to a positive and productive team atmosphere."],
+            'problem_solving': ["Identifies operational issues and proposes effective solutions, leading to a 15% reduction in workflow interruptions.", "Thinks critically to resolve unexpected challenges under pressure.", "Analyzes information from multiple sources to determine the root cause of a problem."],
+            'adaptability': ["Adapts quickly to new procedures, software, and responsibilities with a positive attitude.", "Maintains high performance and quality of work during periods of change or high demand.", "Learns new skills rapidly to meet evolving job requirements."],
 
-      <!-- STEP 5 -->
-      <div class="section" data-section="5">
-        <div class="step-indicator">Step 5 of 5</div>
-        <div class="section-header">
-          <div class="section-icon">📄</div>
-          <div class="section-title"><h2>Review Your Resume</h2><p>Check everything looks good, then download or email</p></div>
-        </div>
-        <div id="preview"></div>
-        <div class="download-buttons">
-          <button type="button" class="btn-success" id="downloadBtn">📥 Download as PDF</button>
-          <button type="button" class="btn-primary" id="downloadWordBtn">📄 Download as Word</button>
-          <button type="button" class="btn-primary" id="emailBtn">📧 Email to TASK</button>
-        </div>
-        <div class="button-group" style="margin-top: 20px;">
-          <button type="button" class="btn-secondary" id="prevBtn5">← Edit Resume</button>
-        </div>
-      </div>
-    </form>
-  </div>
-</div>
+            // Languages
+            'bilingual': ["Provides seamless customer service and support in both English and Spanish, broadening the accessible customer base.", "Translates documents and conversations accurately to facilitate clear communication between colleagues and clients.", "Assists in training and onboarding Spanish-speaking employees, ensuring they fully understand company policies and procedures."],
+            
+            'generic': ["Applies this skill effectively to complete tasks, meet deadlines, and contribute positively to team objectives.", "Demonstrates a strong capacity to use this skill in practical, real-world situations to achieve desired outcomes.", "Consistently utilizes this skill to improve workflow, solve problems, and enhance overall performance."]
+        };
+        
+        let generatedBulletsCache = {};
+        
+        function getJobFamily(title) {
+            title = title.toLowerCase();
+            if (/\b(warehouse|picker|packer|forklift|inventory|shipping|receiving|loader|sorter|package|delivery|dock|stocker|material handler|ups|fedex|amazon|grainger)\b/.test(title)) return 'warehouse';
+            if (/\b(retail|cashier|sales|merchandiser|customer service|associate|greeter|walmart|target)\b/.test(title)) return 'retail';
+            if (/\b(cook|prep|line|dishwasher|server|barista|food|deli|cafeteria|busser|host|culinary intern)\b/.test(title)) return 'culinary';
+            if (/\b(hotel|front desk|housekeeper|concierge|bellhop|laundry|room attendant)\b/.test(title)) return 'hospitality';
+            if (/\b(janitor|cleaner|sanitation|porter|custodian|environmental services)\b/.test(title)) return 'janitorial';
+            if (/\b(cna|hha|home health|medical assistant|patient care|pca)\b/.test(title)) return 'healthcare_entry';
+            if (/\b(receptionist|office assistant|admin|data entry|mailroom|clerk)\b/.test(title)) return 'admin';
+            if (/\b(assembler|machine operator|production|qa|technician|manufacturing)\b/.test(title)) return 'manufacturing';
+            return 'generic';
+        }
 
-<!-- libs -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script>
-// ---------- constants ----------
-const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-const currentYear = new Date().getFullYear();
+        function generateBullets(jobTitle, count = 5) {
+            const family = getJobFamily(jobTitle);
+            const pool = [...(JOB_BULLET_POOLS[family] || []), ...JOB_BULLET_POOLS.generic];
+            
+            if (!generatedBulletsCache[jobTitle]) {
+                generatedBulletsCache[jobTitle] = [];
+            }
+            
+            const usedBullets = new Set(generatedBulletsCache[jobTitle]);
+            const availablePool = pool.filter(b => !usedBullets.has(b));
+            
+            // Shuffle and pick
+            const shuffled = availablePool.sort(() => 0.5 - Math.random());
+            const newBullets = shuffled.slice(0, count);
 
-// ---------- helpers ----------
-function fillYearSelect(selectEl, span=50) { for(let y=currentYear; y>=currentYear-span; y--){ const opt=document.createElement('option'); opt.value=y; opt.textContent=y; selectEl.appendChild(opt); } }
-function qs(s,root=document){ return root.querySelector(s); }
-function qsa(s,root=document){ return Array.from(root.querySelectorAll(s)); }
+            // Add new bullets to cache
+            newBullets.forEach(b => generatedBulletsCache[jobTitle].push(b));
+            
+            return newBullets;
+        }
+        
+        function getSkillKey(skill) {
+            skill = skill.toLowerCase();
+            if (skill.includes('servsafe')) return 'servsafe';
+            if (skill.includes('forklift')) return 'forklift';
+            if (skill.includes('cash')) return 'cash_handling';
+            if (skill.includes('pos') || skill.includes('point of sale')) return 'pos';
+            if (skill.includes('customer')) return 'customer_service';
+            if (skill.includes('data entry')) return 'data_entry';
+            if (skill.includes('bilingual') || skill.includes('spanish')) return 'bilingual';
+            if (skill.includes('cpr') || skill.includes('first aid')) return 'first_aid';
+            if (skill.includes('time manage')) return 'time_management';
+            if (skill.includes('office') || skill.includes('word') || skill.includes('excel')) return 'ms_office';
+            if (skill.includes('google') || skill.includes('docs') || skill.includes('sheets')) return 'google_suite';
+            if (skill.includes('osha')) return 'osha';
+            if (skill.includes('communicat')) return 'communication';
+            if (skill.includes('team')) return 'teamwork';
+            if (skill.includes('problem') || skill.includes('solving')) return 'problem_solving';
+            if (skill.includes('adapt')) return 'adaptability';
+            return 'generic';
+        }
 
-// ---------- progress & nav ----------
-let currentSection=1; const totalSections=5;
-function updateProgress(){ const bar = qs('#progressBar'); if(bar){ bar.style.width=(currentSection/totalSections)*100+'%'; } }
-function goTo(n){ const cur = qs('.section.active'); const next = qs('.section[data-section="'+n+'"]');
-  if(!next) return;
-  if(cur) cur.classList.remove('active');
-  currentSection=n;
-  next.classList.add('active');
-  updateProgress();
-  window.scrollTo({top:0,behavior:'smooth'});
-  if(currentSection===5) generatePreview();
-}
-updateProgress();
+        function generateSkillSentences(skill, count = 3) {
+            const key = getSkillKey(skill);
+            const templates = SKILL_TEMPLATES[key] || SKILL_TEMPLATES.generic;
+            const prettySkill = skill.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+            
+            return templates.map(template => `**${prettySkill}:** ${template}`).slice(0, count);
+        }
 
-// attach step buttons safely
-function attach(id, fn){ const el = qs(id); if(el) el.addEventListener('click', fn); }
-attach('#nextBtn1', ()=> goTo(2));
-attach('#prevBtn2', ()=> goTo(1));
-attach('#nextBtn2', ()=> goTo(3));
-attach('#prevBtn3', ()=> goTo(2));
-attach('#nextBtn3', ()=> goTo(4));
-attach('#prevBtn4', ()=> goTo(3));
-attach('#nextBtn4', ()=> goTo(5));
-attach('#prevBtn5', ()=> goTo(4));
+        // --- UI COMPONENTS ---
+        const STEPS = ['contact', 'path', 'job', 'education', 'skills', 'additional', 'preview'];
+        
+        function ProgressBar() {
+            const currentPath = window.location.hash.substring(1) || 'welcome';
+            let activeIndex = STEPS.indexOf(currentPath);
+            if (activeIndex === -1) activeIndex = 0; // Default to first step on welcome
 
-// ---------- phone mask ----------
-document.addEventListener('input', function(e){
-  if(e.target && e.target.id==='phone'){
-    let x = e.target.value.replace(/\D/g,'').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
-    e.target.value = !x[2]? x[1] : '('+x[1]+') '+x[2]+(x[3]?'-'+x[3]:'');
-  }
-});
+            return createDOM(`
+                <div class="progress-bar">
+                    ${STEPS.map((step, index) => `<div class="progress-step ${index <= activeIndex ? 'active' : ''}"></div>`).join('')}
+                </div>
+            `);
+        }
+        
+        function renderComponent(component) {
+            const root = document.getElementById('app-root');
+            root.innerHTML = '';
+            
+            const showProgressBar = window.location.hash && window.location.hash !== '#welcome';
+            if (showProgressBar) {
+                root.appendChild(ProgressBar());
+            }
 
-// ---------- last job gating ----------
-const lastJobMonth = qs('#lastJobMonth'); const lastJobYear = qs('#lastJobYear');
-const neverWorked = qs('#neverWorked'); const skillsBanner = qs('#skillsResumeBanner');
-fillYearSelect(lastJobYear, 50);
-function checkGap(){ let show=false;
-  if(neverWorked && neverWorked.checked) show=true;
-  else if(lastJobMonth && lastJobYear && lastJobMonth.value && lastJobYear.value) {
-    const idx = MONTHS.indexOf(lastJobMonth.value); const when = new Date(parseInt(lastJobYear.value), Math.max(idx,0), 1);
-    const diffYears = (Date.now() - when.getTime()) / (1000*60*60*24*365.25); if(diffYears >= 3) show=true;
-  }
-  if(skillsBanner) skillsBanner.style.display = show? 'block':'none';
-}
-if(lastJobMonth) lastJobMonth.addEventListener('change', checkGap);
-if(lastJobYear) lastJobYear.addEventListener('change', checkGap);
-if(neverWorked) neverWorked.addEventListener('change', checkGap);
+            const element = component();
+            element.classList.add('fade-in');
+            root.appendChild(element);
+        }
+        
+        function createDOM(htmlString) {
+            const div = document.createElement('div');
+            div.innerHTML = htmlString.trim();
+            return div.firstChild;
+        }
 
-// ---------- templates ----------
-function jobEntryHTML() { return `
-  <div class="entry-group">
-    <button type="button" class="remove-entry" title="Remove">×</button>
-    <div class="form-group"><label>Job Title *</label><input type="text" name="jobTitle[]" required placeholder="Warehouse Associate"></div>
-    <div class="form-group"><label>Company Name *</label><input type="text" name="company[]" required placeholder="ABC Logistics"></div>
-    <div class="form-group"><label>Dates Worked <span class="label-help">(When did you work here?)</span></label>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;">
-        <div>
-          <label style="font-size:13px;font-weight:500;color:#666;margin-bottom:4px;">Start Date</label>
-          <div style="display:flex;gap:8px;">
-            <select name="startMonth[]" class="startMonth"><option value="">Month</option>${MONTHS.map(m=>`<option>${m}</option>`).join('')}</select>
-            <select name="startYear[]" class="startYear"><option value="">Year</option></select>
-          </div>
-        </div>
-        <div>
-          <label style="font-size:13px;font-weight:500;color:#666;margin-bottom:4px;">End Date</label>
-          <div style="display:flex;gap:8px;">
-            <select name="endMonth[]" class="endMonth"><option value="">Month</option><option value="Present">Present</option>${MONTHS.map(m=>`<option>${m}</option>`).join('')}</select>
-            <select name="endYear[]" class="endYear"><option value="">Year</option></select>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="form-group">
-      <label>What did you do? Use C·A·R method *</label>
-      <div style="background:#e8f4ff;border:2px solid #2196f3;border-radius:10px;padding:15px;margin-bottom:10px;">
-        <p style="margin:0 0 10px;font-weight:600;color:#1976d2;">💡 Need help writing this? Click the button below:</p>
-        <button type="button" class="generate-car" style="display:block;width:100%;background:#2196f3;color:white;border:none;border-radius:8px;padding:12px;cursor:pointer;font-size:15px;font-weight:600;">✨ Generate C·A·R Examples for This Job</button>
-        <div class="car-suggestions" style="margin-top:10px;display:none;"></div>
-      </div>
-      <textarea name="responsibilities[]" class="resp-textarea" required placeholder="Your accomplishments will appear here after you click the button above, or you can type your own...&#10;&#10;Example format:&#10;• Challenge: [What problem existed?]&#10;• Action: [What did you do?]&#10;• Result: [What improved? Use numbers!]"></textarea>
-      <div class="counter bulletCounter">0 / 600</div>
-      <div class="example-box"><strong>✅ Good Example:</strong><p>• Challenge: Shipping delays were causing customer complaints</p><p>• Action: Created new packing checklist and trained team</p><p>• Result: Cut shipping errors by 40% and improved ratings from 3.5 to 4.8 stars</p></div>
-    </div>
-  </div>`; }
+        function NavigationButtons(backTarget, nextTarget, isNextDisabled = false) {
+            const backAction = backTarget ? `onclick="go('${backTarget}')"` : 'disabled';
+            const nextAction = nextTarget ? `onclick="go('${nextTarget}')"` : '';
+            const disabledAttr = isNextDisabled ? 'disabled' : '';
 
-function eduEntryHTML() { return `
-  <div class="entry-group">
-    <button type="button" class="remove-entry" title="Remove">×</button>
-    <div class="form-group">
-      <label>Degree or Certificate *</label>
-      <select name="degree[]" required>
-        <option value="">Select…</option>
-        <option>High School Diploma</option>
-        <option>GED</option>
-        <option>Associate Degree</option>
-        <option>Bachelor’s Degree</option>
-        <option>Master’s Degree</option>
-        <option>Certificate / License</option>
-        <option>Vocational / Trade</option>
-        <option>Other</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>School Name *</label>
-      <input type="text" name="school[]" required placeholder="Trenton Central High School">
-    </div>
-    <div class="form-group">
-      <label>Field of Study</label>
-      <select name="fieldOfStudy[]">
-        <option value="">Select…</option>
-        <option>General Studies</option>
-        <option>Business</option>
-        <option>Healthcare</option>
-        <option>Information Technology</option>
-        <option>Culinary</option>
-        <option>Construction</option>
-        <option>Logistics</option>
-        <option>Other</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Graduated (Month & Year)</label>
-      <div style="display:flex; gap:8px;">
-        <select name="gradMonth[]"><option value="">Month</option><option>January</option><option>February</option><option>March</option><option>April</option><option>May</option><option>June</option><option>July</option><option>August</option><option>September</option><option>October</option><option>November</option><option>December</option></select>
-        <select name="gradYear[]"><option value="">Year</option></select>
-      </div>
-    </div>
-  </div>`; }
+            return `
+                <div class="flex flex-col sm:flex-row gap-4 w-full mt-8">
+                    <button class="btn btn-secondary w-full sm:w-auto" ${backAction}>Back</button>
+                    <div class="flex-grow"></div>
+                    <button class="btn btn-primary w-full sm:w-auto" ${nextAction} ${disabledAttr}>Next</button>
+                </div>
+            `;
+        }
 
-// ---------- initial render ----------
-const workWrap = qs('#workExperiences');
-function addJobEntry() { 
-  if(!workWrap) return;
-  const max = parseInt(workWrap.dataset.max||'4',10);
-  if(workWrap.querySelectorAll('.entry-group').length >= max) { alert('Limit reached: up to '+max+' jobs.'); return; }
-  const div = document.createElement('div'); div.innerHTML = jobEntryHTML(); const node = div.firstElementChild;
-  workWrap.appendChild(node);
-  // fill years
-  node.querySelectorAll('.startYear, .endYear').forEach(s=>fillYearSelect(s, 50));
-  // endYear disabled when Present
-  const endMonth = node.querySelector('.endMonth'); const endYear = node.querySelector('.endYear');
-  endMonth.addEventListener('change', ()=>{ endYear.disabled = (endMonth.value==='Present'); if(endYear.disabled) endYear.value=''; });
-  // remove
-  node.querySelector('.remove-entry').addEventListener('click', ()=> node.remove());
-  // bullet counter & cap (600 chars / 6 lines)
-  const ta = node.querySelector('.resp-textarea'); const counter = node.querySelector('.bulletCounter');
-  function enforce(){ 
-    let v = ta.value;
-    if(v.length>600) v = v.slice(0,600);
-    const lines = v.split('\n'); 
-    if(lines.length>6) v = lines.slice(0,6).join('\n');
-    if(ta.value!==v) ta.value=v;
-    counter.textContent = v.length + ' / 600';
-  }
-  ta.addEventListener('input', enforce); enforce();
-}
-addJobEntry(); // first job
+        function cardFooter() {
+            return `<div class="text-center mt-8 pt-4 border-t border-gray-200">
+                        <p class="text-sm text-gray-500">Trenton Area Soup Kitchen</p>
+                    </div>`;
+        }
 
-const eduWrap = qs('#educationEntries');
-function addEduEntry(){ if(!eduWrap) return; const div=document.createElement('div'); div.innerHTML = eduEntryHTML(); const node = div.firstElementChild; eduWrap.appendChild(node);
-  node.querySelectorAll('select[name="gradYear[]"]').forEach(s=>fillYearSelect(s, 70));
-  node.querySelector('.remove-entry').addEventListener('click', ()=> node.remove());
-}
-addEduEntry(); // first edu
 
-const addWorkBtn = qs('#addWork'); if(addWorkBtn) addWorkBtn.addEventListener('click', addJobEntry);
-const addEduBtn = qs('#addEdu'); if(addEduBtn) addEduBtn.addEventListener('click', addEduEntry);
+        function Welcome() {
+            return createDOM(`
+                <div class="card text-center">
+                    <h1 class="text-4xl font-bold card-title mb-4">Let's build your resume.</h1>
+                    <p class="text-xl text-gray-600 mb-8">Click <strong>Start</strong> when you’re ready.</p>
+                    <button class="btn btn-primary" onclick="go('contact')">Start</button>
+                    ${cardFooter()}
+                </div>
+            `);
+        }
 
-// ---------- Skills suggestions (skills resume support) ----------
-const skillIdeas = {
-  "Customer service": [
-    "Handled 50+ customer interactions daily with 4.8/5.0 average rating",
-    "Defused difficult situations using empathy and active listening",
-    "Explained products and policies clearly; reduced repeat calls by 25%"
-  ],
-  "Forklift": [
-    "Operated stand-up and sit-down forklifts with zero safety incidents",
-    "Moved 10,000+ lbs per shift; organized pallets to optimize space",
-    "Performed daily inspections and reported maintenance issues promptly"
-  ],
-  "Cashier": [
-    "Processed 200+ transactions per shift with 99.8% cash accuracy",
-    "Resolved pricing issues quickly to keep lines moving",
-    "Promoted loyalty program; exceeded sign-up goals 3 months running"
-  ],
-  "Cleaning": [
-    "Maintained 4.9/5.0 quality scores in daily inspections",
-    "Used checklists to ensure rooms/areas were completed on time",
-    "Handled chemicals safely following SDS and company protocols"
-  ],
-  "Food service": [
-    "Prepared 150+ meals per day while following food safety rules",
-    "Kept prep area organized to cut ticket times during rush",
-    "Delivered friendly service; increased positive reviews by 40%"
-  ],
-  "Reception": [
-    "Managed phones and greeted visitors while scheduling appointments",
-    "Organized files and digitized records for faster retrieval",
-    "Kept front desk area professional and welcoming"
-  ],
-  "Security": [
-    "Monitored cameras and completed hourly patrols with accurate logs",
-    "Checked IDs and visitor badges to prevent unauthorized access",
-    "Wrote clear incident reports used to improve procedures"
-  ],
-  "Warehouse": [
-    "Picked and packed orders with 99%+ accuracy",
-    "Reorganized bins to speed up picking and reduce errors",
-    "Cross-trained on shipping/receiving to support the team"
-  ],
-  "Manufacturing": [
-    "Operated machines safely; met or beat production goals",
-    "Checked quality and corrected issues to reduce scrap",
-    "Kept work area 5S organized to save time"
-  ],
-  "Delivery driving": [
-    "Planned routes to achieve 99% on-time delivery",
-    "Practiced safe driving; zero accidents",
-    "Provided professional service and clear communication"
-  ],
-  "Microsoft Office": [
-    "Created spreadsheets to track schedules and inventory",
-    "Formatted documents and emails professionally",
-    "Built simple charts to show progress and results"
-  ],
-  "Bilingual": [
-    "Helped customers in English and Spanish to resolve needs",
-    "Translated instructions to support teammates and supervisors",
-    "Improved service by bridging language gaps on the team"
-  ]
-};
+        function Contact() {
+            const { name, email, phone, city, state, zip } = resume.contact;
+            
+            const element = createDOM(`
+                <div class="card">
+                    <h1 class="text-3xl font-bold card-title mb-2">Contact Information</h1>
+                    <p class="text-lg text-gray-600 mb-8">Let's start with the basics.</p>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-xl font-medium text-gray-700 mb-2">Full Name</label>
+                            <input id="name" type="text" class="input-bubble" placeholder="e.g., Jane Doe" value="${name}">
+                        </div>
+                        <div>
+                            <label class="block text-xl font-medium text-gray-700 mb-2">Email</label>
+                            <input id="email" type="email" class="input-bubble" placeholder="e.g., jane.doe@email.com" value="${email}">
+                            <p id="email-error" class="text-red-600 text-sm mt-1 h-5"></p>
+                        </div>
+                        <div>
+                            <label class="block text-xl font-medium text-gray-700 mb-2">Phone Number</label>
+                            <input id="phone" type="tel" class="input-bubble" placeholder="(999) 999-9999" value="${phone}">
+                            <p class="text-sm text-gray-500 mt-1">Format auto-fills as you type.</p>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-5 gap-4">
+                            <div class="sm:col-span-2">
+                                <label class="block text-xl font-medium text-gray-700 mb-2">City</label>
+                                <input id="city" type="text" class="input-bubble" placeholder="e.g., Trenton" value="${city}">
+                            </div>
+                            <div class="sm:col-span-1">
+                                <label class="block text-xl font-medium text-gray-700 mb-2">State</label>
+                                <select id="state" class="input-bubble">${US_STATES.map(s => `<option value="${s.abbr}" ${s.abbr === state ? 'selected' : ''}>${s.abbr}</option>`).join('')}</select>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block text-xl font-medium text-gray-700 mb-2">ZIP Code (Optional)</label>
+                                <input id="zip" type="text" class="input-bubble" placeholder="e.g., 08609" value="${zip}" maxlength="5">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="nav-container"></div>
+                    ${cardFooter()}
+                </div>
+            `);
 
-const skillChooser = qs('#skillChooser');
-const skillSuggestions = qs('#skillSuggestions');
-if(skillChooser) skillChooser.addEventListener('change', ()=>{ 
-  if(!skillChooser.value) { skillSuggestions.style.display='none'; return; }
-  const ideas = skillIdeas[skillChooser.value] || [];
-  skillSuggestions.style.display='block';
-  skillSuggestions.innerHTML = '<strong>Example bullets for '+skillChooser.value+':</strong>' + ideas.map(x=>'<p>• '+x+'</p>').join('') + '<hr class="soft"><span class="small-note">Tip: Copy any you like into your Skills or Experience.</span>';
-});
+            const inputs = {
+                name: element.querySelector('#name'),
+                email: element.querySelector('#email'),
+                phone: element.querySelector('#phone'),
+                city: element.querySelector('#city'),
+                state: element.querySelector('#state'),
+                zip: element.querySelector('#zip'),
+            };
 
-// ---------- CAR generator ----------
-const carExamples = {
-  "general": ["Improved [process/metric] by [X%] through [specific action taken]","Reduced [problem] by [X%] by implementing [solution]","Exceeded [goal] by [X%] through [actions]","Trained [number] team members on [skill/process], resulting in [improvement]","Maintained [achievement] for [timeframe] by [action taken]","Completed [task] [X%] faster/better by [method used]"],
-  "cashier": ["Maintained 99.8% cash drawer accuracy","Processed 200+ transactions daily efficiently","Resolved pricing discrepancies immediately","Cross-trained on customer service desk","Received 20+ positive customer comments","Handled $10K+ cash daily with zero errors","Trained 5 new cashiers on POS"],
-  "food service": ["Cut food waste by 30% by tracking prep","Achieved perfect health inspection score","Improved table turnover by 20%","Prepared 150+ meals daily","Reduced order errors to <2%","Trained 6 new servers on POS"],
-  "warehouse": ["Improved inventory accuracy to 98%","Processed 500+ orders daily with 99% accuracy","Reduced loading dock congestion by 50%","Trained 8 new hires on equipment","Reorganized bin layout to speed picking"],
-  "retail": ["Exceeded sales targets by 18%","Reduced returns by 30% with fitting guide","Built loyalty program generating $15K","Kept 98% customer satisfaction"],
-  "customer service": ["Reduced average call time while keeping quality","Decreased repeat complaints by 40%","Raised first-call resolution to 88%","Handled 50+ interactions daily"],
-  "driver": ["98% on-time deliveries via route planning","Zero accidents over 50,000+ miles","Reduced fuel costs by 15%","Completed pre-trip inspections daily"],
-  "manufacturing": ["Exceeded quota by 20% at zero defects","Reduced downtime by 30%","Implemented 5S to cut setup time 25%"],
-  "cleaning": ["4.9/5.0 inspection scores","Reduced supply costs by 20%","Zero incidents with chemicals/equipment"],
-  "security": ["Monitored 50+ cameras; zero incidents","De-escalated tense situations","Maintained perfect attendance on nights"],
-  "receptionist": ["Managed 80+ calls daily","Zero scheduling conflicts for meetings","Digitized 500+ documents"]
-};
+            const checkValidity = () => {
+                const isNameValid = inputs.name.value.trim().length > 0;
+                const isEmailValid = validateEmail(inputs.email.value);
+                const isPhoneValid = inputs.phone.value.replace(/\D/g, '').length === 10;
+                const isCityValid = inputs.city.value.trim().length > 0;
+                const isStateValid = inputs.state.value.trim().length > 0;
+                
+                element.querySelector('#email-error').textContent = isEmailValid || inputs.email.value.length === 0 ? '' : 'Please enter a valid email.';
+                
+                const allValid = isNameValid && isEmailValid && isPhoneValid && isCityValid && isStateValid;
+                element.querySelector('#nav-container').innerHTML = NavigationButtons('welcome', 'path', !allValid);
+            };
 
-document.addEventListener('click',function(e){ if(e.target && e.target.classList.contains('generate-car')){ 
-  const entryGroup=e.target.closest('.entry-group');
-  const jobTitle=(entryGroup.querySelector('input[name="jobTitle[]"]').value||'').toLowerCase();
-  const textarea=entryGroup.querySelector('.resp-textarea'); const suggestionsDiv=e.target.nextElementSibling;
-  let k='general';
-  if(jobTitle.includes('cashier')) k='cashier';
-  else if(jobTitle.includes('cook')||jobTitle.includes('server')||jobTitle.includes('food')||jobTitle.includes('restaurant')) k='food service';
-  else if(jobTitle.includes('warehouse')||jobTitle.includes('forklift')||jobTitle.includes('picker')||jobTitle.includes('packer')) k='warehouse';
-  else if(jobTitle.includes('retail')||jobTitle.includes('sales')) k='retail';
-  else if(jobTitle.includes('customer')) k='customer service';
-  else if(jobTitle.includes('driver')||jobTitle.includes('cdl')||jobTitle.includes('delivery')) k='driver';
-  else if(jobTitle.includes('manufact')||jobTitle.includes('machine')||jobTitle.includes('operator')) k='manufacturing';
-  else if(jobTitle.includes('clean')||jobTitle.includes('housekeep')) k='cleaning';
-  else if(jobTitle.includes('security')||jobTitle.includes('guard')) k='security';
-  else if(jobTitle.includes('reception')||jobTitle.includes('front desk')) k='receptionist';
-  const examples = carExamples[k] || carExamples.general;
-  const shuffled=[...examples].sort(()=>Math.random()-0.5);
-  suggestionsDiv.style.display='block';
-  suggestionsDiv.innerHTML='<p style="margin:10px 0 8px;font-size:14px;color:#1976d2;font-weight:600;">👇 Click up to 3 examples to add (they\'ll appear as bullets):</p>';
-  let selectedCount=0;
-  shuffled.forEach(ex=>{ const btn=document.createElement('button'); btn.type='button'; btn.className='suggestion-option';
-    btn.style.cssText='display:block;width:100%;text-align:left;background:#fff;border:2px solid #ddd;border-radius:8px;padding:12px;margin:8px 0;cursor:pointer;font-size:13px;line-height:1.6;transition:all 0.2s;';
-    btn.textContent='• '+ex;
-    btn.onmouseover=()=>btn.style.borderColor='#2196f3'; btn.onmouseout=()=>{ if(!btn.classList.contains('selected')) btn.style.borderColor='#ddd'; };
-    btn.onclick=()=>{ if(btn.classList.contains('selected')){ btn.classList.remove('selected'); btn.style.background='#fff'; btn.style.borderColor='#ddd'; selectedCount--; }
-      else { if(selectedCount>=3){ alert('You can select up to 3 examples.'); return; }
-        btn.classList.add('selected'); btn.style.background='#e8f4ff'; btn.style.borderColor='#2196f3'; selectedCount++;
-        if(textarea.value.trim()) textarea.value+='\n• '+ex; else textarea.value='• '+ex;
-        textarea.dispatchEvent(new Event('input'));
-      }};
-    suggestionsDiv.appendChild(btn);
-  });
-  const doneBtn=document.createElement('button'); doneBtn.type='button';
-  doneBtn.style.cssText='display:block;width:100%;background:#10b981;color:white;border:none;border-radius:8px;padding:12px;margin:12px 0 0;cursor:pointer;font-size:15px;font-weight:600;';
-  doneBtn.textContent='✓ Done - Close Examples'; doneBtn.onclick=()=>{ suggestionsDiv.style.display='none'; }; suggestionsDiv.appendChild(doneBtn);
-}});
+            Object.values(inputs).forEach(input => {
+                input.addEventListener('input', (e) => {
+                    if (e.target.id === 'phone') maskPhone(e.target);
+                    if (e.target.id === 'zip') e.target.value = e.target.value.replace(/\D/g, '');
 
-// ---------- skills counter ----------
-const skillsArea = qs('#skills'); const skillsCounter = qs('#skillsCounter');
-if(skillsArea) skillsArea.addEventListener('input', ()=>{ const len=skillsArea.value.length; skillsCounter.textContent = len + ' / 500'; if(len>500) skillsArea.value = skillsArea.value.slice(0,500); });
+                    resume.contact[e.target.id] = e.target.value;
+                    throttledSave();
+                    checkValidity();
+                });
+            });
 
-// ---------- preview (skills-based option reorders sections and limits roles) ----------
-function generatePreview(){ 
-  const p=qs('#preview');
-  if(!p) return;
-  const n=qs('#fullName').value||'';
-  const ph=qs('#phone').value||'';
-  const e=qs('#email').value||'';
-  const l=qs('#location').value||'';
-  let h = `<h3>${n||'Your Name'}</h3><div class="contact-info">${l} | ${ph} | ${e}</div>`;
+            checkValidity(); // Initial check
+            return element;
+        }
 
-  const useSkillsFirst = qs('#useSkillsResume') && qs('#useSkillsResume').checked;
+        function Path() {
+            const element = createDOM(`
+                <div class="card">
+                    <h1 class="text-3xl font-bold card-title mb-2">Work Experience</h1>
+                    <p class="text-lg text-gray-600 mb-8">When was your last job?</p>
+                    <div id="path-selector" class="flex flex-col items-center gap-6">
+                         <div class="flex gap-4">
+                            <select id="month" class="input-bubble">
+                                <option value="">Month</option>
+                                ${MONTHS.map((m, i) => `<option value="${i+1}">${m}</option>`).join('')}
+                            </select>
+                            <select id="year" class="input-bubble">
+                                <option value="">Year</option>
+                                ${YEARS.map(y => `<option value="${y}">${y}</option>`).join('')}
+                            </select>
+                        </div>
+                        <p class="text-gray-600">or</p>
+                        <button id="never-worked" class="btn btn-secondary w-full max-w-xs">I have never worked</button>
+                    </div>
+                    <div id="path-recommendation" class="hidden text-center">
+                        <!-- Recommendation will be injected here -->
+                    </div>
+                    ${cardFooter()}
+                </div>
+            `);
+            
+            const monthSelect = element.querySelector('#month');
+            const yearSelect = element.querySelector('#year');
+            const pathSelector = element.querySelector('#path-selector');
+            const pathRecommendation = element.querySelector('#path-recommendation');
 
-  function skillsHTML(){ 
-    const sk=qs('#skills').value.trim();
-    return sk? '<h4>Skills</h4><p>'+sk.replace(/\n/g,'; ')+'</p>' : '';
-  }
-  function workHTML(){ 
-    const jt=qsa('input[name="jobTitle[]"]'),c=qsa('input[name="company[]"]'),
-      sm=qsa('select[name="startMonth[]"]'),sy=qsa('select[name="startYear[]"]'),
-      em=qsa('select[name="endMonth[]"]'),ey=qsa('select[name="endYear[]"]'),
-      r=qsa('textarea[name="responsibilities[]"]');
-    let s=''; 
-    const maxRoles = useSkillsFirst ? Math.min(2,jt.length) : jt.length;
-    let has=false;
-    for(let i=0;i<maxRoles;i++){
-      if(jt[i] && jt[i].value){
-        if(!has){ s+='<h4>Work Experience</h4>'; has=true; }
-        const startDate=(sm[i]&&sm[i].value?sm[i].value+' ':'')+(sy[i]&&sy[i].value?sy[i].value:'');
-        const endDate=(em[i]&&em[i].value?em[i].value+' ':'')+(ey[i]&&ey[i].value&&em[i].value!=='Present'?ey[i].value:'');
-        const dateRange=startDate&&endDate?`${startDate} - ${endDate}`:startDate?startDate:endDate?endDate:'Present';
-        s+=`<div class="job-entry"><div class="job-title">${jt[i].value}</div><div class="company">${c[i].value} | ${dateRange}</div><ul>`;
-        const bullets=(r[i]?.value||'').split('\n').filter(x=>x.trim()).slice(0,6);
-        bullets.forEach(x=> s+=`<li>${x.replace(/^([•\-*])\s*/, '')}</li>`);
-        s+='</ul></div>';
-      }
-    }
-    return s;
-  }
-  function eduHTML(){
-    const dg=qsa('select[name="degree[]"]'),sc=qsa('input[name="school[]"]'),
-      fos=qsa('select[name="fieldOfStudy[]"]'), gmo=qsa('select[name="gradMonth[]"]'), gy=qsa('select[name="gradYear[]"]');
-    let s=''; let has=false;
-    for(let i=0;i<dg.length;i++){
-      const degree = (dg[i]?.value||'').trim();
-      if(degree){
-        if(!has){ s+='<h4>Education</h4>'; has=true; }
-        const field = (fos[i]?.value||'').trim();
-        const when = (gmo[i]?.value||'') + (gy[i]?.value? (gmo[i]?.value? ', ':'') + gy[i].value : '');
-        s+=`<div class="edu-entry"><strong>${degree}</strong>${field? ' — '+field:''}<br>${sc[i]?.value||''}${when? ', '+when:''}</div>`;
-      }
-    }
-    return s;
-  }
+            const decidePath = () => {
+                const year = parseInt(yearSelect.value);
+                if (!year) return;
 
-  h += useSkillsFirst ? (skillsHTML()+workHTML()+eduHTML()) : (workHTML()+eduHTML()+skillsHTML());
-  p.innerHTML = h;
-}
+                const threeYearsAgo = new Date().getFullYear() - 3;
+                let recommendationHTML = '';
 
-// ---------- PDF (unchanged core) ----------
-function safeAttach(id, fn){ const el = qs(id); if(el) el.addEventListener('click', fn); }
-safeAttach('#downloadBtn', ()=>{ const{jsPDF}=window.jspdf; const doc=new jsPDF(); 
-  const n=qs('#fullName').value||'Your Name';
-  const ph=qs('#phone').value||'';
-  const eml=qs('#email').value||'';
-  const loc=qs('#location').value||'';
-  let y=20; doc.setFontSize(22); doc.setFont(undefined,'bold'); doc.text(n,105,y,{align:'center'});
-  y+=8; doc.setFontSize(10); doc.setFont(undefined,'normal'); doc.text(`${loc} | ${ph} | ${eml}`,105,y,{align:'center'});
-  y+=10; doc.setLineWidth(0.5); doc.line(20,y,190,y); y+=8;
-  const useSkillsFirst = qs('#useSkillsResume') && qs('#useSkillsResume').checked;
+                if (year < threeYearsAgo) {
+                    recommendationHTML = `
+                        <p class="text-lg text-gray-600 mb-6">Since your last job was a while ago, we recommend a <strong>Skills-First</strong> resume to highlight your abilities.</p>
+                        <div class="flex flex-col gap-4">
+                            <button class="btn btn-primary" onclick="window.setFormat('skills-first')">Continue with Skills-First (Recommended)</button>
+                            <button class="btn-link" onclick="window.setFormat('traditional')">Choose Traditional instead</button>
+                        </div>
+                    `;
+                } else {
+                    recommendationHTML = `
+                        <p class="text-lg text-gray-600 mb-6">Great! We recommend a <strong>Traditional</strong> resume that focuses on your recent work experience.</p>
+                        <div class="flex flex-col gap-4">
+                            <button class="btn btn-primary" onclick="window.setFormat('traditional')">Continue with Traditional (Recommended)</button>
+                            <button class="btn-link" onclick="window.setFormat('skills-first')">Choose Skills-First instead</button>
+                        </div>
+                    `;
+                }
+                
+                pathSelector.classList.add('hidden');
+                pathRecommendation.innerHTML = recommendationHTML;
+                pathRecommendation.classList.remove('hidden');
+            };
+            
+            window.setFormat = (format) => {
+                resume.format = format;
+                save();
+                go(resume.format === 'traditional' ? 'job' : 'skills');
+            };
 
-  function addSkills(){ const sk=qs('#skills').value.trim(); if(!sk) return;
-    if(y>250){doc.addPage(); y=20;} doc.setFontSize(14); doc.setFont(undefined,'bold'); doc.text('SKILLS',20,y); y+=7;
-    doc.setFontSize(10); doc.setFont(undefined,'normal'); doc.splitTextToSize(sk.replace(/\n/g,'; '),170).forEach(ln=>{ if(y>270){doc.addPage();y=20;} doc.text(ln,20,y); y+=5; });
-  }
-  function addWork(){ const jt=qsa('input[name="jobTitle[]"]'),co=qsa('input[name="company[]"]'),
-      sm=qsa('select[name="startMonth[]"]'),sy=qsa('select[name="startYear[]"]'),
-      em=qsa('select[name="endMonth[]"]'),ey=qsa('select[name="endYear[]"]'),
-      rs=qsa('textarea[name="responsibilities[]"]');
-    let wrote=false; const limit = useSkillsFirst?Math.min(2,jt.length):jt.length;
-    for(let i=0;i<limit;i++){
-      if(jt[i] && jt[i].value){
-        if(!wrote){ if(y>250){doc.addPage(); y=20;} doc.setFontSize(14); doc.setFont(undefined,'bold'); doc.text('WORK EXPERIENCE',20,y); y+=7; wrote=true; }
-        doc.setFontSize(11); doc.setFont(undefined,'bold'); doc.text(jt[i].value,20,y); y+=5; doc.setFont(undefined,'italic');
-        const startDate=(sm[i]&&sm[i].value?sm[i].value+' ':'')+(sy[i]&&sy[i].value?sy[i].value:'');
-        const endDate=(em[i]&&em[i].value?em[i].value+' ':'')+(ey[i]&&ey[i].value&&em[i].value!=='Present'?ey[i].value:'');
-        const dateRange=startDate&&endDate?`${startDate} - ${endDate}`:startDate?startDate:endDate?endDate:'Present';
-        doc.text(`${co[i].value} | ${dateRange}`,20,y); y+=6; doc.setFont(undefined,'normal'); doc.setFontSize(10);
-        const bullets=(rs[i]?.value||'').split('\n').filter(x=>x.trim()).slice(0,6);
-        bullets.forEach(x=>{ const ln=doc.splitTextToSize('• '+x.replace(/^([•\-*])\s*/,''),170); ln.forEach(l=>{ if(y>270){doc.addPage();y=20;} doc.text(l,20,y); y+=5; }); }); y+=3;
-      }
-    }
-  }
-  function addEdu(){ const dg=qsa('select[name="degree[]"]'),sc=qsa('input[name="school[]"]'),
-      fos=qsa('select[name="fieldOfStudy[]"]'), gmo=qsa('select[name="gradMonth[]"]'), gy=qsa('select[name="gradYear[]"]');
-    let wrote=false; for(let i=0;i<dg.length;i++){ const degree=(dg[i]?.value||'').trim();
-      if(degree){ if(!wrote){ if(y>250){doc.addPage(); y=20;} doc.setFontSize(14); doc.setFont(undefined,'bold'); doc.text('EDUCATION',20,y); y+=7; wrote=true; }
-        doc.setFontSize(11); doc.setFont(undefined,'bold'); doc.text(degree+(fos[i]?.value? ' — '+fos[i].value:''),20,y); y+=5; doc.setFont(undefined,'normal');
-        const when=(gmo[i]?.value||'') + (gy[i]?.value? (gmo[i]?.value? ', ':'') + gy[i].value : ''); 
-        doc.text(`${sc[i]?.value||''}${when? ', '+when:''}`,20,y); y+=7;
-    }}
-  }
-  if(useSkillsFirst){ addSkills(); addWork(); addEdu(); } else { addWork(); addEdu(); addSkills(); }
-  doc.save(`${n.replace(/\s+/g,'_')}_Resume.pdf`);
-});
+            monthSelect.addEventListener('change', decidePath);
+            yearSelect.addEventListener('change', decidePath);
 
-safeAttach('#downloadWordBtn', ()=>{ alert('Word download kept — content mirrors preview.'); });
-safeAttach('#emailBtn', ()=>{ alert('Email draft launcher kept — attach your PDF after download.'); });
-</script>
+            element.querySelector('#never-worked').addEventListener('click', () => {
+                resume.format = 'skills-first';
+                resume.jobs = []; // Clear any old jobs
+                save();
+                window.neverWorked = true; // A temporary flag for navigation
+                go('skills');
+            });
+
+            return element;
+        }
+
+        // A global index to track which job is being edited
+        let currentJobIndex = -1;
+      
+        function Job() {
+            // If navigating directly and no jobs exist, create one
+            if (resume.jobs.length === 0) {
+                 resume.jobs.push({ title: '', company: '', startMonth: '', startYear: '', endMonth: '', endYear: '', isPresent: false, bullets: [] });
+                 currentJobIndex = 0;
+            } else if (currentJobIndex === -1) {
+                 currentJobIndex = 0;
+            }
+            
+            const job = resume.jobs[currentJobIndex];
+            if (!job) { // safety check
+                go('path');
+                return createDOM('<div></div>');
+            }
+
+            const element = createDOM(`
+                <div class="card">
+                     <div class="border-b border-gray-200 mb-6">
+                        <nav class="-mb-px flex gap-6" aria-label="Tabs">
+                           ${resume.jobs.map((j, i) => `
+                            <button 
+                                class="${i === currentJobIndex ? 'border-primary-color text-primary-color' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg"
+                                onclick="window.switchJob(${i})">
+                                Job ${i + 1}
+                            </button>`).join('')}
+                           ${resume.jobs.length < 3 ? `
+                            <button 
+                                class="text-blue-500 hover:text-blue-700 whitespace-nowrap py-4 px-1 font-medium text-lg flex items-center"
+                                onclick="window.addJob()">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
+                                Add Job
+                            </button>` : ''}
+                        </nav>
+                    </div>
+                    <div id="job-form-container" class="space-y-6">
+                        <div>
+                            <label class="block text-xl font-medium text-gray-700 mb-2">Job Title</label>
+                            <input id="title" type="text" class="input-bubble" placeholder="e.g., Warehouse Associate" value="${job.title}">
+                        </div>
+                        <div>
+                            <label class="block text-xl font-medium text-gray-700 mb-2">Company</label>
+                            <input id="company" type="text" class="input-bubble" placeholder="e.g., UPS, Grainger, Amazon" value="${job.company}">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-xl font-medium text-gray-700 mb-2">Start Date</label>
+                            <div class="flex gap-4">
+                                <select id="startMonth" class="input-bubble">${MONTHS.map((m, i) => `<option value="${i}" ${MONTHS.indexOf(job.startMonth) === i ? 'selected' : ''}>${m}</option>`).join('')}</select>
+                                <select id="startYear" class="input-bubble">${YEARS.map(y => `<option value="${y}" ${job.startYear == y ? 'selected' : ''}>${y}</option>`).join('')}</select>
+                            </div>
+                        </div>
+                        <div id="end-date-container">
+                            <label class="block text-xl font-medium text-gray-700 mb-2">End Date</label>
+                            <div class="flex gap-4">
+                                <select id="endMonth" class="input-bubble">${MONTHS.map((m, i) => `<option value="${i}" ${MONTHS.indexOf(job.endMonth) === i ? 'selected' : ''}>${m}</option>`).join('')}</select>
+                                <select id="endYear" class="input-bubble">${YEARS.map(y => `<option value="${y}" ${job.endYear == y ? 'selected' : ''}>${y}</option>`).join('')}</select>
+                            </div>
+                            <p id="date-error" class="text-red-600 text-sm mt-1 h-5"></p>
+                        </div>
+                        <div class="flex items-center">
+                            <input id="isPresent" type="checkbox" class="h-5 w-5 rounded" ${job.isPresent ? 'checked' : ''}>
+                            <label for="isPresent" class="ml-2 text-lg text-gray-700">I currently work here</label>
+                        </div>
+
+                        <div>
+                            <p class="text-lg text-gray-600 mb-4">Describe what you did. Click to get ideas.</p>
+                            <button id="generate-bullets" class="btn btn-secondary w-full mb-4">Generate 5 Examples</button>
+                             <p id="bullet-limit-msg" class="text-center text-sm text-gray-500 mb-4 h-5"></p>
+                            <div id="bullet-suggestions" class="flex flex-wrap gap-2 mb-6"></div>
+                            <label class="block text-xl font-medium text-gray-700 mb-2">Your Responsibilities (Max 5)</label>
+                            <textarea id="bullets" class="input-bubble h-48" placeholder="Tap a suggestion or type your own.">${job.bullets.join('\n')}</textarea>
+                        </div>
+                    </div>
+                     <div class="flex flex-col sm:flex-row gap-4 w-full mt-8">
+                        <button class="btn btn-secondary w-full sm:w-auto" onclick="go('path')">Back</button>
+                        ${resume.jobs.length > 1 ? `<button class="btn btn-secondary w-full sm:w-auto bg-red-50 text-red-700 border-red-200 hover:bg-red-100" onclick="window.removeJob()">Remove This Job</button>` : ''}
+                        <div class="flex-grow"></div>
+                        <button class="btn btn-primary" id="next-section-btn">Next Section</button>
+                    </div>
+                     ${cardFooter()}
+                </div>
+            `);
+
+            // --- ATTACH LISTENERS ---
+
+            // Basic info
+            element.querySelector('#title').addEventListener('input', e => { job.title = e.target.value; throttledSave(); });
+            element.querySelector('#company').addEventListener('input', e => { job.company = e.target.value; throttledSave(); });
+
+            // Dates
+            const startMonthSelect = element.querySelector('#startMonth');
+            const startYearSelect = element.querySelector('#startYear');
+            const endMonthSelect = element.querySelector('#endMonth');
+            const endYearSelect = element.querySelector('#endYear');
+            const dateError = element.querySelector('#date-error');
+
+            const validateDates = () => {
+                const startYear = parseInt(startYearSelect.value);
+                const startMonth = parseInt(startMonthSelect.value);
+                const endYear = parseInt(endYearSelect.value);
+                const endMonth = parseInt(endMonthSelect.value);
+                
+                if(startYear && endYear && !job.isPresent) {
+                    if (endYear < startYear || (endYear === startYear && endMonth < startMonth)) {
+                        dateError.textContent = "End date can't be before start date.";
+                        endMonthSelect.parentElement.parentElement.classList.add('input-error');
+                        return false;
+                    }
+                }
+                dateError.textContent = '';
+                endMonthSelect.parentElement.parentElement.classList.remove('input-error');
+                return true;
+            };
+
+            [startMonthSelect, startYearSelect, endMonthSelect, endYearSelect].forEach(sel => {
+                sel.addEventListener('change', e => {
+                    const fieldMap = {startMonth: MONTHS[e.target.value], startYear: e.target.value, endMonth: MONTHS[e.target.value], endYear: e.target.value};
+                    job[e.target.id] = fieldMap[e.target.id];
+                    validateDates();
+                    throttledSave();
+                });
+            });
+            
+            const isPresentCheckbox = element.querySelector('#isPresent');
+            const endDateContainer = element.querySelector('#end-date-container');
+            
+            const toggleEndDate = () => {
+                endDateContainer.style.display = isPresentCheckbox.checked ? 'none' : 'block';
+                job.isPresent = isPresentCheckbox.checked;
+                if(job.isPresent) {
+                    job.endMonth = '';
+                    job.endYear = '';
+                }
+                validateDates();
+                throttledSave();
+            };
+            isPresentCheckbox.addEventListener('change', toggleEndDate);
+            toggleEndDate(); // Initial check
+            validateDates();
+
+            // Bullets
+            const suggestionsContainer = element.querySelector('#bullet-suggestions');
+            const bulletsTextarea = element.querySelector('#bullets');
+            const bulletLimitMsg = element.querySelector('#bullet-limit-msg');
+            const generateBtn = element.querySelector('#generate-bullets');
+
+            const checkBulletLimit = () => {
+                if (job.bullets.length >= 5) {
+                    bulletLimitMsg.textContent = "Max 5 bullet points recommended for a strong resume.";
+                    generateBtn.disabled = true;
+                    return true;
+                }
+                bulletLimitMsg.textContent = "";
+                generateBtn.disabled = false;
+                return false;
+            };
+
+            generateBtn.addEventListener('click', () => {
+                if (checkBulletLimit()) return;
+                const bullets = generateBullets(job.title);
+                suggestionsContainer.innerHTML = bullets.map(b => `<button class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1.5 rounded-full hover:bg-blue-200">${b}</button>`).join('');
+                suggestionsContainer.querySelectorAll('button').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        if (job.bullets.length < 5) {
+                            const currentText = bulletsTextarea.value.trim();
+                            bulletsTextarea.value = (currentText ? currentText + '\n' : '') + btn.textContent;
+                            job.bullets = bulletsTextarea.value.split('\n').filter(Boolean);
+                            throttledSave();
+                            btn.remove();
+                            checkBulletLimit();
+                        }
+                    });
+                });
+            });
+            bulletsTextarea.addEventListener('input', e => {
+                job.bullets = e.target.value.split('\n').filter(Boolean).slice(0, 5);
+                bulletsTextarea.value = job.bullets.join('\n');
+                throttledSave();
+                checkBulletLimit();
+            });
+            checkBulletLimit();
+            
+            // Navigation
+            element.querySelector('#next-section-btn').addEventListener('click', () => {
+                if (validateDates()) {
+                    const nextRoute = resume.format === 'traditional' ? 'education' : 'additional';
+                    go(nextRoute);
+                }
+            });
+
+            // --- GLOBAL FUNCTIONS for onclick ---
+            window.switchJob = (index) => { currentJobIndex = index; render(); };
+            window.addJob = () => {
+                if (resume.jobs.length < 3) {
+                    resume.jobs.push({ title: '', company: '', startMonth: '', startYear: '', endMonth: '', endYear: '', isPresent: false, bullets: [] });
+                    currentJobIndex = resume.jobs.length - 1;
+                    save();
+                    render();
+                }
+            };
+            window.removeJob = () => {
+                if (resume.jobs.length > 0) {
+                    resume.jobs.splice(currentJobIndex, 1);
+                    currentJobIndex = Math.max(0, currentJobIndex - 1);
+                    save();
+                    render();
+                }
+            };
+
+            return element;
+        }
+        
+        let currentEduIndex = 0;
+        
+        function Education() {
+            if (resume.education.length === 0) {
+                resume.education.push({ degree: '', degreeOther: '', field: '', school: '', gradMonth: '', gradYear: '' });
+                currentEduIndex = 0;
+            } else if (currentEduIndex === -1) {
+                currentEduIndex = 0;
+            }
+
+            const edu = resume.education[currentEduIndex];
+            
+            const DEGREES = ['High School Diploma', 'GED', 'Associate', 'Bachelor', 'Certificate', 'Apprenticeship', 'Other'];
+
+            const element = createDOM(`
+                <div class="card">
+                     <div class="border-b border-gray-200 mb-6">
+                        <nav class="-mb-px flex gap-6" aria-label="Tabs">
+                           ${resume.education.map((ed, i) => `
+                            <button 
+                                class="${i === currentEduIndex ? 'border-primary-color text-primary-color' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg"
+                                onclick="window.switchEdu(${i})">
+                                Entry ${i + 1}
+                            </button>`).join('')}
+                           ${resume.education.length < 3 ? `
+                            <button 
+                                class="text-blue-500 hover:text-blue-700 whitespace-nowrap py-4 px-1 font-medium text-lg flex items-center"
+                                onclick="window.addEdu()">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
+                                Add Entry
+                            </button>` : ''}
+                        </nav>
+                    </div>
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-xl font-medium text-gray-700 mb-2">Degree / Certificate</label>
+                            <select id="degree" class="input-bubble">${DEGREES.map(d => `<option value="${d}" ${edu.degree === d ? 'selected' : ''}>${d}</option>`).join('')}</select>
+                        </div>
+                        <div id="degreeOther-container" class="hidden">
+                             <label class="block text-xl font-medium text-gray-700 mb-2">Other Degree</label>
+                             <input id="degreeOther" type="text" class="input-bubble" placeholder="e.g., Vocational Training" value="${edu.degreeOther || ''}">
+                        </div>
+                        <div>
+                            <label class="block text-xl font-medium text-gray-700 mb-2">Field of Study (Optional)</label>
+                            <input id="field" type="text" class="input-bubble" placeholder="e.g., Culinary Arts" value="${edu.field || ''}">
+                        </div>
+                        <div>
+                            <label class="block text-xl font-medium text-gray-700 mb-2">School / Institution</label>
+                            <input id="school" type="text" class="input-bubble" placeholder="e.g., The Emilio Culinary Academy" value="${edu.school || ''}">
+                        </div>
+                        <div>
+                           <label class="block text-xl font-medium text-gray-700 mb-2">Graduation Date</label>
+                           <div class="flex gap-4">
+                               <select id="gradMonth" class="input-bubble">
+                                    <option value="">Month (Optional)</option>
+                                    ${MONTHS.map(m => `<option value="${m}" ${edu.gradMonth === m ? 'selected' : ''}>${m}</option>`).join('')}
+                               </select>
+                               <select id="gradYear" class="input-bubble">
+                                    <option value="">Year</option>
+                                    ${YEARS.map(y => `<option value="${y}" ${edu.gradYear == y ? 'selected' : ''}>${y}</option>`).join('')}
+                               </select>
+                           </div>
+                        </div>
+                    </div>
+                    <div id="nav-container"></div>
+                    ${cardFooter()}
+                </div>
+            `);
+            
+            const nextRoute = resume.format === 'traditional' ? 'skills' : (window.neverWorked ? 'additional' : 'job');
+            const prevRoute = resume.format === 'traditional' ? 'job' : 'skills';
+
+            element.querySelector('#nav-container').innerHTML = NavigationButtons(prevRoute, nextRoute);
+
+            const degreeSelect = element.querySelector('#degree');
+            const degreeOtherContainer = element.querySelector('#degreeOther-container');
+
+            const checkOtherDegree = () => {
+                if(degreeSelect.value === 'Other') {
+                    degreeOtherContainer.classList.remove('hidden');
+                } else {
+                    degreeOtherContainer.classList.add('hidden');
+                }
+            };
+            
+            degreeSelect.addEventListener('change', e => {
+                edu.degree = e.target.value;
+                throttledSave();
+                checkOtherDegree();
+            });
+            
+            element.querySelector('#degreeOther').addEventListener('input', e => { edu.degreeOther = e.target.value; throttledSave(); });
+            element.querySelector('#field').addEventListener('input', e => { edu.field = e.target.value; throttledSave(); });
+            element.querySelector('#school').addEventListener('input', e => { edu.school = e.target.value; throttledSave(); });
+            element.querySelector('#gradMonth').addEventListener('change', e => { edu.gradMonth = e.target.value; throttledSave(); });
+            element.querySelector('#gradYear').addEventListener('change', e => { edu.gradYear = e.target.value; throttledSave(); });
+
+            window.switchEdu = (index) => { currentEduIndex = index; render(); };
+            window.addEdu = () => {
+                if(resume.education.length < 3) {
+                    resume.education.push({ degree: '', degreeOther: '', field: '', school: '', gradMonth: '', gradYear: '' });
+                    currentEduIndex = resume.education.length - 1;
+                    save();
+                    render();
+                }
+            };
+
+            checkOtherDegree();
+            return element;
+        }
+
+        function Skills() {
+            const element = createDOM(`
+                <div class="card">
+                    <h1 class="text-3xl font-bold card-title">Skills & Certifications</h1>
+                    <p class="text-lg text-gray-600 mb-8">List up to 12 key skills. We'll help you describe them.</p>
+
+                    <div class="flex gap-4 mb-4">
+                        <input id="skill-input" class="input-bubble flex-grow" placeholder="e.g., Teamwork, Forklift, Spanish">
+                        <button id="generate-skills" class="btn btn-primary">Generate</button>
+                    </div>
+                    <div id="skill-suggestions" class="flex flex-col gap-2 mb-6"></div>
+                    
+                    <div>
+                       <label class="block text-xl font-medium text-gray-700 mb-2">Your Skills</label>
+                       <div id="skills-list" class="space-y-2"></div>
+                    </div>
+                    
+                    ${NavigationButtons(resume.format === 'traditional' ? 'education' : 'path', 'additional')}
+                    ${cardFooter()}
+                </div>
+            `);
+
+            const skillInput = element.querySelector('#skill-input');
+            const suggestionsContainer = element.querySelector('#skill-suggestions');
+            const skillsListContainer = element.querySelector('#skills-list');
+            
+            const renderSkillsList = () => {
+                skillsListContainer.innerHTML = resume.skills.map((skill, index) => `
+                    <div class="flex items-center gap-2 p-2 bg-gray-100 rounded-lg">
+                        <textarea class="flex-grow bg-transparent focus:outline-none resize-none text-lg" rows="2" data-index="${index}">${skill.replace(/\*\*/g, '')}</textarea>
+                        <button class="text-gray-500 hover:text-red-600" onclick="window.removeSkill(${index})">
+                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                        </button>
+                    </div>
+                `).join('');
+
+                skillsListContainer.querySelectorAll('textarea').forEach(textarea => {
+                    textarea.addEventListener('input', (e) => {
+                        const index = parseInt(e.target.dataset.index);
+                        const fullText = e.target.value;
+                        const boldPart = fullText.split(':')[0];
+                        resume.skills[index] = `**${boldPart}:**${fullText.substring(boldPart.length + 1)}`;
+                        throttledSave();
+                    });
+                });
+            };
+
+            element.querySelector('#generate-skills').addEventListener('click', () => {
+                const skill = skillInput.value.trim();
+                if (skill) {
+                    const sentences = generateSkillSentences(skill);
+                    suggestionsContainer.innerHTML = sentences.map(s => {
+                        const htmlVersion = s.replace(/\*\*/g, '<strong>');
+                        const rawVersion = s;
+                        return `<button class="text-left p-4 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 w-full" data-raw="${encodeURIComponent(rawVersion)}">${htmlVersion}</button>`;
+                    }).join('');
+
+                    suggestionsContainer.querySelectorAll('button').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            if (resume.skills.length < 12) {
+                                resume.skills.push(decodeURIComponent(btn.dataset.raw));
+                                throttledSave();
+                                renderSkillsList();
+                                suggestionsContainer.innerHTML = '';
+                                skillInput.value = '';
+                            }
+                        });
+                    });
+                }
+            });
+
+            window.removeSkill = (index) => {
+                resume.skills.splice(index, 1);
+                save();
+                renderSkillsList();
+            };
+
+            renderSkillsList();
+            return element;
+        }
+        
+        function AdditionalInfo() {
+            let prevRoute;
+            if (resume.format === 'traditional') {
+                prevRoute = 'skills';
+            } else { // skills-first
+                if (window.neverWorked || resume.jobs.length === 0) {
+                    prevRoute = 'education';
+                } else {
+                    prevRoute = 'job';
+                }
+            }
+
+             const element = createDOM(`
+                <div class="card">
+                    <h1 class="text-3xl font-bold card-title">Additional Information</h1>
+                    <p class="text-lg text-gray-600 mb-8">Is there anything else you'd like to add? We'll help proofread it. (Optional)</p>
+                     <textarea id="additionalInfo" class="input-bubble h-48" placeholder="e.g., Volunteer work, languages, or awards. Just type, we'll make it sound professional.">${resume.additionalInfo || ''}</textarea>
+                    ${NavigationButtons(prevRoute, 'preview')}
+                    ${cardFooter()}
+                </div>
+            `);
+
+            element.querySelector('#additionalInfo').addEventListener('input', e => {
+                resume.additionalInfo = e.target.value;
+                throttledSave();
+            });
+
+            return element;
+        }
+
+        function proofreadAndFormatText(text) {
+             if (!text || text.trim() === '') return '';
+
+            // More advanced rewrite rules
+            const REWRITE_RULES = [
+                // Keyword-based professional phrases
+                { pattern: /forklift/i, replacement: 'Certified Forklift Operator' },
+                { pattern: /servsafe/i, replacement: 'ServSafe Certified' },
+                { pattern: /spanish/i, replacement: 'Fluent in Spanish' },
+                { pattern: /bilingual/i, replacement: 'Bilingual' },
+                { pattern: /osha/i, replacement: 'OSHA Certified' },
+                { pattern: /cpr|first aid/i, replacement: 'CPR & First-Aid Certified' },
+                { pattern: /employee of the month/i, replacement: 'Recipient of Employee of the Month award' },
+                
+                // Rewrite common informal phrases
+                { pattern: /good with (people|customers)/i, replacement: 'Strong interpersonal and communication skills' },
+                { pattern: /hard worker/i, replacement: 'Demonstrated strong work ethic' },
+                { pattern: /can (operate|use|do)/i, replacement: 'Experienced in operating' },
+                { pattern: /responsible for/i, replacement: 'Managed' },
+                { pattern: /helped with/i, replacement: 'Assisted in' },
+            ];
+            
+            let lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+
+            let processedLines = lines.map(line => {
+                let processedLine = line;
+                const lowerLine = line.toLowerCase();
+
+                // Apply high-confidence rewrite rules first
+                for (const rule of REWRITE_RULES) {
+                    if (rule.pattern.test(lowerLine)) {
+                        processedLine = rule.replacement;
+                        break; // Stop after first match for simplicity
+                    }
+                }
+
+                // General grammar and cleanup for lines that weren't rewritten
+                const slangAndFillers = /\b(ya dig|got that shit|like|you know|stuff|and all that|that|in that)\b/gi;
+                processedLine = processedLine.replace(slangAndFillers, ' ').replace(/\s+/g, ' ').trim();
+
+                const corrections = { " i ": " I ", "i'm": "I'm", "i've": "I've", "i'll": "I'll", "i'd": "I'd", "cant": "can't", "dont": "don't", "wont": "won't" };
+                let correctedText = ` ${processedLine} `;
+                for(const [wrong, right] of Object.entries(corrections)) {
+                    correctedText = correctedText.replace(new RegExp(wrong, 'gi'), right);
+                }
+                processedLine = correctedText.trim();
+
+                if (processedLine) {
+                    let formattedLine = processedLine.charAt(0).toUpperCase() + processedLine.slice(1);
+                    if (!/[.!?]$/.test(formattedLine)) {
+                        formattedLine += '.';
+                    }
+                    return `<li>${formattedLine}</li>`;
+                }
+                return null;
+            });
+
+            return `<ul>${processedLines.filter(Boolean).join('')}</ul>`;
+        }
+
+        function Preview() {
+            // Trim content to fit one page
+            let onePageResume = JSON.parse(JSON.stringify(resume)); // deep copy
+            let trimMessage = '';
+            
+            // Simplified check - roughly 60 lines max.
+            let lineCount = 10; // header
+            lineCount += onePageResume.skills.length;
+            lineCount += onePageResume.education.length * 4;
+            onePageResume.jobs.forEach(j => {
+                lineCount += 4;
+                lineCount += j.bullets.length;
+            });
+            
+            if (lineCount > 60) {
+                 trimMessage = "We kept this to one page by shortening older details.";
+                 if(onePageResume.jobs.length > 1) {
+                     onePageResume.jobs[onePageResume.jobs.length - 1].bullets = onePageResume.jobs[onePageResume.jobs.length - 1].bullets.slice(0,3);
+                 }
+                 if (lineCount > 65) {
+                     onePageResume.skills = onePageResume.skills.slice(0,8);
+                 }
+            }
+
+
+            const renderable = onePageResume;
+
+            const summarySection = renderable.summary ? `
+                <p class="summary">${renderable.summary}</p>
+            ` : '';
+            
+            const skillsSection = renderable.skills.length > 0 ? `
+                <h2>Skills & Certifications</h2>
+                <ul>${renderable.skills.map(s => `<li>${s.replace(/\*\*/g, '<strong>')}</li>`).join('')}</ul>
+            ` : '';
+            
+            const experienceSection = renderable.jobs.length > 0 ? `
+                <h2>Experience</h2>
+                ${renderable.jobs.map(job => `
+                    <div class="mb-4">
+                        <div class="job-header">
+                            <div>
+                                <span class="job-title">${job.title || ''}</span> | <span class="job-company">${job.company || ''}</span>
+                            </div>
+                            <div>
+                                ${job.startMonth || ''} ${job.startYear || ''} - ${job.isPresent ? 'Present' : `${job.endMonth || ''} ${job.endYear || ''}`}
+                            </div>
+                        </div>
+                        <ul>${(job.bullets || []).map(b => `<li>${b}</li>`).join('')}</ul>
+                    </div>
+                `).join('')}
+            ` : '';
+            
+            const educationSection = renderable.education.length > 0 ? `
+                <h2>Education</h2>
+                ${renderable.education.map(edu => `
+                     <div class="edu-header">
+                        <div>
+                           <span class="degree-field">${(edu.degree === 'Other' ? edu.degreeOther : edu.degree) || ''}${(edu.field ? `, ${edu.field}`: '')}</span>
+                        </div>
+                        <div>
+                           ${edu.gradMonth || ''} ${edu.gradYear || ''}
+                        </div>
+                    </div>
+                    <div class="school">${edu.school || ''}</div>
+                `).join('')}
+            ` : '';
+
+            const additionalSection = renderable.additionalInfo ? `
+                 <h2>Additional Information</h2>
+                 <div class="additional-info">${proofreadAndFormatText(renderable.additionalInfo)}</div>
+            ` : '';
+
+            const resumeHTML = `
+                <div id="resume-preview-content" class="bg-white p-8 shadow-lg w-full max-w-4xl mx-auto" style="aspect-ratio: 8.5 / 11;">
+                    <h1 class="text-center">${renderable.contact.name}</h1>
+                    <p class="contact-info">${renderable.contact.city}, ${renderable.contact.state} | ${renderable.contact.phone} | ${renderable.contact.email}</p>
+                    
+                    ${renderable.format === 'skills-first' ? 
+                        skillsSection + experienceSection + educationSection + additionalSection :
+                        experienceSection + educationSection + skillsSection + additionalSection
+                    }
+                </div>
+            `;
+            
+            const element = createDOM(`
+                <div class="w-full max-w-5xl">
+                    <h1 class="text-3xl font-bold text-center card-title mb-2">Preview Your Resume</h1>
+                    <p class="text-lg text-center text-gray-600 mb-4">${trimMessage}</p>
+                    
+                    ${resumeHTML}
+
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+                        <button class="btn btn-secondary" id="pdf-btn">Download PDF</button>
+                        <button class="btn btn-secondary" id="word-btn">Download Word</button>
+                        <button class="btn btn-primary" id="email-btn">Email to TASK</button>
+                    </div>
+                    <div class="text-center mt-4">
+                        <button class="btn-link" id="edit-btn">Go Back & Edit</button>
+                    </div>
+                </div>
+            `);
+            
+            const handleExport = (exportFunction) => {
+                const warnings = checkBestPractices();
+                if (warnings.length > 0) {
+                    showBestPracticesModal(warnings, exportFunction);
+                } else {
+                    exportFunction();
+                }
+            };
+
+            element.querySelector('#pdf-btn').addEventListener('click', () => handleExport(window.downloadPDF));
+            element.querySelector('#word-btn').addEventListener('click', () => handleExport(window.downloadWord));
+            element.querySelector('#email-btn').addEventListener('click', () => handleExport(window.emailToTask));
+            element.querySelector('#edit-btn').addEventListener('click', () => go(window.resume.format === 'traditional' ? 'job' : 'skills'));
+
+
+            window.downloadPDF = async () => {
+                const content = document.getElementById('resume-preview-content');
+                const pdf = new jsPDF({
+                    orientation: 'p',
+                    unit: 'pt',
+                    format: 'letter'
+                });
+                
+                await pdf.html(content, {
+                    callback: function(doc) {
+                        doc.save(`${window.resume.contact.name}_Resume.pdf`);
+                    },
+                    x: 35,
+                    y: 35,
+                    width: 525, 
+                    windowWidth: content.offsetWidth
+                });
+            };
+
+            window.downloadWord = () => {
+                const sourceHTML = `
+                    <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                    <head><meta charset='utf-8'><title>Resume</title></head><body>${document.getElementById('resume-preview-content').innerHTML}</body></html>`;
+                const source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
+                const fileDownload = document.createElement("a");
+                document.body.appendChild(fileDownload);
+                fileDownload.href = source;
+                fileDownload.download = `${window.resume.contact.name}_Resume.doc`;
+                fileDownload.click();
+                document.body.removeChild(fileDownload);
+            };
+
+            window.emailToTask = () => {
+                const subject = `Resume Submission - ${window.resume.contact.name}`;
+                const body = `Hello,\n\nPlease find my resume attached for your consideration.\n\nMy contact information is:\nName: ${window.resume.contact.name}\nEmail: ${window.resume.contact.email}\nPhone: ${window.resume.contact.phone}\n\nThank you.`;
+                const mailtoUrl = `mailto:EandE@trentonsoupkitchen.org?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                window.open(mailtoUrl, '_blank');
+            };
+            
+            return element;
+        }
+
+        function checkBestPractices() {
+            const warnings = [];
+            if (resume.skills.length < 3) {
+                warnings.push("Consider adding at least 3 skills to showcase your abilities.");
+            }
+            if (resume.jobs.length === 0 && !window.neverWorked) {
+                warnings.push("You haven't added any work experience. This is highly recommended.");
+            }
+            resume.jobs.forEach((job, index) => {
+                if (job.bullets.length < 2) {
+                    warnings.push(`Job #${index + 1} has fewer than 2 bullet points. Try to add more detail.`);
+                }
+            });
+            if (resume.education.length === 0 || !resume.education[0].school) {
+                warnings.push("Your education section is empty. Consider adding your highest level of education.");
+            }
+            return warnings;
+        }
+
+        function showBestPracticesModal(warnings, continueCallback) {
+            const modalContainer = document.getElementById('modal-container');
+            const modal = createDOM(`
+                <div id="modal-backdrop" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                    <div class="card text-center">
+                        <h1 class="text-3xl font-bold card-title mb-2">Resume Suggestions</h1>
+                        <p class="text-lg text-gray-600 mb-6">Your resume looks good, but here are a few suggestions to make it even better:</p>
+                        <ul class="text-left list-disc list-inside bg-yellow-50 p-4 rounded-lg border border-yellow-200 mb-6">
+                            ${warnings.map(w => `<li class="mb-2">${w}</li>`).join('')}
+                        </ul>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <button id="continue-btn" class="btn btn-secondary w-full">Continue Anyway</button>
+                            <button id="edit-btn" class="btn btn-primary w-full">Go Back & Edit</button>
+                        </div>
+                    </div>
+                </div>
+            `);
+            modalContainer.innerHTML = '';
+            modalContainer.appendChild(modal);
+
+            modal.querySelector('#continue-btn').onclick = () => {
+                modalContainer.innerHTML = '';
+                continueCallback();
+            };
+             modal.querySelector('#edit-btn').onclick = () => {
+                modalContainer.innerHTML = '';
+                go(window.resume.format === 'traditional' ? 'job' : 'skills');
+            };
+        }
+
+        function RestoreDraftModal() {
+            const lastSaved = new Date(resume.updatedAt).toLocaleString();
+            return createDOM(`
+                <div id="modal-backdrop" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <div class="card text-center">
+                        <h1 class="text-3xl font-bold card-title mb-2">Welcome Back!</h1>
+                        <p class="text-lg text-gray-600 mb-6">We found a saved draft from ${lastSaved}.</p>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <button id="restore-btn" class="btn btn-primary w-full">Restore Draft</button>
+                            <button id="start-fresh-btn" class="btn btn-secondary w-full">Start Fresh</button>
+                        </div>
+                    </div>
+                </div>
+            `);
+        }
+        
+
+        // --- ROUTER ---
+        const routes = {
+            '': Welcome,
+            '#welcome': Welcome,
+            '#contact': Contact,
+            '#path': Path,
+            '#job': Job,
+            '#education': Education,
+            '#skills': Skills,
+            '#additional': AdditionalInfo,
+            '#preview': Preview,
+        };
+
+        function render() {
+            // Reset temp flags, except for jobWizardStep which is managed separately
+            if(window.location.hash !== '#job') {
+               currentJobIndex = -1;
+            }
+            if(window.location.hash !== '#education') {
+               currentEduIndex = -1;
+            }
+
+            const path = window.location.hash || '';
+            const component = routes[path] || Welcome;
+            
+            renderComponent(component);
+        }
+
+        function go(step) {
+            window.location.hash = step;
+        }
+
+        // --- INITIALIZATION ---
+        window.addEventListener('hashchange', render);
+
+        // Make functions globally accessible for inline onclick handlers
+        window.go = go;
+        // Make resume object global for button handlers that need it
+        window.resume = resume;
+
+        // Initial Load
+        const loadedResume = load();
+        if (loadedResume.updatedAt) {
+            resume = loadedResume;
+            window.resume = resume;
+            const modal = RestoreDraftModal();
+            document.getElementById('modal-container').appendChild(modal);
+            modal.querySelector('#restore-btn').onclick = () => {
+                modal.remove();
+                go('contact');
+            };
+            modal.querySelector('#start-fresh-btn').onclick = () => {
+                modal.remove();
+                clearData();
+                go('welcome');
+            };
+        } else {
+            resume = loadedResume;
+            window.resume = resume; // Also assign here
+            render();
+        }
+    </script>
 </body>
 </html>
-"""
-path = "/mnt/data/task-resume-builder-enhanced-v2.html"
-with open(path, "w", encoding="utf-8") as f:
-    f.write(html)
-path
+
