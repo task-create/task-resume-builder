@@ -6,8 +6,8 @@
     <title>TASK Resume — Simple Builder</title>
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- jsPDF for PDF export -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <!-- jsPDF is no longer needed/loaded as PDF export is removed -->
     
     <style>
         /* Using a system font stack for performance and simplicity */
@@ -146,7 +146,7 @@
             transform: scale(1.25);
         }
 
-        /* Resume Preview Styles */
+        /* Resume Preview Styles (Times New Roman for classic look) */
         #resume-preview-content {
             font-family: 'Times New Roman', Times, serif;
             color: #000;
@@ -160,6 +160,7 @@
         #resume-preview-content .job-company, #resume-preview-content .school { font-style: italic; }
         #resume-preview-content ul { list-style-type: disc; padding-left: 20px; font-size: 11pt; }
         #resume-preview-content li { margin-bottom: 4pt; }
+        /* Style for Additional Info section (using a different list style to differentiate from Job Bullets) */
         #resume-preview-content .additional-info ul { list-style-type: none; padding-left: 0; }
         #resume-preview-content .additional-info li::before { content: "•"; padding-right: 8px; }
     </style>
@@ -169,11 +170,9 @@
     <main id="app-root" class="min-h-screen w-full flex flex-col items-center justify-center p-4">
         <!-- App content will be rendered here -->
     </main>
-     <div id="modal-container"></div>
+    <div id="modal-container"></div>
 
     <script type="module">
-        const { jsPDF } = window.jspdf;
-
         // --- STATE MANAGEMENT ---
         const defaultResume = {
             contact: { name: '', email: '', phone: '', city: '', state: 'NJ', zip: '' },
@@ -190,6 +189,7 @@
         function save() {
             resume.updatedAt = Date.now();
             try {
+                // NOTE: Using localStorage as per original design.
                 localStorage.setItem('task-resume-v1', JSON.stringify(resume));
             } catch (e) {
                 console.error("Failed to save resume to localStorage:", e);
@@ -274,7 +274,7 @@
         const YEARS = Array.from({ length: 70 }, (_, i) => new Date().getFullYear() - i);
 
 
-        // --- CONTENT GENERATORS ---
+        // --- CONTENT GENERATORS (Kept for resume content generation) ---
 
         // Extensive pools for job bullets
         const JOB_BULLET_POOLS = {
@@ -634,18 +634,18 @@
                     <h1 class="text-3xl font-bold card-title mb-2">Work Experience</h1>
                     <p class="text-lg text-gray-600 mb-8">When was your last job?</p>
                     <div id="path-selector" class="flex flex-col items-center gap-6">
-                         <div class="flex gap-4">
-                            <select id="month" class="input-bubble">
-                                <option value="">Month</option>
-                                ${MONTHS.map((m, i) => `<option value="${i+1}">${m}</option>`).join('')}
-                            </select>
-                            <select id="year" class="input-bubble">
-                                <option value="">Year</option>
-                                ${YEARS.map(y => `<option value="${y}">${y}</option>`).join('')}
-                            </select>
-                        </div>
-                        <p class="text-gray-600">or</p>
-                        <button id="never-worked" class="btn btn-secondary w-full max-w-xs">I have never worked</button>
+                           <div class="flex gap-4">
+                               <select id="month" class="input-bubble">
+                                   <option value="">Month</option>
+                                   ${MONTHS.map((m, i) => `<option value="${i+1}">${m}</option>`).join('')}
+                               </select>
+                               <select id="year" class="input-bubble">
+                                   <option value="">Year</option>
+                                   ${YEARS.map(y => `<option value="${y}">${y}</option>`).join('')}
+                               </select>
+                           </div>
+                           <p class="text-gray-600">or</p>
+                           <button id="never-worked" class="btn btn-secondary w-full max-w-xs">I have never worked</button>
                     </div>
                     <div id="path-recommendation" class="hidden text-center">
                         <!-- Recommendation will be injected here -->
@@ -711,7 +711,7 @@
 
         // A global index to track which job is being edited
         let currentJobIndex = -1;
-      
+        
         function Job() {
             // If navigating directly and no jobs exist, create one
             if (resume.jobs.length === 0) {
@@ -978,12 +978,12 @@
                            <label class="block text-xl font-medium text-gray-700 mb-2">Graduation Date</label>
                            <div class="flex gap-4">
                                <select id="gradMonth" class="input-bubble">
-                                    <option value="">Month (Optional)</option>
-                                    ${MONTHS.map(m => `<option value="${m}" ${edu.gradMonth === m ? 'selected' : ''}>${m}</option>`).join('')}
+                                   <option value="">Month (Optional)</option>
+                                   ${MONTHS.map(m => `<option value="${m}" ${edu.gradMonth === m ? 'selected' : ''}>${m}</option>`).join('')}
                                </select>
                                <select id="gradYear" class="input-bubble">
-                                    <option value="">Year</option>
-                                    ${YEARS.map(y => `<option value="${y}" ${edu.gradYear == y ? 'selected' : ''}>${y}</option>`).join('')}
+                                   <option value="">Year</option>
+                                   ${YEARS.map(y => `<option value="${y}" ${edu.gradYear == y ? 'selected' : ''}>${y}</option>`).join('')}
                                </select>
                            </div>
                         </div>
@@ -1076,6 +1076,7 @@
                         const index = parseInt(e.target.dataset.index);
                         const fullText = e.target.value;
                         const boldPart = fullText.split(':')[0];
+                        // Re-add bold markdown syntax to maintain structure for rendering
                         resume.skills[index] = `**${boldPart}:**${fullText.substring(boldPart.length + 1)}`;
                         throttledSave();
                     });
@@ -1116,36 +1117,7 @@
             return element;
         }
         
-        function AdditionalInfo() {
-            let prevRoute;
-            if (resume.format === 'traditional') {
-                prevRoute = 'skills';
-            } else { // skills-first
-                if (window.neverWorked || resume.jobs.length === 0) {
-                    prevRoute = 'education';
-                } else {
-                    prevRoute = 'job';
-                }
-            }
-
-             const element = createDOM(`
-                <div class="card">
-                    <h1 class="text-3xl font-bold card-title">Additional Information</h1>
-                    <p class="text-lg text-gray-600 mb-8">Is there anything else you'd like to add? We'll help proofread it. (Optional)</p>
-                     <textarea id="additionalInfo" class="input-bubble h-48" placeholder="e.g., Volunteer work, languages, or awards. Just type, we'll make it sound professional.">${resume.additionalInfo || ''}</textarea>
-                    ${NavigationButtons(prevRoute, 'preview')}
-                    ${cardFooter()}
-                </div>
-            `);
-
-            element.querySelector('#additionalInfo').addEventListener('input', e => {
-                resume.additionalInfo = e.target.value;
-                throttledSave();
-            });
-
-            return element;
-        }
-
+        // Function to proofread, auto-correct, and format additional text
         function proofreadAndFormatText(text) {
              if (!text || text.trim() === '') return '';
 
@@ -1160,8 +1132,8 @@
                 { pattern: /cpr|first aid/i, replacement: 'CPR & First-Aid Certified' },
                 { pattern: /employee of the month/i, replacement: 'Recipient of Employee of the Month award' },
                 
-                // Rewrite common informal phrases
-                { pattern: /good with (people|customers)/i, replacement: 'Strong interpersonal and communication skills' },
+                // Rewrite common informal phrases (removes phrases not suitable for resumes)
+                { pattern: /good with (people|customers)/i, replacement: 'Strong interpersonal and customer relations skills' },
                 { pattern: /hard worker/i, replacement: 'Demonstrated strong work ethic' },
                 { pattern: /can (operate|use|do)/i, replacement: 'Experienced in operating' },
                 { pattern: /responsible for/i, replacement: 'Managed' },
@@ -1183,18 +1155,31 @@
                 }
 
                 // General grammar and cleanup for lines that weren't rewritten
-                const slangAndFillers = /\b(ya dig|got that shit|like|you know|stuff|and all that|that|in that)\b/gi;
+                // Removes common slang and filler words
+                const slangAndFillers = /\b(ya dig|got that shit|like|you know|stuff|and all that|that|in that|i mean)\b/gi;
                 processedLine = processedLine.replace(slangAndFillers, ' ').replace(/\s+/g, ' ').trim();
 
-                const corrections = { " i ": " I ", "i'm": "I'm", "i've": "I've", "i'll": "I'll", "i'd": "I'd", "cant": "can't", "dont": "don't", "wont": "won't" };
+                // Enhanced typo and basic contraction corrections
+                const corrections = {
+                    " i ": " I ", "i'm": "I'm", "i've": "I've", "i'll": "I'll", "i'd": "I'd",
+                    "cant": "can't", "dont": "don't", "wont": "won't", "didnt": "didn't", "isnt": "isn't",
+                    "wrk": "work", "resposible": "responsible", "recieve": "receive", "managment": "management",
+                    "exellent": "excellent", "custmer": "customer", "communicaion": "communication", 
+                    "volenteer": "volunteer", "aplication": "application", "proces": "process", 
+                    "schedul": "schedule", "suport": "support", "assit": "assist", "teem": "team", 
+                    "qualty": "quality"
+                };
+                
                 let correctedText = ` ${processedLine} `;
                 for(const [wrong, right] of Object.entries(corrections)) {
-                    correctedText = correctedText.replace(new RegExp(wrong, 'gi'), right);
+                    // Use regex with word boundaries to avoid replacing parts of larger words
+                    correctedText = correctedText.replace(new RegExp(`\\b${wrong}\\b`, 'gi'), right);
                 }
                 processedLine = correctedText.trim();
 
                 if (processedLine) {
                     let formattedLine = processedLine.charAt(0).toUpperCase() + processedLine.slice(1);
+                    // Ensure line ends with punctuation if it's not already there
                     if (!/[.!?]$/.test(formattedLine)) {
                         formattedLine += '.';
                     }
@@ -1206,8 +1191,40 @@
             return `<ul>${processedLines.filter(Boolean).join('')}</ul>`;
         }
 
+
+        function AdditionalInfo() {
+            let prevRoute;
+            if (resume.format === 'traditional') {
+                prevRoute = 'skills';
+            } else { // skills-first
+                // Check if any job info was entered (even if skills-first was chosen)
+                if (window.neverWorked || resume.jobs.length === 0) {
+                     prevRoute = 'education';
+                } else {
+                     prevRoute = 'job';
+                }
+            }
+
+            const element = createDOM(`
+                <div class="card">
+                    <h1 class="text-3xl font-bold card-title">Additional Information</h1>
+                    <p class="text-lg text-gray-600 mb-8">Is there anything else you'd like to add? We'll help proofread it. (Optional)</p>
+                     <textarea id="additionalInfo" class="input-bubble h-48" placeholder="e.g., Volunteer work, languages, or awards. Just type, we'll make it sound professional.">${resume.additionalInfo || ''}</textarea>
+                    ${NavigationButtons(prevRoute, 'preview')}
+                    ${cardFooter()}
+                </div>
+            `);
+
+            element.querySelector('#additionalInfo').addEventListener('input', e => {
+                resume.additionalInfo = e.target.value;
+                throttledSave();
+            });
+
+            return element;
+        }
+
         function Preview() {
-            // Trim content to fit one page
+            // Trim content to fit one page (simplified check remains)
             let onePageResume = JSON.parse(JSON.stringify(resume)); // deep copy
             let trimMessage = '';
             
@@ -1221,12 +1238,12 @@
             });
             
             if (lineCount > 60) {
-                 trimMessage = "We kept this to one page by shortening older details.";
+                 trimMessage = "We optimized this for a single page by trimming older details. You can still edit the content if needed.";
                  if(onePageResume.jobs.length > 1) {
-                     onePageResume.jobs[onePageResume.jobs.length - 1].bullets = onePageResume.jobs[onePageResume.jobs.length - 1].bullets.slice(0,3);
+                      onePageResume.jobs[onePageResume.jobs.length - 1].bullets = onePageResume.jobs[onePageResume.jobs.length - 1].bullets.slice(0,3);
                  }
                  if (lineCount > 65) {
-                     onePageResume.skills = onePageResume.skills.slice(0,8);
+                      onePageResume.skills = onePageResume.skills.slice(0,8);
                  }
             }
 
@@ -1285,7 +1302,7 @@
                     <p class="contact-info">${renderable.contact.city}, ${renderable.contact.state} | ${renderable.contact.phone} | ${renderable.contact.email}</p>
                     
                     ${renderable.format === 'skills-first' ? 
-                        skillsSection + experienceSection + educationSection + additionalSection :
+                        skillsSection + educationSection + experienceSection + additionalSection :
                         experienceSection + educationSection + skillsSection + additionalSection
                     }
                 </div>
@@ -1299,9 +1316,8 @@
                     ${resumeHTML}
 
                     <div class="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-                        <button class="btn btn-secondary" id="pdf-btn">Download PDF</button>
-                        <button class="btn btn-secondary" id="word-btn">Download Word</button>
-                        <button class="btn btn-primary" id="email-btn">Email to TASK</button>
+                        <button class="btn btn-primary" id="word-btn">Download Word</button>
+                        <button class="btn btn-secondary" id="email-btn">Email to TASK</button>
                     </div>
                     <div class="text-center mt-4">
                         <button class="btn-link" id="edit-btn">Go Back & Edit</button>
@@ -1309,6 +1325,8 @@
                 </div>
             `);
             
+            // --- EXPORT LOGIC ---
+            // The handleExport is still used to wrap the checks around the export buttons.
             const handleExport = (exportFunction) => {
                 const warnings = checkBestPractices();
                 if (warnings.length > 0) {
@@ -1317,31 +1335,13 @@
                     exportFunction();
                 }
             };
-
-            element.querySelector('#pdf-btn').addEventListener('click', () => handleExport(window.downloadPDF));
+            
             element.querySelector('#word-btn').addEventListener('click', () => handleExport(window.downloadWord));
             element.querySelector('#email-btn').addEventListener('click', () => handleExport(window.emailToTask));
             element.querySelector('#edit-btn').addEventListener('click', () => go(window.resume.format === 'traditional' ? 'job' : 'skills'));
 
 
-            window.downloadPDF = async () => {
-                const content = document.getElementById('resume-preview-content');
-                const pdf = new jsPDF({
-                    orientation: 'p',
-                    unit: 'pt',
-                    format: 'letter'
-                });
-                
-                await pdf.html(content, {
-                    callback: function(doc) {
-                        doc.save(`${window.resume.contact.name}_Resume.pdf`);
-                    },
-                    x: 35,
-                    y: 35,
-                    width: 525, 
-                    windowWidth: content.offsetWidth
-                });
-            };
+            // window.downloadPDF removed as requested.
 
             window.downloadWord = () => {
                 const sourceHTML = `
@@ -1351,34 +1351,42 @@
                 const fileDownload = document.createElement("a");
                 document.body.appendChild(fileDownload);
                 fileDownload.href = source;
-                fileDownload.download = `${window.resume.contact.name}_Resume.doc`;
+                fileDownload.download = `${window.resume.contact.name.replace(/\s/g, '_')}_Resume.doc`;
                 fileDownload.click();
                 document.body.removeChild(fileDownload);
             };
 
             window.emailToTask = () => {
                 const subject = `Resume Submission - ${window.resume.contact.name}`;
-                const body = `Hello,\n\nPlease find my resume attached for your consideration.\n\nMy contact information is:\nName: ${window.resume.contact.name}\nEmail: ${window.resume.contact.email}\nPhone: ${window.resume.contact.phone}\n\nThank you.`;
+                const body = `Hello,\n\nPlease find my resume draft attached for your review and assistance.\n\nMy contact information is:\nName: ${window.resume.contact.name}\nEmail: ${window.resume.contact.email}\nPhone: ${window.resume.contact.phone}\n\nThank you.`;
                 const mailtoUrl = `mailto:EandE@trentonsoupkitchen.org?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                
+                // Note: Mailto links cannot reliably attach files; the user will be prompted to manually attach the downloaded Word file.
                 window.open(mailtoUrl, '_blank');
             };
             
             return element;
         }
 
+        // --- BEST PRACTICES CHECK FUNCTIONS (RESTORED/KEPT) ---
+
         function checkBestPractices() {
             const warnings = [];
+            // Check 1: Skills count
             if (resume.skills.length < 3) {
                 warnings.push("Consider adding at least 3 skills to showcase your abilities.");
             }
+            // Check 2: Work experience present
             if (resume.jobs.length === 0 && !window.neverWorked) {
                 warnings.push("You haven't added any work experience. This is highly recommended.");
             }
+            // Check 3: Bullet depth for jobs
             resume.jobs.forEach((job, index) => {
                 if (job.bullets.length < 2) {
                     warnings.push(`Job #${index + 1} has fewer than 2 bullet points. Try to add more detail.`);
                 }
             });
+            // Check 4: Education present
             if (resume.education.length === 0 || !resume.education[0].school) {
                 warnings.push("Your education section is empty. Consider adding your highest level of education.");
             }
@@ -1411,7 +1419,8 @@
             };
              modal.querySelector('#edit-btn').onclick = () => {
                 modalContainer.innerHTML = '';
-                go(window.resume.format === 'traditional' ? 'job' : 'skills');
+                // Navigate back to the last step (Additional Info) for easy editing
+                go('additional');
             };
         }
 
@@ -1496,4 +1505,3 @@
     </script>
 </body>
 </html>
-
