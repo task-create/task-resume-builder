@@ -274,110 +274,63 @@
         const YEARS = Array.from({ length: 70 }, (_, i) => new Date().getFullYear() - i);
 
 
-        // --- CONTENT GENERATORS (Kept for resume content generation) ---
+        // --- CONTENT GENERATORS ---
 
-        // Extensive pools for job bullets
+        // Expanded Job Pools based on user's detailed list structure:
         const JOB_BULLET_POOLS = {
-            'warehouse': [
-                "Operated pallet jacks and forklifts to move inventory loads up to 2,500 lbs, increasing loading efficiency by 15% within 3 months.",
-                "Used RF scanners to track 500+ daily inbound/outbound shipments, maintaining 99.8% inventory accuracy.",
-                "Collaborated with a team of 10 to pick, pack, and ship over 1,000 orders per day, consistently meeting deadlines.",
-                "Implemented a new bin-labeling system that reduced item retrieval times by 20% in the first month.",
-                "Conducted daily safety checks on equipment, contributing to a 100% accident-free record for 6 consecutive months.",
-                "Sorted and staged materials for production lines, preventing downtime and ensuring a continuous workflow for 3 assembly teams.",
-                "Trained 3 new team members on warehouse safety protocols and inventory management software, reducing their onboarding time by 1 week.",
-                "Maintained a clean and organized work area, adhering to 5S principles to improve safety and efficiency.",
-                "Loaded and unloaded delivery trucks, verifying shipment contents against packing slips for accuracy.",
-                "Assisted in monthly cycle counts and physical inventory audits, helping to resolve discrepancies worth over $5,000.",
-                "Safely handled and stacked fragile items, reducing product damage by 25% over a six-month period."
+            'logistics_prod': [
+                "Managed inventory accuracy of 5,000+ items using WMS/RF scanning technology, maintaining 99.7% reconciliation rate.",
+                "Safely operated heavy equipment (forklifts, reach trucks, pallet jacks) for 8 hours daily with zero safety incidents.",
+                "Coordinated with production teams to ensure timely delivery of raw materials, preventing line stoppage and increasing throughput by 10%.",
+                "Executed quality control checks on finished goods, reducing outgoing product defects by 15%.",
+                "Trained and mentored 5 new associates on proper material handling techniques and safety protocols.",
+                "Loaded and secured daily outbound shipments, ensuring compliance with transport regulations and maximizing trailer space efficiency."
             ],
-            'retail': [
-                "Assisted over 100 customers daily with product selection and inquiries, achieving a 95% customer satisfaction score.",
-                "Operated a POS system to process 200+ transactions per shift with 100% cash handling accuracy.",
-                "Managed and restocked merchandise on the sales floor, contributing to a 10% increase in sales for featured products.",
-                "Handled customer returns and exchanges professionally, de-escalating issues and retaining 85% of customers.",
-                "Participated in nightly inventory counts and store organization, helping the store achieve a 99% inventory accuracy rate.",
-                "Set up promotional displays that attracted customer interest and boosted sales of new items by 25% during the first week.",
-                "Collaborated with a team of 8 associates to prepare the store for opening and closing, ensuring a clean and welcoming environment.",
-                "Actively greeted customers upon entry, creating a friendly and approachable atmosphere.",
-                "Answered store phone calls, providing information on product availability, store hours, and policies.",
-                "Maintained fitting room standards, returning merchandise to the sales floor and ensuring cleanliness."
+            'culinary_hosp': [
+                "Executed comprehensive cleaning and sanitation protocols (ServSafe certified), ensuring a 100% compliance rate during inspections.",
+                "Provided friendly, efficient service to 100+ guests per shift, handling payments and resolving issues to maintain a high guest satisfaction score.",
+                "Expertly prepped all menu ingredients for high-volume service, minimizing waste through precise portion control (FIFO).",
+                "Assisted Executive Chef on the line, maintaining rapid pace and consistent food quality across all station requirements.",
+                "Managed event setup and breakdown for banquets up to 200 guests, ensuring rapid, professional room turnover.",
+                "Handled guest check-in/out procedures and managed reservations using Property Management Software (PMS) systems."
             ],
-            'culinary': [
-                "Prepped ingredients for a menu serving 150+ customers per night, ensuring freshness and reducing food waste by 10%.",
-                "Maintained a clean and sanitized work station in compliance with ServSafe and local health department standards, passing all inspections.",
-                "Operated standard kitchen equipment including grills, fryers, and ovens, contributing to a consistent food preparation time of under 15 minutes.",
-                "Assisted in plating and presentation of dishes, ensuring high-quality and appealing meals for every customer.",
-                "Managed inventory of perishable goods, rotating stock to minimize spoilage and communicating needs to the head cook daily.",
-                "Washed and sanitized over 500 dishes, glassware, and utensils per shift, supporting a smooth kitchen workflow.",
-                "Followed recipes precisely to prepare sauces, dressings, and side dishes for a menu of 30+ items, ensuring consistent taste and quality.",
-                "Received and organized vendor deliveries, ensuring all products met quality standards before storage.",
-                "Communicated effectively with servers and other kitchen staff to coordinate food orders and ensure timely service.",
-                "Assisted with catering event preparation for groups of up to 100 people.",
-                "Contributed to menu development by suggesting 3 new seasonal specials, one of which became a permanent menu item.",
-                "Trained as an intern on garde manger station, preparing cold appetizers and salads."
+            'janit_maint': [
+                "Performed preventative maintenance and minor repairs (plumbing, electrical, HVAC filters) across a 50,000 sq. ft. commercial property.",
+                "Executed specialized floor care techniques, including stripping, waxing, and buffing, extending floor lifespan by 2 years.",
+                "Managed chemical inventory and utilized specialized equipment (floor buffers, pressure washers) adhering strictly to MSDS guidelines.",
+                "Assisted skilled technicians with carpentry, painting, and basic installation projects, ensuring project completion 10% ahead of schedule.",
+                "Maintained clean, sanitary restrooms and common areas for a facility housing 300+ personnel, consistently passing internal quality audits."
             ],
-            'hospitality': [
-                "Greeted and checked in over 75 guests per day, providing a warm and efficient welcome experience.",
-                "Cleaned and prepared up to 15 guest rooms daily, meeting strict hotel standards for cleanliness and presentation.",
-                "Answered a multi-line phone system and directed calls, resolving guest inquiries and booking reservations with 98% accuracy.",
-                "Handled luggage and provided concierge services, such as dining recommendations and transportation arrangements, enhancing the guest experience.",
-                "Responded to guest requests and complaints promptly and professionally, resolving 90% of issues on the first contact.",
-                "Processed payments and maintained accurate guest records using the hotel's property management system (PMS).",
-                "Conducted nightly audits of front desk operations, ensuring all financial transactions were balanced and accounted for.",
-                "Stocked linen closets and housekeeping carts to ensure supplies were available for the next shift.",
-                "Inspected rooms for maintenance needs and reported issues to the engineering department, preventing larger problems.",
-                "Folded and sorted laundry, processing over 200 lbs of linens per shift."
+            'admin_office': [
+                "Managed high-volume data entry (500+ records/week) with 99% accuracy into EHR/CRM systems, ensuring client confidentiality (HIPAA compliant).",
+                "Handled a multi-line phone system, managed executive calendars, and scheduled appointments, optimizing workflow for 3 senior managers.",
+                "Drafted and edited professional correspondence and reports using MS Word and Google Docs, improving document efficiency by 20%.",
+                "Processed all incoming mail, managed office supplies, and coordinated virtual meetings (Zoom/Teams) for a 40-person team.",
+                "Successfully navigated digital job portals and online training platforms, quickly mastering new software tools and procedures.",
+                "Provided excellent customer support via phone and email, resolving 95% of initial inquiries without escalation."
             ],
-            'janitorial': [
-                "Cleaned and maintained a 20,000 sq. ft. commercial facility, including offices, restrooms, and common areas, to a high standard of hygiene.",
-                "Operated floor buffers and carpet cleaners to perform deep cleaning tasks, extending the life of flooring materials by 2 years.",
-                "Managed inventory of cleaning supplies, submitting orders to prevent shortages and reduce waste by 15%.",
-                "Followed all safety protocols for handling chemical cleaning agents, resulting in a zero-incident safety record for 12 months.",
-                "Responded to urgent cleanup requests within 10 minutes, minimizing disruption to building occupants.",
-                "Emptied trash and recycling receptacles daily across 50+ collection points, supporting the facility's recycling program.",
-                "Performed minor maintenance tasks such as changing light bulbs and reporting larger issues, contributing to a well-maintained facility.",
-                "Stripped and waxed floors quarterly to maintain a professional and polished appearance.",
-                "Cleaned windows and glass surfaces, ensuring a streak-free finish.",
-                "Set up and broke down tables and chairs for events and meetings."
+            'healthcare_social': [
+                "Provided direct, compassionate care to 8-10 patients daily, including vital sign measurement, mobility assistance, and feeding support.",
+                "Adhered rigorously to infection control and hand hygiene standards, contributing to a consistently low infection rate.",
+                "Accurately documented patient observations and activities into Electronic Health Record (EHR) systems.",
+                "Certified in CPR/First Aid and trained in emergency response, ensuring immediate action during patient incidents.",
+                "Escorted patients safely to and from appointments within the facility, maintaining patient comfort and dignity.",
+                "Maintained strict HIPAA awareness, protecting sensitive patient information during communication and data entry."
             ],
-            'healthcare_entry': [
-                "Provided compassionate daily living assistance to 8-10 elderly patients, including bathing, dressing, and meal preparation.",
-                "Monitored and recorded vital signs such as blood pressure and temperature, reporting any changes to the supervising nurse immediately.",
-                "Assisted with patient mobility, using proper transfer techniques and equipment to ensure safety for both patient and caregiver.",
-                "Maintained accurate and confidential patient records, documenting care provided and observations in the EMR system.",
-                "Scheduled patient appointments and managed medical records for a clinic serving 50+ patients per day.",
-                "Cleaned and sterilized medical equipment and patient rooms, adhering to strict infection control protocols.",
-                "Transported patients to and from appointments and procedures within the hospital, ensuring their comfort and safety.",
-                "Answered patient call lights promptly, addressing needs and providing comfort.",
-                "Collected lab specimens as directed and prepared them for transport to the lab.",
-                "Assisted with feeding patients who required help, ensuring proper nutrition and hydration."
+            'security_safety': [
+                "Conducted scheduled and random patrols (foot and vehicle) of a large premises, documenting all activity and potential safety hazards in detailed reports.",
+                "Monitored multi-channel CCTV surveillance and access control systems, quickly identifying and responding to breaches.",
+                "Successfully de-escalated potential conflicts and maintained a professional presence while managing crowd flow during high-traffic periods.",
+                "Trained in emergency evacuation and fire safety procedures (including proper extinguisher use), ensuring rapid response readiness.",
+                "Managed visitor intake, checked identification, and controlled access badges, ensuring only authorized personnel entered restricted areas."
             ],
-            'admin': [
-                "Managed a multi-line phone system, directing over 100 calls per day to the appropriate personnel with professionalism and efficiency.",
-                "Performed data entry for 500+ records per week with a 99.5% accuracy rate, maintaining up-to-date client databases.",
-                "Sorted and distributed incoming mail and prepared outgoing shipments, ensuring timely communication for a 30-person office.",
-                "Scheduled appointments and managed calendars for 3 senior managers, optimizing their time and preventing scheduling conflicts.",
-                "Greeted visitors and clients, providing a professional first impression and directing them to their appointments.",
-                "Maintained office supply inventory, ordering new supplies as needed and reducing annual costs by 10% through vendor comparison.",
-                "Created and formatted documents, reports, and presentations using Microsoft Office Suite (Word, Excel, PowerPoint).",
-                "Organized and maintained physical and digital filing systems.",
-                "Booked travel arrangements and prepared expense reports.",
-                "Provided general administrative support to a team of 15 employees."
+            'transport_delivery': [
+                "Maintained a clean driving record and navigated delivery routes efficiently using GPS, optimizing 15+ deliveries daily.",
+                "Responsible for pre-trip and post-trip vehicle inspections, ensuring adherence to DOT and safety standards.",
+                "Accurately loaded and secured diverse cargo, minimizing product damage during transport and delivery.",
+                "Provided professional customer interaction during deliveries, obtaining signatures and handling documentation flawlessly.",
+                "Managed daily logbooks and time tracking accurately, ensuring compliance with transportation regulations."
             ],
-            'manufacturing': [
-                "Operated assembly line machinery to produce 1,000+ units per shift, meeting or exceeding production targets by 10%.",
-                "Performed quality control checks on finished products, identifying and removing defective items to maintain a 99% quality standard.",
-                "Followed detailed schematics and work instructions to assemble complex electronic components with a low error rate of less than 1%.",
-                "Maintained a clean and organized workstation, following 5S principles to improve efficiency and safety.",
-                "Collaborated with a team of 15 to troubleshoot production issues, contributing to a 20% reduction in line stoppages.",
-                "Loaded raw materials into machinery and monitored its operation, making adjustments as needed to ensure consistent output.",
-                "Adhered to all safety and PPE (Personal Protective Equipment) requirements, contributing to a safe working environment.",
-                "Calibrated and performed minor maintenance on production equipment to prevent downtime.",
-                "Packaged and labeled finished goods for shipment.",
-                "Documented production data and reported any deviations to the shift supervisor."
-            ],
-
             'generic': [
                 "Collaborated effectively with a team of 5-10 colleagues to achieve daily operational goals and deadlines.",
                 "Maintained a clean, safe, and organized work environment, adhering to all company safety policies and procedures.",
@@ -387,19 +340,27 @@
             ]
         };
 
+        // --- EXPANDED SKILL TEMPLATES ---
+
         const SKILL_TEMPLATES = {
-            // Certifications
+            // General Certifications
             'servsafe': ["Maintains food safety standards by following HACCP protocols, monitoring time and temperature controls, and ensuring proper sanitation.", "Expertly prevents cross-contamination during all stages of food handling, from receiving and storage to preparation and service.", "Demonstrates comprehensive knowledge of foodborne illness prevention, allergen awareness, and personal hygiene best practices."],
             'forklift': ["Operates sit-down, stand-up, and reach forklifts safely and efficiently in a fast-paced warehouse environment.", "Conducts daily pre-operational vehicle inspections and reports any maintenance issues to ensure equipment safety and longevity.", "Stacks and retrieves pallets from racking up to 30 feet high, maintaining stability and preventing product damage."],
             'osha': ["Adheres to OSHA 10/30 safety standards to maintain a hazard-free work environment.", "Identifies potential workplace hazards and reports them to management to ensure compliance and safety.", "Utilizes Personal Protective Equipment (PPE) correctly and consistently."],
-            'first_aid': ["Certified in First Aid and CPR, able to respond calmly and effectively to workplace emergencies, including minor injuries and medical incidents.", "Maintains and inspects first aid kits and AED devices, ensuring they are fully stocked and operational.", "Assesses emergency situations, provides immediate care to the injured or ill, and accurately reports incidents to management."],
+            'first_aid': ["Certified in First Aid and CPR/AED, able to respond calmly and effectively to workplace emergencies, including minor injuries and medical incidents.", "Maintains and inspects first aid kits and AED devices, ensuring they are fully stocked and operational.", "Assesses emergency situations, provides immediate care to the injured or ill, and accurately reports incidents to management."],
             
-            // Hard Skills
+            // Specialized Skills
             'cash_handling': ["Processes cash, credit, and debit transactions with 100% accuracy using a POS system.", "Balances a cash drawer of over $1,500 daily, consistently accounting for all sales and receipts.", "Follows all security procedures for handling large sums of money, including cash drops and counterfeit bill detection."],
-            'pos': ["Efficiently operates multiple Point-of-Sale systems, including Square and Toast, to process orders and manage payments.", "Troubleshoots common POS issues, such as printer jams and connection errors, to minimize customer wait times.", "Trains new employees on POS functionality, menu navigation, and end-of-day reporting procedures."],
+            'ms_office': ["Proficiently uses the Microsoft Office Suite (Word, Excel, PowerPoint) to create, format, and manage business documents and reports.", "Utilizes core Excel functions for data organization, tracking, and basic analysis.", "Drafts professional correspondence and documentation, ensuring clarity and brand consistency."],
+            'google_suite': ["Utilizes Google Workspace (Docs, Sheets, Slides, Drive, Calendar) for collaboration and efficient workflow management.", "Creates and manages electronic calendars and scheduling for internal and external meetings.", "Organizes and shares files efficiently using cloud storage, ensuring access control."],
             'data_entry': ["Enters alphabetic, numeric, and symbolic data from source documents into computer systems with a typing speed of 70 WPM.", "Verifies and corrects data to ensure 99.8% accuracy, comparing entered data with source documents to identify any discrepancies.", "Maintains confidentiality and adheres to data security policies when handling sensitive personal and financial information."],
-            'ms_office': ["Proficient in Microsoft Office Suite (Word, Excel, PowerPoint) to create documents, analyze data, and build presentations.", "Uses Excel functions, such as VLOOKUP and PivotTables, to organize and interpret large datasets.", "Creates professional, well-formatted reports and correspondence using Microsoft Word."],
-            'google_suite': ["Utilizes Google Workspace (Docs, Sheets, Slides) for real-time collaboration on projects and reports.", "Manages schedules and appointments for multiple team members using Google Calendar.", "Organizes and shares files effectively using Google Drive."],
+            'vitals_cna': ["Accurately monitors and records patient vital signs (BP, pulse, temp, O2), reporting abnormal results to nursing staff immediately.", "Assists patients with mobility using proper transfer techniques, ensuring patient and caregiver safety.", "Practices strict hand hygiene and infection control protocols in all patient care and equipment handling duties."],
+            'tech_digital': ["Efficiently navigates and manages tasks using digital tools, including troubleshooting basic computer and application issues.", "Competent in managing digital file systems, using cloud storage, and handling online documentation (upload/download/PDF creation).", "Uses modern communication platforms (email, virtual meetings, chat systems) effectively for remote and in-person collaboration."],
+            'trades_maint': ["Proficient in the safe operation of common hand and power tools for maintenance and repair tasks.", "Performs routine preventive maintenance (e.g., changing HVAC filters, minor plumbing) to minimize system downtime.", "Capable of reading basic blueprints and following technical diagrams for assembly or repair work."],
+            'security_patrol': ["Conducts regular foot and vehicle patrols, quickly identifying and reporting suspicious activity or security breaches.", "Skilled in initial conflict de-escalation and professional communication when interacting with the public or staff.", "Monitors surveillance (CCTV) systems, completes detailed daily activity reports (DARs), and accurately documents incidents."],
+            'culinary_prep': ["Demonstrates advanced knife skills for rapid, consistent vegetable and protein preparation.", "Maintains strict portion control and uses kitchen scales/thermometers for accurate recipe execution.", "Expertly manages food storage (FIFO rotation) and temperature logging to ensure quality and minimize waste."],
+            'transport_log': ["Maintains a valid driver's license and safe driving record while adhering to all transportation laws and regulations.", "Utilizes GPS/map reading skills for efficient route planning and on-time delivery execution.", "Responsible for basic vehicle inspections and securing cargo to prevent transit damage."],
+            'manufacturing_qa': ["Performs routine quality control inspections using calipers/micrometers to ensure products meet precise specifications.", "Operates and monitors production line machinery, performing basic lubrication and troubleshooting to maintain workflow.", "Strictly adheres to documented work orders and safety procedures, including Lockout/Tagout (LOTO)."],
 
             // Soft Skills
             'customer_service': ["De-escalates customer conflicts by actively listening to concerns, empathizing, and offering practical solutions, retaining 95% of at-risk customers.", "Manages a high volume of over 50 customer inquiries per day via phone and email with a positive and professional attitude.", "Proactively identifies customer needs to recommend products and services, resulting in a 15% increase in up-sells."],
@@ -417,16 +378,30 @@
         
         let generatedBulletsCache = {};
         
+        // --- EXPANDED JOB FAMILY MAPPING ---
         function getJobFamily(title) {
             title = title.toLowerCase();
-            if (/\b(warehouse|picker|packer|forklift|inventory|shipping|receiving|loader|sorter|package|delivery|dock|stocker|material handler|ups|fedex|amazon|grainger)\b/.test(title)) return 'warehouse';
-            if (/\b(retail|cashier|sales|merchandiser|customer service|associate|greeter|walmart|target)\b/.test(title)) return 'retail';
-            if (/\b(cook|prep|line|dishwasher|server|barista|food|deli|cafeteria|busser|host|culinary intern)\b/.test(title)) return 'culinary';
-            if (/\b(hotel|front desk|housekeeper|concierge|bellhop|laundry|room attendant)\b/.test(title)) return 'hospitality';
-            if (/\b(janitor|cleaner|sanitation|porter|custodian|environmental services)\b/.test(title)) return 'janitorial';
-            if (/\b(cna|hha|home health|medical assistant|patient care|pca)\b/.test(title)) return 'healthcare_entry';
-            if (/\b(receptionist|office assistant|admin|data entry|mailroom|clerk)\b/.test(title)) return 'admin';
-            if (/\b(assembler|machine operator|production|qa|technician|manufacturing)\b/.test(title)) return 'manufacturing';
+            // Logistics, Production, Manufacturing, Supply Chain (250+ titles)
+            if (/\b(warehouse|picker|packer|forklift|inventory|shipping|receiving|loader|sorter|package|delivery|dock|stocker|material handler|assembly|machine|production|logistics|plant|analyst|coordinator|supervisor|manager|scheduler|qc|qa|supply chain|distribution|freight|palletizer|factory|process|fabrication)\b/.test(title)) return 'logistics_prod';
+            
+            // Culinary, Food Service, Hospitality (100+ titles)
+            if (/\b(cook|prep|line|dishwasher|server|barista|food|deli|cafeteria|busser|host|culinary|kitchen|chef|catering|banquet|dining|guest services|attendant|hospitality|hotel|housekeeper|room service|barback|pantry|grill|pizza|bakery|tray line|beverage|steward|sommelier)\b/.test(title)) return 'culinary_hosp';
+            
+            // Facilities, Maintenance, Janitorial, Trades (100+ titles)
+            if (/\b(janitor|cleaner|sanitation|porter|custodian|maintenance|facilities|groundskeeper|engineer|technician|laborer|carpenter|plumbing|electrical|hvac|trades|mechanic|apprentice|painter|handyman|floor care|utility|trade support|building cleaner|window cleaner|pressure wash|site cleanup|snow removal|pool maintenance|pest control)\b/.test(title)) return 'janit_maint';
+            
+            // Office, Admin, Customer Service, Retail, Digital (150+ titles)
+            if (/\b(retail|cashier|sales|merchandiser|customer service|associate|greeter|receptionist|office assistant|admin|data entry|mailroom|clerk|scheduler|support|specialist|manager|analyst|coordinator|supervisor|payroll|hr|finance|billing|procurement|project|pr|marketing|client services|tech support|it support|helpdesk|enrollment|virtual assistant|auditor|business analyst|systems analyst|digital|tech)\b/.test(title)) return 'admin_office';
+            
+            // Healthcare, Human Services, Medical (150+ titles)
+            if (/\b(cna|hha|home health|medical assistant|patient care|pca|nurse|clinical|aide|records|health|dietary|therapy|phlebotomy|ekg|pharmacy tech|sterile|surgical|coordinator|manager|lab|radiology|respiratory|physical therapist|occupational|behavioral|dsp|case aide|hospice|dialysis|telehealth|ehr|emr|ambulatory)\b/.test(title)) return 'healthcare_social';
+            
+            // Security, Public Safety, Protective Services (50+ titles)
+            if (/\b(security|guard|officer|loss prevention|patrol|watchman|access control|cctv|sora|fire watch|dispatcher|investigation|protective|safety|public safety|emergency response|traffic control)\b/.test(title)) return 'security_safety';
+            
+            // Transportation & Delivery (if not covered above)
+            if (/\b(driver|delivery|transportation|courier|chauffeur|vehicle patrol|fleet)\b/.test(title)) return 'transport_delivery';
+            
             return 'generic';
         }
 
@@ -451,24 +426,62 @@
             return newBullets;
         }
         
+        // --- EXPANDED SKILL KEY MAPPING ---
         function getSkillKey(skill) {
             skill = skill.toLowerCase();
-            if (skill.includes('servsafe')) return 'servsafe';
-            if (skill.includes('forklift')) return 'forklift';
-            if (skill.includes('cash')) return 'cash_handling';
-            if (skill.includes('pos') || skill.includes('point of sale')) return 'pos';
-            if (skill.includes('customer')) return 'customer_service';
-            if (skill.includes('data entry')) return 'data_entry';
+            // --- Certifications & Safety ---
+            if (skill.includes('servsafe') || skill.includes('food safety') || skill.includes('allergen awareness')) return 'servsafe';
+            if (skill.includes('forklift') || skill.includes('pallet jack') || skill.includes('loading & unloading') || skill.includes('material handling')) return 'forklift';
+            if (skill.includes('osha') || skill.includes('safety gear') || skill.includes('safety procedures')) return 'osha';
+            if (skill.includes('cpr') || skill.includes('first aid') || skill.includes('aed') || skill.includes('emergency response')) return 'first_aid';
+            if (skill.includes('sora')) return 'security_patrol';
+            if (skill.includes('hipaa') || skill.includes('confidentiality') || skill.includes('patient charts')) return 'vitals_cna';
+            
+            // --- Finance/POS/Retail/Sales ---
+            if (skill.includes('cash') || skill.includes('cash handling') || skill.includes('sales transactions') || skill.includes('reconciliation') || skill.includes('cash drawer')) return 'cash_handling';
+            if (skill.includes('pos system') || skill.includes('pos operation')) return 'pos';
+            if (skill.includes('upselling') || skill.includes('suggestive selling') || skill.includes('product display') || skill.includes('merchandising') || skill.includes('restocking')) return 'customer_service_retail';
+
+            // --- Data/Office/Admin/Tech ---
+            if (skill.includes('data entry') || skill.includes('typing') || skill.includes('filing') || skill.includes('recordkeeping') || skill.includes('document scanning')) return 'data_entry';
+            if (skill.includes('microsoft word') || skill.includes('excel') || skill.includes('powerpoint') || skill.includes('outlook') || skill.includes('basic formulas')) return 'ms_office';
+            if (skill.includes('google workspace') || skill.includes('google drive') || skill.includes('online calendars') || skill.includes('cloud storage')) return 'google_suite';
+            if (skill.includes('computer setup') || skill.includes('troubleshooting') || skill.includes('software') || skill.includes('digital skills') || skill.includes('online job applications') || skill.includes('telehealth') || skill.includes('virtual meeting')) return 'tech_digital';
+
+            // --- Maintenance/Janitorial/Trades/Construction ---
+            if (skill.includes('floor care') || skill.includes('stripping') || skill.includes('waxing') || skill.includes('restroom sanitation') || skill.includes('chemical dilution') || skill.includes('industrial vacuum')) return 'facilities_janitorial';
+            if (skill.includes('minor repairs') || skill.includes('hvac filter') || skill.includes('plumbing repairs') || skill.includes('electrical repairs') || skill.includes('handyman') || skill.includes('building inspection') || skill.includes('preventive maintenance')) return 'trades_maint';
+            if (skill.includes('hand tool') || skill.includes('power tool') || skill.includes('blueprints') || skill.includes('measuring') || skill.includes('mixing cement') || skill.includes('painting') || skill.includes('carpentry assistance') || skill.includes('caulking')) return 'trades_maint';
+            
+            // --- Culinary/Food Service ---
+            if (skill.includes('knife skills') || skill.includes('food preparation') || skill.includes('portion control') || skill.includes('baking basics') || skill.includes('food plating') || skill.includes('recipe cards') || skill.includes('garnish') || skill.includes('mise en place') || skill.includes('grill') || skill.includes('fryer')) return 'culinary_prep';
+            if (skill.includes('inventory rotation') || skill.includes('food storage') || skill.includes('temperature checks') || skill.includes('fifo')) return 'culinary_prep';
+
+            // --- Manufacturing/Industrial ---
+            if (skill.includes('cnc') || skill.includes('calipers') || skill.includes('micrometers') || skill.includes('production line monitoring') || skill.includes('assembly line') || skill.includes('lockout/tagout') || skill.includes('work orders') || skill.includes('torque wrench') || skill.includes('welding assistance') || skill.includes('quality control sampling')) return 'manufacturing_qa';
+            
+            // --- Security/Public Safety ---
+            if (skill.includes('security') || skill.includes('patrolling') || skill.includes('incident reports') || skill.includes('cctv monitoring') || skill.includes('access control') || skill.includes('conflict de-escalation') || skill.includes('loss prevention') || skill.includes('bag checks') || skill.includes('radio communication') || skill.includes('fire extinguisher')) return 'security_patrol';
+
+            // --- Healthcare/Human Services ---
+            if (skill.includes('vital signs') || skill.includes('patient transport') || skill.includes('mobility assistance') || skill.includes('infection control') || skill.includes('bedside manner') || skill.includes('patient intake') || skill.includes('patient charts')) return 'vitals_cna';
+            if (skill.includes('medical supplies') || skill.includes('equipment sanitization') || skill.includes('phlebotomy') || skill.includes('ekg') || skill.includes('dialysis') || skill.includes('blood pressure cuff') || skill.includes('oximeters')) return 'vitals_cna';
+
+            // --- Transportation ---
+            if (skill.includes('driver’s license') || skill.includes('route planning') || skill.includes('securing cargo') || skill.includes('vehicle inspection') || skill.includes('delivery documentation') || skill.includes('hand truck') || skill.includes('logbooks')) return 'transport_log';
+
+
+            // --- Soft Skills (broad match) ---
+            if (skill.includes('customer') || skill.includes('guest interaction') || skill.includes('customer greeting')) return 'customer_service';
+            if (skill.includes('time manage') || skill.includes('time tracking')) return 'time_management';
+            if (skill.includes('communicat') || skill.includes('phone etiquette') || skill.includes('email communication')) return 'communication';
+            if (skill.includes('team') || skill.includes('collaboration') || skill.includes('teamwork')) return 'teamwork';
+            if (skill.includes('problem') || skill.includes('solving') || skill.includes('critical thinking')) return 'problem_solving';
+            if (skill.includes('adapt') || skill.includes('learns quickly')) return 'adaptability';
+
+            // Languages
             if (skill.includes('bilingual') || skill.includes('spanish')) return 'bilingual';
-            if (skill.includes('cpr') || skill.includes('first aid')) return 'first_aid';
-            if (skill.includes('time manage')) return 'time_management';
-            if (skill.includes('office') || skill.includes('word') || skill.includes('excel')) return 'ms_office';
-            if (skill.includes('google') || skill.includes('docs') || skill.includes('sheets')) return 'google_suite';
-            if (skill.includes('osha')) return 'osha';
-            if (skill.includes('communicat')) return 'communication';
-            if (skill.includes('team')) return 'teamwork';
-            if (skill.includes('problem') || skill.includes('solving')) return 'problem_solving';
-            if (skill.includes('adapt')) return 'adaptability';
+            
             return 'generic';
         }
 
@@ -1042,7 +1055,7 @@
                     <p class="text-lg text-gray-600 mb-8">List up to 12 key skills. We'll help you describe them.</p>
 
                     <div class="flex gap-4 mb-4">
-                        <input id="skill-input" class="input-bubble flex-grow" placeholder="e.g., Teamwork, Forklift, Spanish">
+                        <input id="skill-input" class="input-bubble flex-grow" placeholder="e.g., Forklift, Excel, HIPAA, De-escalation">
                         <button id="generate-skills" class="btn btn-primary">Generate</button>
                     </div>
                     <div id="skill-suggestions" class="flex flex-col gap-2 mb-6"></div>
@@ -1131,6 +1144,7 @@
                 { pattern: /osha/i, replacement: 'OSHA Certified' },
                 { pattern: /cpr|first aid/i, replacement: 'CPR & First-Aid Certified' },
                 { pattern: /employee of the month/i, replacement: 'Recipient of Employee of the Month award' },
+                { pattern: /i am (responsible for|a hard worker|a team player|good with people|ready to work)/i, replacement: 'Demonstrated strong work ethic and collaboration skills.' },
                 
                 // Rewrite common informal phrases (removes phrases not suitable for resumes)
                 { pattern: /good with (people|customers)/i, replacement: 'Strong interpersonal and customer relations skills' },
@@ -1156,7 +1170,7 @@
 
                 // General grammar and cleanup for lines that weren't rewritten
                 // Removes common slang and filler words
-                const slangAndFillers = /\b(ya dig|got that shit|like|you know|stuff|and all that|that|in that|i mean)\b/gi;
+                const slangAndFillers = /\b(ya dig|got that shit|like|you know|stuff|and all that|that|in that|i mean|gonna|wanna)\b/gi;
                 processedLine = processedLine.replace(slangAndFillers, ' ').replace(/\s+/g, ' ').trim();
 
                 // Enhanced typo and basic contraction corrections
@@ -1167,7 +1181,9 @@
                     "exellent": "excellent", "custmer": "customer", "communicaion": "communication", 
                     "volenteer": "volunteer", "aplication": "application", "proces": "process", 
                     "schedul": "schedule", "suport": "support", "assit": "assist", "teem": "team", 
-                    "qualty": "quality"
+                    "qualty": "quality",
+                    "my self": "myself", "a lot": "alot", "alot": "a lot", // Basic spelling correction
+                    "warehous": "warehouse", "logisticks": "logistics"
                 };
                 
                 let correctedText = ` ${processedLine} `;
