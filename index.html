@@ -73,7 +73,6 @@
   <script>
     // ---------- State ----------
     let currentSection = 0; // 0 = Splash
-    const totalSections = 6; // 0..6 inclusive
     const form = document.getElementById('resumeForm');
     const progressBar = document.getElementById('progressBar');
     const modal = document.getElementById('warningModal');
@@ -495,7 +494,6 @@
     }
 
     // ---------- Generators (CAR + Skills) ----------
-    // CAR generator — combinational; seeded by title+company to get "100k+" realistic variations; displays 3 at a time.
     const actionVerbs = ["implemented","optimized","coordinated","streamlined","launched","trained","audited","calibrated","inspected","resolved","led","designed","standardized","consolidated","negotiated","documented","analyzed","improved","reduced","increased"];
     const challenges = [
       "high defect rates","slow order processing","inventory inaccuracies","long wait times","food waste","schedule gaps","safety incidents","low customer satisfaction","missed delivery windows","unreliable vendor lead times","untrained staff","outdated SOPs","manual errors","equipment downtime"
@@ -523,7 +521,7 @@
         const ch = pick(challenges, r1);
         const act = pick(actionVerbs, r2);
         const [mName, mUnit] = pick(metrics, r3);
-        let val = Math.floor(seededRand(seedBase + i*7 + 11) * 35) + 10; // 10..45 typical
+        let val = Math.floor(seededRand(seedBase + i*7 + 11) * 35) + 10; // 10..45
         if (mName === "revenue") val = Math.floor(seededRand(seedBase + i*9 + 13) * 25) + 5; // 5..30
         const scope = pick(scopes, seededRand(seedBase + i*5 + 17));
         const bullet = `• Faced ${ch} at ${company}; ${act} ${title.toLowerCase()} workflows ${scope}, resulting in ${mName} ${mUnit.trim()? (mUnit.startsWith('%')? `${val}%` : `${val}${mUnit}`) : val}.`;
@@ -532,7 +530,6 @@
       return examples;
     }
 
-    // Skill sentence generator — combinational, thousands of variations per skill.
     const skillStarters = ["Applied","Demonstrated","Leveraged","Utilized","Strengthened","Consistently practiced","Implemented"];
     const skillContexts = [
       "in fast-paced environments","while serving diverse customers","across cross-functional teams","under minimal supervision",
@@ -670,30 +667,17 @@
       const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } = docx;
 
       const docChildren = [];
-
-      // Name
-      docChildren.push(new Paragraph({
-        alignment: AlignmentType.CENTER,
-        children: [new TextRun({ text: data.name || 'Your Name', bold: true, size: 48 })],
-      }));
-
-      // Contact
+      docChildren.push(new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: data.name || 'Your Name', bold: true, size: 48 })] }));
       const contact = [data.location, data.phone, data.email].filter(Boolean).join(' | ');
-      if (contact) {
-        docChildren.push(new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: contact, size: 20, italics: true })] }));
-      }
+      if (contact) docChildren.push(new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: contact, size: 20, italics: true })] }));
 
       const addHeading = (t) => docChildren.push(new Paragraph({ text: t.toUpperCase(), heading: HeadingLevel.HEADING_3 }));
 
-      // Skills-first (skills-based)
       if (resumeData.resumeType === 'skills-based' && data.skills.length) {
         addHeading('Skills');
-        data.skills.forEach(s=>{
-          docChildren.push(new Paragraph({ children: [new TextRun({ text: `${s.skill}: ${s.sent}`, size: 22 })] }));
-        });
+        data.skills.forEach(s=> docChildren.push(new Paragraph({ children: [new TextRun({ text: `${s.skill}: ${s.sent}`, size: 22 })] })));
       }
 
-      // Experience
       if (data.work.length) {
         addHeading('Experience');
         data.work.forEach(w=>{
@@ -701,13 +685,10 @@
           const line2 = `${(w.start||'').trim()}${w.end ? ' — ' + (w.end||'').trim() : ''}`;
           if (line1.trim()) docChildren.push(new Paragraph({ children: [new TextRun({ text: line1, bold: true, size: 24 })] }));
           if (line2.trim()) docChildren.push(new Paragraph({ children: [new TextRun({ text: line2, italics: true, size: 20 })] }));
-          (w.bullets || '').split(/\n|•/).filter(Boolean).forEach(b=>{
-            docChildren.push(new Paragraph({ children: [new TextRun({ text: '• ' + b.trim(), size: 22 })] }));
-          });
+          (w.bullets || '').split(/\n|•/).filter(Boolean).forEach(b=> docChildren.push(new Paragraph({ children: [new TextRun({ text: '• ' + b.trim(), size: 22 })] })));
         });
       }
 
-      // Education
       if (data.education.length) {
         addHeading('Education');
         data.education.forEach(e=>{
@@ -719,12 +700,9 @@
         });
       }
 
-      // Skills-last (traditional)
       if (resumeData.resumeType === 'traditional' && data.skills.length) {
         addHeading('Skills');
-        data.skills.forEach(s=>{
-          docChildren.push(new Paragraph({ children: [new TextRun({ text: `${s.skill}: ${s.sent}`, size: 22 })] }));
-        });
+        data.skills.forEach(s=> docChildren.push(new Paragraph({ children: [new TextRun({ text: `${s.skill}: ${s.sent}`, size: 22 })] })));
       }
 
       const doc = new Document({ sections: [{ children: docChildren }] });
@@ -744,14 +722,10 @@
       if (contact) lines.push(contact);
       lines.push('');
 
-      function pushBullets(s) {
-        (s || '').split(/\n|•/).filter(Boolean).forEach(b=>lines.push('• ' + b.trim()));
-      }
+      function pushBullets(s) { (s || '').split(/\n|•/).filter(Boolean).forEach(b=>lines.push('• ' + b.trim())); }
 
       if (resumeData.resumeType === 'skills-based' && data.skills.length) {
-        lines.push('SKILLS:');
-        data.skills.forEach(s=>lines.push(`- ${s.skill}: ${s.sent}`));
-        lines.push('');
+        lines.push('SKILLS:'); data.skills.forEach(s=>lines.push(`- ${s.skill}: ${s.sent}`)); lines.push('');
       }
 
       if (data.work.length) {
@@ -760,8 +734,7 @@
           lines.push(`${w.title || ''}${(w.title && w.company)?' — ':''}${w.company || ''}`);
           const dates = `${(w.start||'').trim()}${w.end? ' — ' + (w.end||'').trim() : ''}`;
           if (dates.trim()) lines.push(dates);
-          pushBullets(w.bullets);
-          lines.push('');
+          pushBullets(w.bullets); lines.push('');
         });
       }
 
@@ -776,9 +749,7 @@
       }
 
       if (resumeData.resumeType === 'traditional' && data.skills.length) {
-        lines.push('SKILLS:');
-        data.skills.forEach(s=>lines.push(`- ${s.skill}: ${s.sent}`));
-        lines.push('');
+        lines.push('SKILLS:'); data.skills.forEach(s=>lines.push(`- ${s.skill}: ${s.sent}`)); lines.push('');
       }
 
       return lines.join('%0D%0A'); // URL-encoded line breaks
@@ -786,7 +757,7 @@
 
     function isResumeEmpty() {
       const d = collectData();
-      const contactOk = d.name && d.email;
+      const contactOk = d.name && d.email; // require basic contact
       const hasAny = (d.work && d.work.length) || (d.education && d.education.length) || (d.skills && d.skills.length);
       return !(contactOk && hasAny);
     }
@@ -812,8 +783,8 @@
         addWork: ()=> addDynamicEntry('workExperiences', workEntryTemplate),
         addEdu: ()=> addDynamicEntry('educationEntries', eduEntryTemplate),
         remove: ()=> document.getElementById(e.target.dataset.target)?.remove(),
-        generateCar: ()=> handleCar(e, /*offset*/0),
-        moreCar: ()=> handleCar(e, /*offset*/ Math.floor(Math.random()*100000)),
+        generateCar: ()=> handleCar(e, 0),
+        moreCar: ()=> handleCar(e, Math.floor(Math.random()*100000)),
         addSkill: ()=>{
           const input = document.getElementById('newSkill');
           const skill = input.value.trim();
@@ -879,7 +850,6 @@
         .join('');
       sugg.innerHTML = `<div class="space-y-2">${bullets}</div>`;
       sugg.classList.remove('hidden');
-
       sugg.querySelectorAll('.select-bullet').forEach(btn=>{
         btn.addEventListener('click', ()=>{
           const area = grp.querySelector('textarea[name="responsibilities"]');
@@ -894,10 +864,10 @@
     styleFormElements();
     goToSection(0);
 
-    // Keep inputs/buttons styled on DOM changes
     const observer = new MutationObserver(styleFormElements);
     observer.observe(form, { childList: true, subtree: true });
 
+    function updateProgressBarManually() { /* kept for parity if needed */ }
   </script>
 </body>
 </html>
