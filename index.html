@@ -4,20 +4,29 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TASK Resume Builder</title>
+
+  <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+
   <!-- Word export -->
   <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
+
   <style>
     body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; }
+
+    /* Section animations */
     .form-section { display: none; animation: fadeIn 0.35s ease-in-out; }
     .form-section.active { display: block; }
-    @keyframes fadeIn { from {opacity: 0; transform: translateY(14px);} to {opacity: 1; transform: translateY(0);} }
-    /* Classic resume preview styles */
-    #resumePreview { font-family: 'Times New Roman', Times, serif; color: #1a202c; }
-    #resumePreview h3 { font-size: 24px; font-weight:700; text-align:center; margin-bottom:4px; }
+    @keyframes fadeIn { from {opacity:0; transform:translateY(14px)} to {opacity:1; transform:translateY(0)} }
+
+    /* Resume preview (classic look) */
+    #resumePreview { font-family: 'Times New Roman', Times, serif; color:#1a202c; }
+    #resumePreview h3 { font-size:24px; font-weight:700; text-align:center; margin-bottom:4px; }
     #resumePreview .contact-info { font-size:12px; text-align:center; color:#4a5568; margin-bottom:16px; padding-bottom:8px; border-bottom:2px solid #2d3748; }
     #resumePreview h4 { font-size:16px; font-weight:700; text-transform:uppercase; margin-top:16px; margin-bottom:8px; border-bottom:1px solid #4a5568; padding-bottom:4px; }
     #resumePreview .entry { margin-bottom:12px; }
@@ -26,8 +35,12 @@
     #resumePreview .meta { font-style:italic; font-size:13px; color:#4a5568; }
     #resumePreview ul { list-style-position:outside; padding-left:20px; margin-top:4px; }
     #resumePreview li { font-size:13px; margin-bottom:4px; line-height:1.6; color:#2d3748; }
-    #resumePreview .skills-list { font-size:13px; line-height:1.6; }
+
+    /* Important: keep hidden by default. We avoid Tailwind's `flex` here to prevent it showing on load. */
     .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); }
+
+    /* Utility applied via JS to inputs/buttons so we don’t repeat classes in templates */
+    .form-input { }
   </style>
 </head>
 <body class="bg-gray-100">
@@ -42,6 +55,7 @@
           TASK Resume Builder
         </h1>
         <p class="mt-2 text-indigo-200 text-lg">Build your professional resume step-by-step</p>
+
         <!-- Progress bar -->
         <div class="mt-6 bg-black/20 h-2.5 rounded-full overflow-hidden">
           <div id="progressBar" class="bg-white h-full rounded-full transition-all duration-500 ease-out" style="width:0%;"></div>
@@ -55,30 +69,39 @@
     </div>
   </div>
 
-  <!-- Warning Modal -->
-  <div id="warningModal" class="modal-overlay flex items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md mx-auto text-center">
-      <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100">
-        <svg class="h-6 w-6 text-yellow-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M4.07 19h15.86c1.54 0 2.5-1.67 1.73-3L13.73 4c-.77-1.33-2.69-1.33-3.46 0L2.34 16c-.77 1.33.19 3 1.73 3z"/></svg>
-      </div>
-      <h3 class="text-lg font-bold text-gray-900 mt-3">Resume may be incomplete</h3>
-      <p class="text-sm text-gray-600 mt-2">We didn’t find enough info to build a solid resume. Do you still want to continue?</p>
-      <div class="mt-5 flex gap-3 justify-center">
-        <button type="button" id="modalContinueBtn" class="px-6 py-3 rounded-md text-white bg-indigo-600 hover:bg-indigo-700 font-semibold">Continue anyway</button>
-        <button type="button" id="modalCancelBtn" class="px-6 py-3 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold">Go back & edit</button>
+  <!-- Warning Modal (hidden by default; no Tailwind `flex` class here) -->
+  <div id="warningModal" class="modal-overlay hidden z-50">
+    <div class="w-full h-full flex items-center justify-center p-4">
+      <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md mx-auto text-center">
+        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100">
+          <svg class="h-6 w-6 text-yellow-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M4.07 19h15.86c1.54 0 2.5-1.67 1.73-3L13.73 4c-.77-1.33-2.69-1.33-3.46 0L2.34 16c-.77 1.33.19 3 1.73 3z"/></svg>
+        </div>
+        <h3 class="text-lg font-bold text-gray-900 mt-3">Resume may be incomplete</h3>
+        <p class="text-sm text-gray-600 mt-2">We didn’t find enough info to build a solid resume. Do you still want to continue?</p>
+        <div class="mt-5 flex gap-3 justify-center">
+          <button type="button" id="modalContinueBtn" class="px-6 py-3 rounded-md text-white bg-indigo-600 hover:bg-indigo-700 font-semibold">Continue anyway</button>
+          <button type="button" id="modalCancelBtn" class="px-6 py-3 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold">Go back & edit</button>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    // ---------- State ----------
-    let currentSection = 0; // 0 = Splash
+    /* =========================
+       State & Shared Refs
+    ========================= */
+    let currentSection = 0; // 0 = splash
     const form = document.getElementById('resumeForm');
     const progressBar = document.getElementById('progressBar');
     const modal = document.getElementById('warningModal');
+    const modalContinueBtn = document.getElementById('modalContinueBtn');
+    const modalCancelBtn = document.getElementById('modalCancelBtn');
     const resumeData = { resumeType: 'traditional' };
+    let afterWarning = null; // stores the action to run after user clicks "Continue anyway"
 
-    // ---------- Templates ----------
+    /* =========================
+       Sections / Templates
+    ========================= */
     const sectionTemplates = {
       0: `
         <section class="form-section" data-section="0">
@@ -262,7 +285,9 @@
       `
     };
 
-    // ---------- Dynamic entry templates ----------
+    /* =========================
+       Dynamic entry templates
+    ========================= */
     const workEntryTemplate = (id) => `
       <div class="entry-group bg-gray-50 p-5 rounded-lg border relative" id="work-${id}">
         <button type="button" data-action="remove" data-target="work-${id}" class="absolute top-2 right-2 text-gray-400 hover:text-red-500 text-2xl font-bold">&times;</button>
@@ -360,7 +385,9 @@
       </div>
     `;
 
-    // ---------- Utilities ----------
+    /* =========================
+       Helpers / UI
+    ========================= */
     function updateProgress() {
       const pct = Math.max(0, Math.min(100, (currentSection / 6) * 100));
       progressBar.style.width = pct + '%';
@@ -375,7 +402,7 @@
       if (!next) {
         form.insertAdjacentHTML('beforeend', sectionTemplates[n]);
         next = form.querySelector(`.form-section[data-section="${n}"]`);
-        // Initialize dynamic containers
+        // Initialize dynamic content
         if (n === 1) updateResumeTypeSuggestion(document.getElementById('lastJob').value);
         if (n === 3) {
           if (resumeData.resumeType === 'traditional') {
@@ -389,6 +416,7 @@
         }
         if (n === 4) addDynamicEntry('educationEntries', eduEntryTemplate);
       }
+
       currentSection = n;
       next.classList.add('active');
       updateProgress();
@@ -423,20 +451,14 @@
         endY.innerHTML = '<option value="">Year</option><option>Present</option>';
         for (let y = currentYear; y >= currentYear - 70; y--) endY.innerHTML += `<option>${y}</option>`;
       }
-      if (startM) {
-        startM.innerHTML = '<option value="">Month</option>' + months.map(m=>`<option>${m}</option>`).join('');
-      }
-      if (endM) {
-        endM.innerHTML = '<option value="">Month</option>' + months.map(m=>`<option>${m}</option>`).join('');
-      }
+      if (startM) startM.innerHTML = '<option value="">Month</option>' + months.map(m=>`<option>${m}</option>`).join('');
+      if (endM)   endM.innerHTML   = '<option value="">Month</option>' + months.map(m=>`<option>${m}</option>`).join('');
     }
 
     function populateGradYearDropdown(container) {
       const currentYear = new Date().getFullYear();
       const gradYearSelect = container.querySelector('select[name="gradYear"]');
-      if (gradYearSelect) {
-        for (let y = currentYear + 1; y >= currentYear - 70; y--) gradYearSelect.innerHTML += `<option>${y}</option>`;
-      }
+      if (gradYearSelect) for (let y = currentYear + 1; y >= currentYear - 70; y--) gradYearSelect.innerHTML += `<option>${y}</option>`;
     }
 
     function validateSection(n) {
@@ -493,14 +515,12 @@
       box.classList.remove('hidden');
     }
 
-    // ---------- Generators (CAR + Skills) ----------
+    /* =========================
+       Generators (CAR + Skills)
+    ========================= */
     const actionVerbs = ["implemented","optimized","coordinated","streamlined","launched","trained","audited","calibrated","inspected","resolved","led","designed","standardized","consolidated","negotiated","documented","analyzed","improved","reduced","increased"];
-    const challenges = [
-      "high defect rates","slow order processing","inventory inaccuracies","long wait times","food waste","schedule gaps","safety incidents","low customer satisfaction","missed delivery windows","unreliable vendor lead times","untrained staff","outdated SOPs","manual errors","equipment downtime"
-    ];
-    const metrics = [
-      ["cost","%"],["time","%"],["errors","%"],["throughput","%"],["on-time delivery","%"],["customer satisfaction"," pts"],["scrap","%"],["waste","%"],["uptime","%"],["revenue","%"],["units/hour",""],["NPS"," pts"]
-    ];
+    const challenges = ["high defect rates","slow order processing","inventory inaccuracies","long wait times","food waste","schedule gaps","safety incidents","low customer satisfaction","missed delivery windows","unreliable vendor lead times","untrained staff","outdated SOPs","manual errors","equipment downtime"];
+    const metrics = [["cost","%"],["time","%"],["errors","%"],["throughput","%"],["on-time delivery","%"],["customer satisfaction"," pts"],["scrap","%"],["waste","%"],["uptime","%"],["revenue","%"],["units/hour",""],["NPS"," pts"]];
     const scopes = ["across 3 departments","on a 12-person team","for a 40-seat dining room","across 2 shifts","for 5 sites","for 200+ daily orders","serving 150+ patrons/day","supporting 25 SKUs","across 4 routes"];
 
     function seededRand(seed) {
@@ -531,18 +551,10 @@
     }
 
     const skillStarters = ["Applied","Demonstrated","Leveraged","Utilized","Strengthened","Consistently practiced","Implemented"];
-    const skillContexts = [
-      "in fast-paced environments","while serving diverse customers","across cross-functional teams","under minimal supervision",
-      "while adhering to safety and quality standards","during peak-demand periods","within SLA targets","in high-volume operations"
-    ];
-    const skillActions = [
-      "to solve operational problems quickly","to improve task accuracy","to support team goals","to reduce rework and delays",
-      "to streamline daily workflows","to maintain compliance with SOPs","to boost service quality","to meet or exceed daily targets"
-    ];
-    const skillOutcomes = [
-      "cutting errors by","increasing throughput by","reducing wait times by","raising satisfaction scores by",
-      "improving on-time completion by","reducing escalations by","shortening training time by","improving first-pass yield by"
-    ];
+    const skillContexts = ["in fast-paced environments","while serving diverse customers","across cross-functional teams","under minimal supervision","while adhering to safety and quality standards","during peak-demand periods","within SLA targets","in high-volume operations"];
+    const skillActions = ["to solve operational problems quickly","to improve task accuracy","to support team goals","to reduce rework and delays","to streamline daily workflows","to maintain compliance with SOPs","to boost service quality","to meet or exceed daily targets"];
+    const skillOutcomes = ["cutting errors by","increasing throughput by","reducing wait times by","raising satisfaction scores by","improving on-time completion by","reducing escalations by","shortening training time by","improving first-pass yield by"];
+
     function generateSkillSentence(skill) {
       const s = skill.toLowerCase();
       const r1 = Math.random(), r2 = Math.random(), r3 = Math.random(), r4 = Math.random(), r5 = Math.random();
@@ -550,11 +562,13 @@
       const ctx = pick(skillContexts, r2);
       const act = pick(skillActions, r3);
       const out = pick(skillOutcomes, r4);
-      const val = Math.floor(10 + r5 * 35); // 10..45
+      const val = Math.floor(10 + r5 * 35);
       return `${starter} ${s} ${ctx} ${act}, ${out} ${val}%.`;
     }
 
-    // ---------- Preview / Export / Email ----------
+    /* =========================
+       Preview / Export / Email
+    ========================= */
     function collectData() {
       const data = {
         type: resumeData.resumeType,
@@ -566,7 +580,7 @@
         education: [],
         skills: []
       };
-      // Work
+
       document.querySelectorAll('#workExperiences .entry-group').forEach(g=>{
         const get = n => g.querySelector(`[name="${n}"]`)?.value?.trim() || '';
         const title = get('jobTitle'), company = get('company');
@@ -576,7 +590,7 @@
           data.work.push({ title, company, start:`${sm||''} ${sy||''}`.trim(), end:`${em||''} ${ey||''}`.trim(), bullets });
         }
       });
-      // Education
+
       document.querySelectorAll('#educationEntries .entry-group').forEach(g=>{
         const get = n => g.querySelector(`[name="${n}"]`)?.value?.trim() || '';
         const type = get('degreeType');
@@ -588,7 +602,7 @@
         const desc = get('eduDescription');
         if (school || degree) data.education.push({ type, school, degree, gradYear, desc });
       });
-      // Skills
+
       document.querySelectorAll('#skillsList .entry-group').forEach(g=>{
         const skill = g.querySelector('p.font-bold')?.textContent?.trim();
         const sent = g.querySelector('textarea[name="skillDescription"]')?.value?.trim() || '';
@@ -608,7 +622,7 @@
 
       if (data.type === 'skills-based' && data.skills.length) {
         lines.push(`<h4>Skills</h4>`);
-        lines.push(`<ul class="skills-list">${data.skills.map(s=>`<li><strong>${escapeHtml(s.skill)}:</strong> ${escapeHtml(s.sent)}</li>`).join('')}</ul>`);
+        lines.push(`<ul>${data.skills.map(s=>`<li><strong>${escapeHtml(s.skill)}:</strong> ${escapeHtml(s.sent)}</li>`).join('')}</ul>`);
       }
 
       if (data.work.length && data.type === 'traditional') {
@@ -654,7 +668,7 @@
 
       if (data.type === 'traditional' && data.skills.length) {
         lines.push(`<h4>Skills</h4>`);
-        lines.push(`<ul class="skills-list">${data.skills.map(s=>`<li><strong>${escapeHtml(s.skill)}:</strong> ${escapeHtml(s.sent)}</li>`).join('')}</ul>`);
+        lines.push(`<ul>${data.skills.map(s=>`<li><strong>${escapeHtml(s.skill)}:</strong> ${escapeHtml(s.sent)}</li>`).join('')}</ul>`);
       }
 
       wrap.innerHTML = lines.join('');
@@ -727,7 +741,6 @@
       if (resumeData.resumeType === 'skills-based' && data.skills.length) {
         lines.push('SKILLS:'); data.skills.forEach(s=>lines.push(`- ${s.skill}: ${s.sent}`)); lines.push('');
       }
-
       if (data.work.length) {
         lines.push('EXPERIENCE:');
         data.work.forEach(w=>{
@@ -737,7 +750,6 @@
           pushBullets(w.bullets); lines.push('');
         });
       }
-
       if (data.education.length) {
         lines.push('EDUCATION:');
         data.education.forEach(e=>{
@@ -747,31 +759,47 @@
           lines.push('');
         });
       }
-
       if (resumeData.resumeType === 'traditional' && data.skills.length) {
         lines.push('SKILLS:'); data.skills.forEach(s=>lines.push(`- ${s.skill}: ${s.sent}`)); lines.push('');
       }
-
-      return lines.join('%0D%0A'); // URL-encoded line breaks
+      return lines.join('%0D%0A');
     }
 
-    function isResumeEmpty() {
+    /* =========================
+       Incomplete Check + Modal
+    ========================= */
+    function isResumeIncomplete() {
+      // Minimal sanity check: need a name + at least one of work/edu/skills
       const d = collectData();
-      const contactOk = d.name && d.email; // require basic contact
-      const hasAny = (d.work && d.work.length) || (d.education && d.education.length) || (d.skills && d.skills.length);
+      const contactOk = !!d.name;
+      const hasAny = (d.work?.length || d.education?.length || d.skills?.length);
       return !(contactOk && hasAny);
     }
 
-    function openWarning(onContinue) {
-      modal.style.display = 'flex';
-      const cont = document.getElementById('modalContinueBtn');
-      const cancel = document.getElementById('modalCancelBtn');
-      const closeAll = ()=> modal.style.display = 'none';
-      cont.onclick = ()=>{ closeAll(); onContinue && onContinue(); };
-      cancel.onclick = closeAll;
+    function showWarning(onContinue) {
+      afterWarning = onContinue || null;
+      // Remove `hidden` and apply flex layout wrapper
+      modal.classList.remove('hidden');
+      modal.style.display = 'block';
     }
 
-    // ---------- Event handlers ----------
+    function hideWarning() {
+      modal.style.display = 'none';
+      modal.classList.add('hidden');
+      afterWarning = null;
+    }
+
+    // Attach once: these buttons now always work
+    modalContinueBtn.addEventListener('click', () => {
+      const next = afterWarning;
+      hideWarning();
+      if (typeof next === 'function') next();
+    });
+    modalCancelBtn.addEventListener('click', hideWarning);
+
+    /* =========================
+       Events
+    ========================= */
     form.addEventListener('click', (e)=>{
       const action = e.target.dataset.action;
       if (!action) return;
@@ -801,7 +829,7 @@
         },
         download: ()=>{
           const proceed = ()=> downloadDocx();
-          if (isResumeEmpty()) openWarning(proceed); else proceed();
+          if (isResumeIncomplete()) showWarning(proceed); else proceed();
         },
         email: ()=>{
           const proceed = ()=>{
@@ -809,7 +837,7 @@
             const body = composeEmailBody();
             window.location.href = `mailto:EandE@trentonsoupkitchen.org?subject=${subject}&body=${body}`;
           };
-          if (isResumeEmpty()) openWarning(proceed); else proceed();
+          if (isResumeIncomplete()) showWarning(proceed); else proceed();
         }
       };
       if (actions[action]) actions[action]();
@@ -859,7 +887,9 @@
       });
     }
 
-    // ---------- Init ----------
+    /* =========================
+       Boot
+    ========================= */
     form.innerHTML = sectionTemplates[0];
     styleFormElements();
     goToSection(0);
@@ -867,7 +897,6 @@
     const observer = new MutationObserver(styleFormElements);
     observer.observe(form, { childList: true, subtree: true });
 
-    function updateProgressBarManually() { /* kept for parity if needed */ }
   </script>
 </body>
 </html>
