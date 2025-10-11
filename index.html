@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-  <!-- docx.js for Word export -->
+  <!-- Word export -->
   <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
   <style>
     body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; }
@@ -73,7 +73,7 @@
   <script>
     // ---------- State ----------
     let currentSection = 0; // 0 = Splash
-    const totalSections = 6; // 0..6 inclusive (0 splash, 1 demo/last job, 2 personal, 3 work, 4 edu, 5 skills, 6 review)
+    const totalSections = 6; // 0..6 inclusive
     const form = document.getElementById('resumeForm');
     const progressBar = document.getElementById('progressBar');
     const modal = document.getElementById('warningModal');
@@ -353,7 +353,10 @@
         <p class="font-bold text-gray-800">${skill}</p>
         <div class="mt-2 space-y-2">
           <textarea name="skillDescription" class="form-input text-sm" placeholder="Add or generate a sentence describing this skill."></textarea>
-          <button type="button" data-action="generateSkillSentence" data-skill="${skill}" class="text-xs bg-indigo-100 text-indigo-700 font-semibold py-1 px-2 rounded hover:bg-indigo-200">Generate Example Sentence</button>
+          <div class="flex gap-2">
+            <button type="button" data-action="generateSkillSentence" data-skill="${skill}" class="text-xs bg-indigo-100 text-indigo-700 font-semibold py-1 px-2 rounded hover:bg-indigo-200">Generate Example Sentence</button>
+            <button type="button" data-action="generateSkillSentence" data-skill="${skill}" class="text-xs bg-white border border-indigo-200 text-indigo-700 font-semibold py-1 px-2 rounded hover:bg-indigo-50">Generate Another</button>
+          </div>
         </div>
       </div>
     `;
@@ -492,7 +495,8 @@
     }
 
     // ---------- Generators (CAR + Skills) ----------
-    const actionVerbs = ["implemented","optimized","coordinated","streamlined","launched","trained","audited","calibrated","inspected","resolved"," led","designed","standardized","consolidated","negotiated","documented","analyzed","improved","reduced","increased"];
+    // CAR generator — combinational; seeded by title+company to get "100k+" realistic variations; displays 3 at a time.
+    const actionVerbs = ["implemented","optimized","coordinated","streamlined","launched","trained","audited","calibrated","inspected","resolved","led","designed","standardized","consolidated","negotiated","documented","analyzed","improved","reduced","increased"];
     const challenges = [
       "high defect rates","slow order processing","inventory inaccuracies","long wait times","food waste","schedule gaps","safety incidents","low customer satisfaction","missed delivery windows","unreliable vendor lead times","untrained staff","outdated SOPs","manual errors","equipment downtime"
     ];
@@ -519,26 +523,38 @@
         const ch = pick(challenges, r1);
         const act = pick(actionVerbs, r2);
         const [mName, mUnit] = pick(metrics, r3);
-        // Make a plausible number
-        let val = Math.floor(seededRand(seedBase + i*7 + 11) * 35) + 10; // 10..45
+        let val = Math.floor(seededRand(seedBase + i*7 + 11) * 35) + 10; // 10..45 typical
         if (mName === "revenue") val = Math.floor(seededRand(seedBase + i*9 + 13) * 25) + 5; // 5..30
         const scope = pick(scopes, seededRand(seedBase + i*5 + 17));
-        const bullet = `• Faced ${ch} at ${company}; ${act} ${title.toLowerCase()} workflows ${scope}, resulting in ${mName} ${mUnit.trim()? (mUnit.startsWith('%')? `${val}%` : `${val}${mUnit}`) : val}${mUnit ? '' : ''}.`;
+        const bullet = `• Faced ${ch} at ${company}; ${act} ${title.toLowerCase()} workflows ${scope}, resulting in ${mName} ${mUnit.trim()? (mUnit.startsWith('%')? `${val}%` : `${val}${mUnit}`) : val}.`;
         examples.push(bullet);
       }
       return examples;
     }
 
+    // Skill sentence generator — combinational, thousands of variations per skill.
+    const skillStarters = ["Applied","Demonstrated","Leveraged","Utilized","Strengthened","Consistently practiced","Implemented"];
+    const skillContexts = [
+      "in fast-paced environments","while serving diverse customers","across cross-functional teams","under minimal supervision",
+      "while adhering to safety and quality standards","during peak-demand periods","within SLA targets","in high-volume operations"
+    ];
+    const skillActions = [
+      "to solve operational problems quickly","to improve task accuracy","to support team goals","to reduce rework and delays",
+      "to streamline daily workflows","to maintain compliance with SOPs","to boost service quality","to meet or exceed daily targets"
+    ];
+    const skillOutcomes = [
+      "cutting errors by","increasing throughput by","reducing wait times by","raising satisfaction scores by",
+      "improving on-time completion by","reducing escalations by","shortening training time by","improving first-pass yield by"
+    ];
     function generateSkillSentence(skill) {
-      const templates = [
-        `Demonstrated ${skill.toLowerCase()} in fast-paced settings, maintaining accuracy and positive customer outcomes.`,
-        `Applied ${skill.toLowerCase()} to meet daily targets while following safety and quality standards.`,
-        `Used ${skill.toLowerCase()} to solve problems quickly and support team goals with minimal supervision.`,
-        `Practiced ${skill.toLowerCase()} consistently, contributing to smooth operations and on-time completion.`,
-        `Leveraged ${skill.toLowerCase()} to improve service quality, reduce errors, and support repeat customers.`
-      ];
-      const r = Math.floor(Math.random() * templates.length);
-      return templates[r];
+      const s = skill.toLowerCase();
+      const r1 = Math.random(), r2 = Math.random(), r3 = Math.random(), r4 = Math.random(), r5 = Math.random();
+      const starter = pick(skillStarters, r1);
+      const ctx = pick(skillContexts, r2);
+      const act = pick(skillActions, r3);
+      const out = pick(skillOutcomes, r4);
+      const val = Math.floor(10 + r5 * 35); // 10..45
+      return `${starter} ${s} ${ctx} ${act}, ${out} ${val}%.`;
     }
 
     // ---------- Preview / Export / Email ----------
@@ -878,17 +894,9 @@
     styleFormElements();
     goToSection(0);
 
-    // ---------- Styles pass (after mutation) ----------
+    // Keep inputs/buttons styled on DOM changes
     const observer = new MutationObserver(styleFormElements);
     observer.observe(form, { childList: true, subtree: true });
-
-    // ---------- Helpers ----------
-    function ensureAtLeastOneWorkIfTraditional() {
-      if (resumeData.resumeType !== 'traditional') return true;
-      return !!document.querySelector('#workExperiences .entry-group');
-    }
-
-    // Kick off with at least one work entry when visiting step 3 (handled in goToSection)
 
   </script>
 </body>
